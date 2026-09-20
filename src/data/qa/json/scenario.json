@@ -148,7 +148,7 @@
           },
           {
             "type": "text",
-            "value": " 时 disconnect；失败给重试。"
+            "value": " 时 disconnect；失败时提供重试入口。"
           }
         ],
         [
@@ -276,7 +276,7 @@
           },
           {
             "type": "text",
-            "value": "从资源体积、接口并行与感知体验三方面优化，并以 FCP/LCP 与 RUM 数据验收。"
+            "value": "从资源体积、接口并行与感知体验三方面优化，并以 FCP/LCP 与真实用户监控（RUM）数据验收。"
           }
         ],
         [
@@ -311,12 +311,16 @@
             "value": "请求"
           },
           {
+            "type": "text",
+            "value": "："
+          },
+          {
             "type": "code",
             "value": "Promise.all"
           },
           {
             "type": "text",
-            "value": " 并行首屏接口；能缓存的用 HTTP 缓存或 SWR。"
+            "value": " 并行首屏接口；能缓存的用 HTTP 缓存或 stale-while-revalidate（SWR，先回缓存再后台更新）。"
           }
         ],
         [
@@ -350,7 +354,7 @@
         [
           {
             "type": "text",
-            "value": "5）验证：本地观测 FCP、LCP 与长任务；线上用真实用户监控（RUM）按版本、地区对比。"
+            "value": "5）验证：本地观测 FCP、LCP 与长任务；线上用 RUM 按版本、地区对比。"
           }
         ]
       ]
@@ -359,7 +363,7 @@
       "id": "q-auth",
       "navLabel": "登录态",
       "question": "前端应如何管理登录态？访问令牌应存放在哪里？",
-      "questionNote": "HttpOnly Cookie 与内存 access + refresh 对比；401 单飞刷新队列是常见加分点。",
+      "questionNote": "HttpOnly Cookie 与内存 access + refresh 对比；401 单飞刷新队列是关键细节。",
       "answer": [
         [
           {
@@ -560,7 +564,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1）分片："
           },
           {
             "type": "code",
@@ -568,19 +572,49 @@
           },
           {
             "type": "text",
-            "value": " 分片，携带 index/total/hash；并发窗口（如 3 片）控制带宽。"
+            "value": " 切片，携带 "
+          },
+          {
+            "type": "code",
+            "value": "index"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "total"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "hash"
+          },
+          {
+            "type": "text",
+            "value": "；用并发窗口（如同时 3 片）控制带宽与失败面。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）服务端合并或对象存储分片 API；秒传先算文件 hash 查是否已存在。"
+            "value": "2）断点续传：上传前先调接口查「已收到哪些分片」，只补缺失的那几片。这是断点续传的核心，不查进度就只能整个文件重传。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）失败重试要幂等；进度条用已确认字节/总大小。"
+            "value": "3）合并与秒传：服务端合并分片或走对象存储的分片 API；秒传先算文件 hash 查是否已存在，命中则直接完成。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）重试与进度：单片失败要幂等重试；进度条用服务端已确认字节 / 总大小，避免重复计数。"
           }
         ]
       ]
@@ -597,44 +631,48 @@
             "value": "要点："
           },
           {
-            "type": "code",
-            "value": "onclose/onerror"
+            "type": "text",
+            "value": "onclose / onerror 触发时采用指数退避重连，并配合心跳检测连接存活。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）退避间隔 1s、2s、4s… 封顶 30s，避免网络抖动时压垮服务端；连上后要把重试计数复位，否则下次断线会直接等最长间隔。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）定时心跳，超时未 pong 则主动 close 再重连；服务端要处理重复会话 id。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）重连成功后要补数据：按会话 id 或消息游标（lastMsgId）拉取断线期间的增量，只重连不补拉会丢消息。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）visibilitychange 回前台可主动 ping 一次，尽快发现假死连接。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
           },
           {
             "type": "text",
-            "value": " 触发时采用指数退避重连，并配合心跳检测连接存活。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）退避间隔 1s、2s、4s… 封顶 30s，避免网络抖动时压垮服务端。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "code",
-            "value": "visibilitychange"
-          },
-          {
-            "type": "text",
-            "value": " 回前台可主动 ping 一次。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）定时心跳，超时未 pong 则主动 close 再重连；服务端处理重复会话 id。"
+            "value": "指数退避与重试复位。"
           }
         ],
         [
           {
             "type": "code",
-            "value": "function connect(retry = 0) {\n  const ws = new WebSocket(url)\n  ws.onclose = () => {\n    const delay = Math.min(1000 * 2 ** retry, 30000)\n    setTimeout(() => connect(retry + 1), delay)\n  }\n  ws.onopen = () => { /* reset retry */ }\n}"
+            "value": "function connect(retry = 0) {\n  const ws = new WebSocket(url)\n  ws.onopen = () => { retry = 0 } // 连上即复位，避免下次直接等最长间隔\n  ws.onclose = () => {\n    const delay = Math.min(1000 * 2 ** retry, 30000)\n    setTimeout(() => connect(retry + 1), delay)\n  }\n}"
           }
         ]
       ]
@@ -652,17 +690,17 @@
           },
           {
             "type": "text",
-            "value": "SSE 适合单向服务端推流；WebSocket 适合全双工低延迟场景，按业务选型。"
+            "value": "服务端发送事件（SSE）适合单向服务端推流；WebSocket 适合全双工低延迟场景，按业务选型。"
           }
         ],
         [
           {
             "type": "strong",
-            "value": "服务端发送事件（SSE）："
+            "value": "SSE："
           },
           {
             "type": "text",
-            "value": "单向服务器推流，走 HTTP，自动重连，适合日志、进度、通知。"
+            "value": "服务端单向推流，走 HTTP，自动重连，适合日志、进度、通知。"
           }
         ],
         [
@@ -709,12 +747,6 @@
           {
             "type": "text",
             "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "大模型流式对话的协议与打断细节见「AI」章。"
           }
         ]
       ]
@@ -900,7 +932,7 @@
           },
           {
             "type": "text",
-            "value": " 可见比例 + 停留时长再上报，与 RUM 字段分开。"
+            "value": " 可见比例 + 停留时长再上报，与真实用户监控（RUM）字段分开。"
           }
         ]
       ]
@@ -918,7 +950,7 @@
           },
           {
             "type": "text",
-            "value": "按首屏需求、SEO 与交互复杂度在 CSR、SSG、SSR 间选型，亦可采用混合方案。"
+            "value": "按首屏需求、搜索引擎优化（SEO）与交互复杂度在 CSR、SSG、SSR 间选型，亦可采用混合方案。"
           }
         ],
         [
@@ -955,6 +987,80 @@
           {
             "type": "text",
             "value": "混合：增量静态再生成（ISR）、流式 SSR 先吐壳再填内容，改善首字节时间（TTFB）感知。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-saas-zero-to-one",
+      "navLabel": "SaaS 从 0 到 1",
+      "question": "从 0 到 1 搭一个中后台 SaaS，前端前期要定哪些事？",
+      "questionNote": "对应经历：主导 SaaS 平台从 0 到 1 搭建；侧重决策顺序与取舍。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "先定工程基线，再定横切能力，最后定可扩展层；先跑通一条业务链路再复制，别一上来就铺全。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）"
+          },
+          {
+            "type": "strong",
+            "value": "基线"
+          },
+          {
+            "type": "text",
+            "value": "框架与构建选型、目录约定、代码规范、提交门禁与多环境流水线，先保证可持续交付。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）"
+          },
+          {
+            "type": "strong",
+            "value": "横切"
+          },
+          {
+            "type": "text",
+            "value": "登录与权限模型、统一请求层、路由与菜单、错误与埋点上报，这几块后期改造成本最高。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）"
+          },
+          {
+            "type": "strong",
+            "value": "扩展"
+          },
+          {
+            "type": "text",
+            "value": "多租户与主题、国际化、图表与表单基础组件，按客户需求排优先级，避免过度设计。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）"
+          },
+          {
+            "type": "strong",
+            "value": "节奏"
+          },
+          {
+            "type": "text",
+            "value": "首个版本只覆盖核心链路并留好扩展点，用真实交付倒逼抽象，比空想架构更稳。"
           }
         ]
       ]

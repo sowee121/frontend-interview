@@ -178,7 +178,7 @@
           },
           {
             "type": "text",
-            "value": " 判空是刻意用法，无需背诵完整比较表。"
+            "value": " 判空是刻意用法。"
           }
         ],
         [
@@ -327,7 +327,7 @@
     {
       "id": "q-hoisting",
       "navLabel": "变量与函数提升",
-      "question": "var 与 function 声明如何提升？与 let/const 的暂时性死区（TDZ）有何区别？",
+      "question": "var 与 function 声明的提升规则是怎样的？",
       "answer": [
         [
           {
@@ -356,7 +356,7 @@
           },
           {
             "type": "text",
-            "value": " 虽提升但处于暂时性死区，声明前访问抛错。"
+            "value": " 虽也提升但处于暂时性死区。"
           }
         ],
         [
@@ -366,7 +366,7 @@
           },
           {
             "type": "text",
-            "value": " 编译阶段提升声明并初始化为 "
+            "value": " 在编译阶段提升声明并初始化为 "
           },
           {
             "type": "code",
@@ -393,6 +393,10 @@
         ],
         [
           {
+            "type": "text",
+            "value": "工程建议：新代码用 "
+          },
+          {
             "type": "code",
             "value": "let"
           },
@@ -406,26 +410,19 @@
           },
           {
             "type": "text",
-            "value": " 处于"
-          },
-          {
-            "type": "strong",
-            "value": "暂时性死区（TDZ）"
-          },
-          {
-            "type": "text",
-            "value": "，声明前访问抛 "
+            "value": " 与函数声明，少用 "
           },
           {
             "type": "code",
-            "value": "ReferenceError"
+            "value": "var"
           },
           {
             "type": "text",
-            "value": "，详见 ES6 章。"
+            "value": "，避免提升带来的隐式行为。"
           }
         ]
-      ]
+      ],
+      "questionNote": "提升只看声明形式：var 提声明并初始化为 undefined，函数声明整体提升；TDZ 属 let/const。"
     },
     {
       "id": "q-execution-context",
@@ -694,15 +691,15 @@
         [
           {
             "type": "text",
-            "value": "生产代码避免直接改 "
+            "value": "生产代码避免运行时改原型（会拖慢属性访问）：创建时就指定，用 "
           },
           {
             "type": "code",
-            "value": "__proto__"
+            "value": "Object.create(proto)"
           },
           {
             "type": "text",
-            "value": "，用 "
+            "value": "；读原型用 "
           },
           {
             "type": "code",
@@ -710,15 +707,7 @@
           },
           {
             "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "Object.setPrototypeOf"
-          },
-          {
-            "type": "text",
-            "value": "；"
+            "value": "。"
           },
           {
             "type": "code",
@@ -769,15 +758,15 @@
           },
           {
             "type": "text",
-            "value": "：立即执行，第二参为数组，适合参数个数不定（如 "
+            "value": "：立即执行，第二参为数组，适合参数个数不定。经典写法 "
           },
           {
             "type": "code",
-            "value": "Math.max.apply"
+            "value": "Math.max.apply(null, arr)"
           },
           {
             "type": "text",
-            "value": " 的替代写法）。"
+            "value": "，ES6 后多用 Math.max(...arr) 替代。"
           }
         ],
         [
@@ -866,7 +855,7 @@
           },
           {
             "type": "text",
-            "value": "普通函数 this 由调用方式决定；箭头函数继承定义处外层词法 this，不可被 call/apply/bind 修改。"
+            "value": "普通函数 this 由调用方式决定；箭头函数继承定义时所在词法作用域的 this，不可被 call/apply/bind 修改。"
           }
         ],
         [
@@ -1071,7 +1060,7 @@
           },
           {
             "type": "code",
-            "value": "I/O"
+            "value": "I/O 回调"
           },
           {
             "type": "text",
@@ -1079,7 +1068,7 @@
           },
           {
             "type": "code",
-            "value": "message"
+            "value": "postMessage / MessageChannel"
           },
           {
             "type": "text",
@@ -1113,7 +1102,7 @@
           },
           {
             "type": "text",
-            "value": " 优先于 Promise 微任务；浏览器无 nextTick。口述顺序：同步 → 微任务 → 宏任务。"
+            "value": " 优先于 Promise 微任务；浏览器无 nextTick。执行顺序：同步 → 微任务 → 宏任务。"
           }
         ],
         [
@@ -1178,7 +1167,7 @@
           },
           {
             "type": "text",
-            "value": " 结束后再量布局。leading 选项可在首次立即触发。"
+            "value": " 结束后再量布局。leading 选项可让首次立即触发（trailing 则控制末次是否再补一次）。"
           }
         ],
         [
@@ -1212,7 +1201,7 @@
           },
           {
             "type": "text",
-            "value": "防抖骨架（完整版见编程题章）。"
+            "value": "防抖骨架。"
           }
         ],
         [
@@ -1235,13 +1224,13 @@
           },
           {
             "type": "text",
-            "value": "JavaScript 数字为 IEEE 754 双精度浮点，许多十进制小数无法精确表示，直接比较会出现误差。"
+            "value": "JavaScript 数字是 IEEE 754 双精度浮点，许多十进制小数无法精确表示，直接比较会出现误差。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "金额等场景：用整数分存储，或借助 "
+            "value": "1）金额等场景：用整数分存储，或借助 "
           },
           {
             "type": "code",
@@ -1257,7 +1246,13 @@
           },
           {
             "type": "text",
-            "value": "；比较时用误差范围而非 "
+            "value": " 这类库。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）比较时不要用 "
           },
           {
             "type": "code",
@@ -1265,10 +1260,27 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "，改用误差范围："
+          },
+          {
+            "type": "code",
+            "value": "Math.abs(a - b) < Number.EPSILON"
+          },
+          {
+            "type": "text",
+            "value": "。注意 "
+          },
+          {
+            "type": "code",
+            "value": "toFixed"
+          },
+          {
+            "type": "text",
+            "value": " 自身也会四舍五入，不能当作可靠的比较手段。"
           }
         ]
-      ]
+      ],
+      "questionNote": "IEEE 754 双精度；金额用整数分或 decimal 库；比较用 Number.EPSILON 误差范围。"
     },
     {
       "id": "q-event-delegation",
@@ -1296,7 +1308,7 @@
           },
           {
             "type": "text",
-            "value": " 区分真实点击源；捕获/冒泡顺序、阻止传播见 browser 章 DOM 事件题。"
+            "value": " 区分真实点击源。"
           }
         ],
         [

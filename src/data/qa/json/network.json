@@ -114,7 +114,7 @@
           },
           {
             "type": "text",
-            "value": "减少重复头；服务端推送（Server Push）实际用得少。"
+            "value": "减少重复头；服务端推送（Server Push）自 Chrome 106 起已被移除支持，实践中不再使用。"
           }
         ],
         [
@@ -280,10 +280,14 @@
           },
           {
             "type": "text",
-            "value": "强缓存未过期则不发请求；过期后协商缓存向服务端确认是否仍可用。"
+            "value": "强缓存未过期则不发请求；过期后走协商缓存向服务端确认是否仍可用。"
           }
         ],
         [
+          {
+            "type": "text",
+            "value": "1）"
+          },
           {
             "type": "strong",
             "value": "强缓存"
@@ -306,18 +310,22 @@
           },
           {
             "type": "text",
-            "value": "，未过期"
+            "value": "，未过期不发网络请求，直接用本地副本；两者同时存在时 "
           },
           {
-            "type": "strong",
-            "value": "不发网络请求"
+            "type": "code",
+            "value": "Cache-Control"
           },
           {
             "type": "text",
-            "value": "，直接用本地副本。"
+            "value": " 优先级更高。"
           }
         ],
         [
+          {
+            "type": "text",
+            "value": "2）"
+          },
           {
             "type": "strong",
             "value": "协商缓存"
@@ -340,35 +348,51 @@
           },
           {
             "type": "text",
-            "value": " 询问服务端。"
+            "value": " 询问服务端；返回 304 则响应体为空、继续用旧文件，200 则下载新内容。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "返回 "
+            "value": "3）容易混淆的指令："
           },
           {
             "type": "code",
-            "value": "304"
+            "value": "no-cache"
           },
           {
             "type": "text",
-            "value": " 则体为空继续用旧文件；"
+            "value": " 是可缓存但每次都要协商校验；"
           },
           {
             "type": "code",
-            "value": "200"
+            "value": "no-store"
           },
           {
             "type": "text",
-            "value": " 则下载新内容。"
+            "value": " 是完全不缓存。"
+          },
+          {
+            "type": "code",
+            "value": "immutable"
+          },
+          {
+            "type": "text",
+            "value": " 表示有效期内不必再校验，"
+          },
+          {
+            "type": "code",
+            "value": "must-revalidate"
+          },
+          {
+            "type": "text",
+            "value": " 表示过期后必须回服务端确认。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "静态资源文件名带 "
+            "value": "4）生产组合：静态资源文件名带 "
           },
           {
             "type": "code",
@@ -376,7 +400,7 @@
           },
           {
             "type": "text",
-            "value": " + 长 "
+            "value": " 配合长 "
           },
           {
             "type": "code",
@@ -384,7 +408,23 @@
           },
           {
             "type": "text",
-            "value": " 是常见生产组合。"
+            "value": "（或 "
+          },
+          {
+            "type": "code",
+            "value": "immutable"
+          },
+          {
+            "type": "text",
+            "value": "），HTML 入口用 "
+          },
+          {
+            "type": "code",
+            "value": "no-cache"
+          },
+          {
+            "type": "text",
+            "value": "，保证发版后能立刻拿到新的资源地址。"
           }
         ]
       ]
@@ -538,15 +578,23 @@
         [
           {
             "type": "text",
-            "value": "简单请求："
+            "value": "1）"
           },
           {
-            "type": "code",
-            "value": "GET/HEAD/POST"
+            "type": "strong",
+            "value": "简单请求"
           },
           {
             "type": "text",
-            "value": " + 安全头 + 简单 Content-Type（"
+            "value": "需要同时满足：方法是 GET/HEAD/POST；头都在安全清单内（不含自定义头）；"
+          },
+          {
+            "type": "code",
+            "value": "Content-Type"
+          },
+          {
+            "type": "text",
+            "value": " 只限 "
           },
           {
             "type": "code",
@@ -554,10 +602,30 @@
           },
           {
             "type": "text",
-            "value": " 等），不预检。"
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "application/x-www-form-urlencoded"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "multipart/form-data"
+          },
+          {
+            "type": "text",
+            "value": " 三种。"
           }
         ],
         [
+          {
+            "type": "text",
+            "value": "2）"
+          },
           {
             "type": "strong",
             "value": "非简单请求"
@@ -580,29 +648,45 @@
           },
           {
             "type": "text",
-            "value": "、自定义头，先 "
-          },
-          {
-            "type": "code",
-            "value": "OPTIONS"
-          },
-          {
-            "type": "text",
-            "value": "。"
+            "value": "、自定义头，浏览器先发 OPTIONS 预检。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "优化：GET 尽量简单；网关对 OPTIONS 快速 "
+            "value": "3）"
           },
           {
-            "type": "code",
-            "value": "204"
+            "type": "strong",
+            "value": "减少预检"
           },
           {
             "type": "text",
-            "value": "；开发期代理同源可绕预检。"
+            "value": "：预检响应带 "
+          },
+          {
+            "type": "code",
+            "value": "Access-Control-Max-Age"
+          },
+          {
+            "type": "text",
+            "value": " 把结果缓存起来，同时要带 "
+          },
+          {
+            "type": "code",
+            "value": "Access-Control-Allow-Methods"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "Allow-Headers"
+          },
+          {
+            "type": "text",
+            "value": "；网关对 OPTIONS 快速返回 204；开发期用代理保持同源可直接绕开。"
           }
         ],
         [
@@ -660,11 +744,7 @@
           },
           {
             "type": "strong",
-            "value": "存放："
-          },
-          {
-            "type": "text",
-            "value": "localStorage 易被 XSS 读；Cookie 需防 CSRF（SameSite 等）。按威胁模型选型，敏感操作可配合短时 token。"
+            "value": "存放：localStorage 易被 XSS 读，Cookie 要防 CSRF。"
           }
         ],
         [
@@ -679,6 +759,20 @@
           {
             "type": "text",
             "value": "请求带上凭证、处理过期与刷新竞态；勿在前端存密钥，勿把可解码的 payload 当机密。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）"
+          },
+          {
+            "type": "strong",
+            "value": "最大短板："
+          },
+          {
+            "type": "text",
+            "value": "JWT（JSON Web Token）是无状态的，服务端不保存会话，因此无法主动让某个 token 立即失效；要做登出或踢人只能靠短过期 + refresh token，或额外维护黑名单。"
           }
         ]
       ]
@@ -696,17 +790,21 @@
           },
           {
             "type": "text",
-            "value": "XSS 是恶意脚本进入页面上下文；CSRF 是浏览器自动携带 Cookie 发状态改变请求。"
+            "value": "XSS 是恶意脚本进入页面上下文；CSRF 是浏览器自动携带 Cookie 发状态改变请求，两者攻击面不同。"
           }
         ],
         [
           {
+            "type": "text",
+            "value": "1）"
+          },
+          {
             "type": "strong",
-            "value": "跨站脚本（XSS）"
+            "value": "跨站脚本（XSS）："
           },
           {
             "type": "text",
-            "value": "：恶意脚本进入页面上下文，能读 "
+            "value": "恶意脚本进入页面上下文，能读 "
           },
           {
             "type": "code",
@@ -714,13 +812,45 @@
           },
           {
             "type": "text",
-            "value": "（非 HttpOnly）、调接口、改 DOM。"
+            "value": "（非 HttpOnly 时）、调接口、改 DOM。按注入方式可分三类："
+          },
+          {
+            "type": "strong",
+            "value": "存储型"
+          },
+          {
+            "type": "text",
+            "value": "（脏数据落库，所有访问者都中招）、"
+          },
+          {
+            "type": "strong",
+            "value": "反射型"
+          },
+          {
+            "type": "text",
+            "value": "（随请求参数回显）、"
+          },
+          {
+            "type": "strong",
+            "value": "DOM 型"
+          },
+          {
+            "type": "text",
+            "value": "（纯前端把不可信数据写进 "
+          },
+          {
+            "type": "code",
+            "value": "innerHTML"
+          },
+          {
+            "type": "text",
+            "value": " 等）。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "防：输出转义、模板默认转义、"
+            "value": "2）XSS 防护：输出转义、模板默认转义、"
           },
           {
             "type": "code",
@@ -728,7 +858,7 @@
           },
           {
             "type": "text",
-            "value": " 限脚本源、敏感 Cookie 设 "
+            "value": " 限制脚本源、敏感 Cookie 设 "
           },
           {
             "type": "code",
@@ -744,55 +874,67 @@
           },
           {
             "type": "text",
-            "value": "。"
-          }
-        ],
-        [
+            "value": " 与 "
+          },
           {
-            "type": "strong",
-            "value": "跨站请求伪造（CSRF）"
+            "type": "code",
+            "value": "dangerouslySetInnerHTML"
           },
           {
             "type": "text",
-            "value": "：诱导已登录用户访问恶意页，浏览器"
-          },
-          {
-            "type": "strong",
-            "value": "自动带 Cookie"
-          },
-          {
-            "type": "text",
-            "value": " 发状态改变请求。"
+            "value": "。DOM 型完全可由前端自己防住。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "防："
+            "value": "3）"
           },
           {
-            "type": "code",
-            "value": "SameSite=Lax/Strict"
-          },
-          {
-            "type": "text",
-            "value": "、关键接口 "
-          },
-          {
-            "type": "code",
-            "value": "CSRF Token"
+            "type": "strong",
+            "value": "跨站请求伪造（CSRF）："
           },
           {
             "type": "text",
-            "value": " 或 "
+            "value": "诱导已登录用户访问恶意页，浏览器自动带 Cookie 发状态改变请求。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）CSRF 防护："
           },
           {
             "type": "code",
-            "value": "Origin/Referer"
+            "value": "SameSite=Lax"
           },
           {
             "type": "text",
-            "value": " 校验、敏感操作用 "
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "Strict"
+          },
+          {
+            "type": "text",
+            "value": "、关键接口用 CSRF Token 或校验 "
+          },
+          {
+            "type": "code",
+            "value": "Origin"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "Referer"
+          },
+          {
+            "type": "text",
+            "value": "、敏感操作改用 "
           },
           {
             "type": "code",
@@ -800,7 +942,7 @@
           },
           {
             "type": "text",
-            "value": " 头（不自动发送）。"
+            "value": " 头（不会自动携带）。"
           }
         ]
       ]
@@ -993,7 +1135,7 @@
       "id": "q-websocket-basics",
       "navLabel": "WebSocket 基础",
       "question": "WebSocket 与 HTTP 是什么关系？",
-      "questionNote": "握手走 HTTP 升级；全双工长连接；重连与 SSE 选型见场景题。",
+      "questionNote": "握手走 HTTP 升级；全双工长连接。",
       "answer": [
         [
           {
@@ -1028,7 +1170,7 @@
         [
           {
             "type": "text",
-            "value": "3）注意代理超时、握手鉴权；断线重连与心跳见场景题。"
+            "value": "3）注意代理超时与握手鉴权。"
           }
         ],
         [
@@ -1068,7 +1210,7 @@
         [
           {
             "type": "text",
-            "value": "1）401/403：走统一未授权处理；业务码如「登录失效」同样清 token 并跳登录。"
+            "value": "1）401 与业务失效码：走统一未授权处理，清 token 并跳登录。"
           }
         ],
         [

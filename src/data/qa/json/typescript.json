@@ -76,88 +76,6 @@
       ]
     },
     {
-      "id": "q-basic-types",
-      "navLabel": "基础类型",
-      "question": "TypeScript 中常见的基础类型有哪些？",
-      "questionNote": "先掌握变量、数组与简单对象的类型标注，再学习进阶语法。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "最常用的是 "
-          },
-          {
-            "type": "code",
-            "value": "string"
-          },
-          {
-            "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "number"
-          },
-          {
-            "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "boolean"
-          },
-          {
-            "type": "text",
-            "value": "，以及数组与对象形状。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "let name: string = \"Tom\""
-          },
-          {
-            "type": "text",
-            "value": "；"
-          },
-          {
-            "type": "code",
-            "value": "let ids: number[] = [1, 2]"
-          },
-          {
-            "type": "text",
-            "value": " 或 "
-          },
-          {
-            "type": "code",
-            "value": "Array<number>"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "对象写法："
-          },
-          {
-            "type": "code",
-            "value": "type User = { id: string; age: number }"
-          },
-          {
-            "type": "text",
-            "value": "。类型标注正确时，属性访问有提示，拼写错误会在编译期报错。"
-          }
-        ]
-      ]
-    },
-    {
       "id": "q-type-interface",
       "navLabel": "type 和 interface",
       "question": "type 与 interface 应如何选择？",
@@ -170,23 +88,51 @@
           },
           {
             "type": "text",
-            "value": "描述对象形状时，"
-          },
-          {
-            "type": "code",
-            "value": "type"
-          },
+            "value": "描述对象形状时二者大多可互换，差别在扩展方式与能力边界。"
+          }
+        ],
+        [
           {
             "type": "text",
-            "value": " 与 "
+            "value": "1）"
           },
           {
-            "type": "code",
+            "type": "strong",
             "value": "interface"
           },
           {
             "type": "text",
-            "value": " 大多可互换；需要联合类型（"
+            "value": " 支持声明合并（同名多次声明自动合并）与 "
+          },
+          {
+            "type": "code",
+            "value": "extends"
+          },
+          {
+            "type": "text",
+            "value": " 继承，也便于被 "
+          },
+          {
+            "type": "code",
+            "value": "implements"
+          },
+          {
+            "type": "text",
+            "value": "；适合对外暴露的对象契约与可扩展的第三方类型。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）"
+          },
+          {
+            "type": "strong",
+            "value": "type"
+          },
+          {
+            "type": "text",
+            "value": " 支持联合（"
           },
           {
             "type": "code",
@@ -194,43 +140,21 @@
           },
           {
             "type": "text",
-            "value": "）时 "
+            "value": "）、交叉（"
           },
           {
             "type": "code",
-            "value": "type"
+            "value": "&"
           },
           {
             "type": "text",
-            "value": " 更直接。"
+            "value": "）、条件、映射与模板字面量等类型运算，表达「A 或 B」或从已有类型派生更直接。"
           }
         ],
         [
           {
-            "type": "code",
-            "value": "interface User { id: string; name: string }"
-          },
-          {
             "type": "text",
-            "value": " 与 "
-          },
-          {
-            "type": "code",
-            "value": "type User = { id: string; name: string }"
-          },
-          {
-            "type": "text",
-            "value": " 效果接近，团队选定一种风格并保持一致即可。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "type Id = string | number"
-          },
-          {
-            "type": "text",
-            "value": " 这类「A 或 B」的写法，"
+            "value": "3）选型：对外契约、需要声明合并或 implements 时用 "
           },
           {
             "type": "code",
@@ -238,7 +162,7 @@
           },
           {
             "type": "text",
-            "value": " 不便直接表达，应使用 "
+            "value": "；需要联合类型、元组、条件类型或工具类型派生时用 "
           },
           {
             "type": "code",
@@ -246,7 +170,7 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "。同一项目内保持风格一致即可。"
           }
         ]
       ]
@@ -255,7 +179,7 @@
       "id": "q-any-unknown",
       "navLabel": "any 和 unknown",
       "question": "any 与 unknown 有何区别？",
-      "questionNote": "记住 unknown 比 any 更安全，是处理外部数据的首选。",
+      "questionNote": "unknown 比 any 更安全，是处理外部数据的首选；但库的返回值多为 any，需自己标注为 unknown。",
       "answer": [
         [
           {
@@ -320,7 +244,15 @@
           },
           {
             "type": "text",
-            "value": " 等外部数据时，优先使用 "
+            "value": " 这类外部数据时，库的类型是 "
+          },
+          {
+            "type": "code",
+            "value": "Promise<any>"
+          },
+          {
+            "type": "text",
+            "value": "，拿到后要自己标注成 "
           },
           {
             "type": "code",
@@ -328,7 +260,7 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": " 再收窄，别顺着 any 一路写下去。"
           }
         ],
         [
@@ -350,88 +282,6 @@
       ]
     },
     {
-      "id": "q-optional-union",
-      "navLabel": "可选与联合",
-      "question": "可选属性（?）与联合类型（|）分别如何运用？",
-      "questionNote": "表单字段与接口返回值中，这两类写法最为常见。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "code",
-            "value": "?"
-          },
-          {
-            "type": "text",
-            "value": " 表示字段可有可无，"
-          },
-          {
-            "type": "code",
-            "value": "|"
-          },
-          {
-            "type": "text",
-            "value": " 表示值可能是若干类型之一。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "可选属性："
-          },
-          {
-            "type": "code",
-            "value": "type User = { id: string; nickname?: string }"
-          },
-          {
-            "type": "text",
-            "value": "，"
-          },
-          {
-            "type": "code",
-            "value": "nickname"
-          },
-          {
-            "type": "text",
-            "value": " 可传可不传；访问时常配合 "
-          },
-          {
-            "type": "code",
-            "value": "?."
-          },
-          {
-            "type": "text",
-            "value": " 可选链。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "联合类型："
-          },
-          {
-            "type": "code",
-            "value": "type Status = \"pending\" | \"done\" | \"failed\""
-          },
-          {
-            "type": "text",
-            "value": "，变量只能是列出的字面量之一；"
-          },
-          {
-            "type": "code",
-            "value": "string | null"
-          },
-          {
-            "type": "text",
-            "value": " 则用于表示可能为空。"
-          }
-        ]
-      ]
-    },
-    {
       "id": "q-type-narrowing",
       "navLabel": "类型收窄",
       "question": "TypeScript 中常见的类型收窄写法有哪些？",
@@ -444,15 +294,7 @@
           },
           {
             "type": "text",
-            "value": "在 "
-          },
-          {
-            "type": "code",
-            "value": "if"
-          },
-          {
-            "type": "text",
-            "value": " 分支中做判断后，TypeScript 会自动收窄类型，此后访问属性才安全。"
+            "value": "在 if 分支里做判断后，TypeScript 会自动把宽类型收窄为更具体的类型，此后访问属性才安全。"
           }
         ],
         [
@@ -470,11 +312,11 @@
           },
           {
             "type": "code",
-            "value": "if (typeof x === \"string\") { x.toUpperCase() }"
+            "value": "if (typeof x === \"string\")"
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "，用于区分原始类型。"
           }
         ],
         [
@@ -484,11 +326,33 @@
           },
           {
             "type": "code",
+            "value": "instanceof"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "Array.isArray"
+          },
+          {
+            "type": "text",
+            "value": "：区分类实例与数组。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）"
+          },
+          {
+            "type": "code",
             "value": "in"
           },
           {
             "type": "text",
-            "value": "："
+            "value": " 与判别联合："
           },
           {
             "type": "code",
@@ -496,7 +360,7 @@
           },
           {
             "type": "text",
-            "value": " 可区分不同对象形态；联合类型也可通过 "
+            "value": " 可区分对象形态；更推荐让各分支带同一字面量字段构成判别联合（discriminated union），再用 "
           },
           {
             "type": "code",
@@ -505,6 +369,42 @@
           {
             "type": "text",
             "value": " 逐分支收窄。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）判空："
+          },
+          {
+            "type": "code",
+            "value": "x !== null && x !== undefined"
+          },
+          {
+            "type": "text",
+            "value": "（或 "
+          },
+          {
+            "type": "code",
+            "value": "x != null"
+          },
+          {
+            "type": "text",
+            "value": "）之后才能安全访问；这一步是可选链之外最常见的收窄来源。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5）自定义类型谓词：写 "
+          },
+          {
+            "type": "code",
+            "value": "function isUser(x): x is User"
+          },
+          {
+            "type": "text",
+            "value": "，把判断逻辑复用到多处，比在每个调用点重复断言更安全。"
           }
         ]
       ]
@@ -645,6 +545,66 @@
         ],
         [
           {
+            "type": "text",
+            "value": "底层实现：这类工具类型靠映射类型（mapped type）完成，形如 "
+          },
+          {
+            "type": "code",
+            "value": "{ [K in keyof T]?: T[K] }"
+          },
+          {
+            "type": "text",
+            "value": "，理解这一点就能自己写派生类型。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "同类还有 "
+          },
+          {
+            "type": "code",
+            "value": "Required"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "Readonly"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "Omit"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "Record"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "ReturnType"
+          },
+          {
+            "type": "text",
+            "value": "，按需组合即可。"
+          }
+        ],
+        [
+          {
             "type": "strong",
             "value": "示例："
           },
@@ -746,15 +706,49 @@
           },
           {
             "type": "text",
-            "value": "，需补充类型注解。可按目录逐步开启 "
-          },
+            "value": "，需补充类型注解。"
+          }
+        ],
+        [
           {
             "type": "code",
             "value": "strict"
           },
           {
             "type": "text",
-            "value": "，无需一次改完全仓。"
+            "value": " 是总开关，无法按目录分段生效；渐进迁移的做法是先在 "
+          },
+          {
+            "type": "code",
+            "value": "tsconfig"
+          },
+          {
+            "type": "text",
+            "value": " 里逐个开启子开关（如先 "
+          },
+          {
+            "type": "code",
+            "value": "noImplicitAny"
+          },
+          {
+            "type": "text",
+            "value": " 再 "
+          },
+          {
+            "type": "code",
+            "value": "strictNullChecks"
+          },
+          {
+            "type": "text",
+            "value": "），或用多份 "
+          },
+          {
+            "type": "code",
+            "value": "tsconfig"
+          },
+          {
+            "type": "text",
+            "value": " 按范围覆盖。"
           }
         ]
       ]
@@ -839,6 +833,226 @@
           {
             "type": "text",
             "value": " 敷衍处理。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-basic-types",
+      "navLabel": "基础类型",
+      "question": "TypeScript 中常见的基础类型有哪些？",
+      "questionNote": "先掌握变量、数组与简单对象的类型标注，再学习进阶语法。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "常用的是 string、number、boolean、null/undefined，再加上数组、元组与对象形状。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）原始类型："
+          },
+          {
+            "type": "code",
+            "value": "let name: string = \"Tom\""
+          },
+          {
+            "type": "text",
+            "value": "；"
+          },
+          {
+            "type": "code",
+            "value": "let ids: number[] = [1, 2]"
+          },
+          {
+            "type": "text",
+            "value": " 或 "
+          },
+          {
+            "type": "code",
+            "value": "Array<number>"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）特殊值："
+          },
+          {
+            "type": "code",
+            "value": "null"
+          },
+          {
+            "type": "text",
+            "value": " 与 "
+          },
+          {
+            "type": "code",
+            "value": "undefined"
+          },
+          {
+            "type": "text",
+            "value": " 单独成一类，开启 "
+          },
+          {
+            "type": "code",
+            "value": "strictNullChecks"
+          },
+          {
+            "type": "text",
+            "value": " 后不能赋给 "
+          },
+          {
+            "type": "code",
+            "value": "string"
+          },
+          {
+            "type": "text",
+            "value": " 等类型。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）其它常用："
+          },
+          {
+            "type": "code",
+            "value": "tuple"
+          },
+          {
+            "type": "text",
+            "value": "（固定长度与各位置类型的数组）、"
+          },
+          {
+            "type": "code",
+            "value": "enum"
+          },
+          {
+            "type": "text",
+            "value": "（具名常量集合）、"
+          },
+          {
+            "type": "code",
+            "value": "void"
+          },
+          {
+            "type": "text",
+            "value": "（无返回值）、"
+          },
+          {
+            "type": "code",
+            "value": "never"
+          },
+          {
+            "type": "text",
+            "value": "（永不会正常返回，如必抛异常的函数）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）对象与函数："
+          },
+          {
+            "type": "code",
+            "value": "type User = { id: string; age: number }"
+          },
+          {
+            "type": "text",
+            "value": "；函数要标注参数与返回值类型。类型正确时属性访问有提示，拼写错误在编译期就报错。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-optional-union",
+      "navLabel": "可选与联合",
+      "question": "可选属性（?）与联合类型（|）分别如何运用？",
+      "questionNote": "表单字段与接口返回值中，这两类写法最为常见。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "code",
+            "value": "?"
+          },
+          {
+            "type": "text",
+            "value": " 表示字段可有可无，"
+          },
+          {
+            "type": "code",
+            "value": "|"
+          },
+          {
+            "type": "text",
+            "value": " 表示值可能是若干类型之一。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "可选属性："
+          },
+          {
+            "type": "code",
+            "value": "type User = { id: string; nickname?: string }"
+          },
+          {
+            "type": "text",
+            "value": "，"
+          },
+          {
+            "type": "code",
+            "value": "nickname"
+          },
+          {
+            "type": "text",
+            "value": " 可传可不传；访问时常配合 "
+          },
+          {
+            "type": "code",
+            "value": "?."
+          },
+          {
+            "type": "text",
+            "value": " 可选链。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "联合类型："
+          },
+          {
+            "type": "code",
+            "value": "type Status = \"pending\" | \"done\" | \"failed\""
+          },
+          {
+            "type": "text",
+            "value": "，变量只能是列出的字面量之一；"
+          },
+          {
+            "type": "code",
+            "value": "string | null"
+          },
+          {
+            "type": "text",
+            "value": " 则用于表示可能为空。"
           }
         ]
       ]

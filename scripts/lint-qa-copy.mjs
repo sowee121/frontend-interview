@@ -63,6 +63,25 @@ const BARE_ACRONYMS = [
   'iterable',
 ]
 
+/** 单题叙事（text/strong，不含 code）建议字数上限，超出应压缩到口述体量 */
+const NARRATIVE_MAX = 520
+
+/** 跨章指回提示：正文不得出现「见 X 章「某题」」类编辑口吻，每题答案须自足 */
+const CROSS_CHAPTER_REF =
+  /(?<![常意遇可而])见\s*(?:本章|同章|场景题|编程题|「[^」]{1,12}」\s*章|[\u4e00-\u9fffA-Za-z0-9./\s]{0,12}?章)/
+
+/** 隐私词：真实公司/机构/业务名一律用通用系统词替代 */
+const PRIVACY_WORDS = ['菜鸟', '医院', '诊所', '医疗寄递', '字节跳动']
+
+/** 已废弃/已被取代的术语；命中时同段须出现对应说明才放行 */
+const OBSOLETE_TERMS = [
+  { term: '.cursorrules', allow: /废弃|旧的|旧版/ },
+  { term: 'wx.getUserProfile', allow: /不能|不再|已只返回|废弃/ },
+  { term: 'wx.getUserInfo', allow: /不能|不再|已只返回|废弃/ },
+  { term: 'Server Push', allow: /移除|不再使用/ },
+  { term: 'FID', allow: /取代/ },
+]
+
 function collectText(item) {
   const parts = []
   if (item.questionNote) parts.push(item.questionNote)
@@ -137,16 +156,89 @@ function lintFile(filePath) {
       }
     }
 
-    const capsRun = full.match(/\b[A-Z]{2,6}\b(?:\s*[→、/]\s*\b[A-Z]{2,6}\b){2,}/)
-    if (capsRun && !hasChineseContext(full, capsRun[0].slice(0, 3))) {
+    // 文本段反引号/加粗残留、空 text 段、跨章指回提示
+    for (const para of item.answer ?? []) {
+      for (const seg of para) {
+        if (seg.type !== 'text' && seg.type !== 'strong') continue
+        if (seg.value.includes('`') || seg.value.includes('**')) {
+          issues.push({
+            file: base,
+            id: item.id,
+            kind: 'markdown-residue',
+            snippet: seg.value.slice(0, 60),
+          })
+        }
+        if (seg.type === 'text' && seg.value === '') {
+          issues.push({
+            file: base,
+            id: item.id,
+            kind: 'empty-text-segment',
+            snippet: '存在空的 text 段',
+          })
+        }
+        const ref = seg.value.match(CROSS_CHAPTER_REF)
+        if (ref) {
+          issues.push({
+            file: base,
+            id: item.id,
+            kind: 'cross-chapter-ref',
+            snippet: `正文含指回提示「…${ref[0]}…」，应删除并保持本题自足`,
+          })
+        }
+      }
+    }
+    if (item.questionNote) {
+      const ref = item.questionNote.match(CROSS_CHAPTER_REF)
+      if (ref) {
+        issues.push({
+          file: base,
+          id: item.id,
+          kind: 'cross-chapter-ref',
+          snippet: `questionNote 含指回提示「…${ref[0]}…」，应删除`,
+        })
+      }
+    }
+
+    // 单题叙事体量
+    const narrativeLen = (item.answer ?? [])
+      .flatMap((para) => para.filter((s) => s.type === 'text' || s.type === 'strong'))
+      .reduce((n, s) => n + s.value.length, 0)
+    if (narrativeLen > NARRATIVE_MAX) {
       issues.push({
         file: base,
         id: item.id,
-        kind: 'acronym-chain',
-        snippet: capsRun[0],
+        kind: 'overlong-answer',
+        snippet: `叙事 ${narrativeLen} 字，超过建议上限 ${NARRATIVE_MAX}`,
       })
     }
 
+    // 隐私词与过时术语
+    for (const word of PRIVACY_WORDS) {
+      if (full.includes(word)) {
+        issues.push({
+          file: base,
+          id: item.id,
+          kind: 'privacy-word',
+          snippet: `出现真实公司/机构名「${word}」，请改为通用系统词`,
+        })
+      }
+    }
+    for (const { term, allow } of OBSOLETE_TERMS) {
+      let from = 0
+      while (full.indexOf(term, from) !== -1) {
+        const idx = full.indexOf(term, from)
+        const window = full.slice(Math.max(0, idx - 40), idx + term.length + 40)
+        if (!allow.test(window)) {
+          issues.push({
+            file: base,
+            id: item.id,
+            kind: 'obsolete-term',
+            snippet: `${term}（未见废弃/替代说明）`,
+          })
+        }
+        from = idx + term.length
+      }
+    }
     for (const ac of BARE_ACRONYMS) {
       if (!full.includes(ac)) continue
       if (!hasChineseContext(full, ac) && full.includes(ac)) {
@@ -162,6 +254,33 @@ function lintFile(filePath) {
           })
         }
       }
+    }
+
+    const capsRun = full.match(/\b[A-Z]{2,6}\b(?:\s*[→、/]\s*\b[A-Z]{2,6}\b){2,}/)
+    if (capsRun && !hasChineseContext(full, capsRun[0].slice(0, 3))) {
+      issues.push({
+        file: base,
+        id: item.id,
+        kind: 'acronym-chain',
+        snippet: capsRun[0],
+      })
+    }
+  }
+
+  // 同章 navLabel 重复
+  const labelCount = new Map()
+  for (const item of data.items ?? []) {
+    const key = item.navLabel
+    labelCount.set(key, [...(labelCount.get(key) ?? []), item.id])
+  }
+  for (const [label, ids] of labelCount) {
+    if (ids.length > 1) {
+      issues.push({
+        file: base,
+        id: ids.join(', '),
+        kind: 'duplicate-navlabel',
+        snippet: `章节内 navLabel「${label}」重复`,
+      })
     }
   }
 

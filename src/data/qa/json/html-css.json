@@ -9,7 +9,7 @@
       "id": "q-semantic",
       "navLabel": "语义化",
       "question": "语义化标签有哪些作用？",
-      "questionNote": "从无障碍、SEO 与可维护性三方面作答，无需罗列全部 HTML5 标签。",
+      "questionNote": "覆盖无障碍、搜索引擎优化（SEO）与可维护性三方面，无需罗列全部 HTML5 标签。",
       "answer": [
         [
           {
@@ -36,11 +36,7 @@
           },
           {
             "type": "strong",
-            "value": "读屏"
-          },
-          {
-            "type": "text",
-            "value": "能按 landmark 跳转；"
+            "value": "读屏可按键地标（landmark）跳转；"
           },
           {
             "type": "strong",
@@ -294,7 +290,7 @@
         [
           {
             "type": "text",
-            "value": "回答时强调子项可同时参与行、列对齐，比背诵完整属性表更具参考价值。"
+            "value": "与 Flex 不同，Grid 子项可同时参与行、列两个方向的对齐。"
           }
         ]
       ]
@@ -675,6 +671,10 @@
       "answer": [
         [
           {
+            "type": "text",
+            "value": "1）"
+          },
+          {
             "type": "code",
             "value": "@media (prefers-color-scheme: dark) { ... }"
           },
@@ -686,7 +686,7 @@
         [
           {
             "type": "text",
-            "value": "根上用 "
+            "value": "2）根上用 "
           },
           {
             "type": "code",
@@ -707,12 +707,16 @@
         ],
         [
           {
+            "type": "text",
+            "value": "3）"
+          },
+          {
             "type": "code",
             "value": "color-scheme: dark"
           },
           {
             "type": "text",
-            "value": " 让原生表单滚动条与系统 UI 协调；图片/图标注意对比度，参考 Web 内容无障碍指南（WCAG）。"
+            "value": " 让原生表单与滚动条跟系统 UI 协调；图片与图标注意对比度，参考 Web 内容无障碍指南（WCAG）。"
           }
         ],
         [
@@ -858,13 +862,7 @@
         [
           {
             "type": "text",
-            "value": "3）与 1px 细线、100vh/dvh 同属移动端高频考点。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）与 1px 细线、100vh/dvh 同属移动端高频考点。"
+            "value": "2）与 1px 细线、100vh/dvh 同属移动端适配经典问题。"
           }
         ]
       ]
@@ -916,7 +914,7 @@
         [
           {
             "type": "text",
-            "value": "3）触摸目标宜 ≥ 44px；1px 细线与安全区适配参见本章其他题目。"
+            "value": "3）触摸目标宜 ≥ 44px。"
           }
         ]
       ]
@@ -934,7 +932,7 @@
           },
           {
             "type": "text",
-            "value": "rem 相对根字号建立体系；em 相对当前字号易嵌套放大；vw/vh 相对视口，移动端须注意 100vh 问题。"
+            "value": "rem 相对根字号建立体系；em 相对当前或父级字号，嵌套时易被层层放大；vw/vh 相对视口，移动端须注意 100vh 问题。"
           }
         ],
         [

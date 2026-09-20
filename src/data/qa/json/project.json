@@ -2,137 +2,9 @@
   "slug": "project",
   "title": "项目题",
   "documentTitle": "项目题",
-  "description": "对照简历职责的项目深挖题：小程序/Hybrid、ERP、SaaS、自助终端、客服会话与在线考试。",
+  "description": "对照简历职责的项目深挖题：小程序/Hybrid、ERP、SaaS 多租户配置化、自助终端、客服会话与在线考试。",
   "lead": "用通用系统词表述；按机制、取舍与边界口述，不背诵项目说明文案。",
   "items": [
-    {
-      "id": "q-proj-mp-subpackage",
-      "navLabel": "分包与冷启动",
-      "question": "小程序如何通过分包与构建优化改善冷启动？",
-      "questionNote": "对应职责：主包/分包策略、压缩混淆、冷启动。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "主包只留启动与核心链路；低频进分包；生产压缩混淆；用体积与启动耗时做回归。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "主包"
-          },
-          {
-            "type": "text",
-            "value": "：首页、下单、订单列表等首达页进主包；大图 CDN，工具库按需，给主包留余量。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "分包"
-          },
-          {
-            "type": "text",
-            "value": "：按业务域拆包；活动页可独立分包；常用分包可预下载，减轻首次点击等待。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "构建"
-          },
-          {
-            "type": "text",
-            "value": "：生产压缩、去掉调试日志；核心逻辑可混淆；发布前核对主包体积与冷启动指标。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-proj-mp-setdata",
-      "navLabel": "setData 优化",
-      "question": "小程序页面因 setData 卡顿时，你会怎么优化？",
-      "questionNote": "对应职责：优化 setData，降低通信与渲染开销。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "少传、少次、局部更新；能路径更新就别整表替换；长列表分页或虚拟化。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "减小载荷"
-          },
-          {
-            "type": "text",
-            "value": "：只传变更字段，如 "
-          },
-          {
-            "type": "code",
-            "value": "setData({ 'list[i].checked': true })"
-          },
-          {
-            "type": "text",
-            "value": "，避免大对象反复同步。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "合并与节流"
-          },
-          {
-            "type": "text",
-            "value": "：同帧多次变更合并一次；滚动等高频事件节流后再 setData。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "拆分"
-          },
-          {
-            "type": "text",
-            "value": "：复杂区块拆自定义组件做局部更新；若封装了增量 Diff，数组场景要验证是否真刷新。"
-          }
-        ]
-      ]
-    },
     {
       "id": "q-proj-hybrid-login",
       "navLabel": "内嵌 H5 登录态",
@@ -152,43 +24,41 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1）传递：打开 "
           },
           {
-            "type": "strong",
-            "value": "传递"
+            "type": "code",
+            "value": "web-view"
           },
           {
             "type": "text",
-            "value": "：打开 web-view 带一次性 ticket，或由 Bridge 注入会话；长期 Token 不要明文挂 URL。"
+            "value": " 带一次性 "
+          },
+          {
+            "type": "code",
+            "value": "ticket"
+          },
+          {
+            "type": "text",
+            "value": "，或由 Bridge 注入会话；长期 Token 不要明文挂在 URL 上。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "请求"
-          },
-          {
-            "type": "text",
-            "value": "：H5 拦截器统一带会话头；401 区分未带凭证与已过期，再决定换票或回登录。"
+            "value": "2）请求：H5 拦截器统一带会话头；401 要区分「未带凭证」与「已过期」，再决定换票还是回登录。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "同步"
-          },
+            "value": "3）续期：刷新由原生统一负责，成功后重新注入；避免 H5 与原生各刷一次互相顶掉。"
+          }
+        ],
+        [
           {
             "type": "text",
-            "value": "：原生登出通知 H5 清本地态；续期由原生统一刷新后再注入。"
+            "value": "4）同步：原生登出要通知 H5 清本地态；H5 内主动退出也要回调原生，保持两边一致。"
           }
         ]
       ]
@@ -206,21 +76,13 @@
           },
           {
             "type": "text",
-            "value": "核心是 JSBridge。H5 调容器用注入 API 或官方 SDK；容器调 H5 用执行脚本或 URL 传参。"
+            "value": "核心是 JS 桥（JSBridge）。H5 调容器用注入 API 或官方 SDK；容器调 H5 用执行脚本或 URL 传参。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "H5 → 小程序"
-          },
-          {
-            "type": "text",
-            "value": "：调用 "
+            "value": "1）H5 → 小程序：调用 "
           },
           {
             "type": "code",
@@ -250,43 +112,51 @@
         [
           {
             "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "H5 → App"
-          },
-          {
-            "type": "text",
-            "value": "：原生向页面注入 Bridge；H5 调用其中方法，原生处理完再回调页面。"
+            "value": "2）H5 → App：原生向页面注入 Bridge；H5 调用其中方法，原生处理完再回调页面。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
+            "value": "3）小程序 → H5：不能直接执行页面函数，通常改 "
           },
           {
-            "type": "strong",
-            "value": "小程序 → H5"
+            "type": "code",
+            "value": "web-view"
           },
           {
             "type": "text",
-            "value": "：不能直接执行页面函数，通常改 web-view 的 URL 参数；H5 读参后执行逻辑。"
+            "value": " 的 URL 参数；H5 读参后执行逻辑。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4）"
+            "value": "4）App → H5：iOS 走 "
           },
           {
-            "type": "strong",
-            "value": "App → H5"
+            "type": "code",
+            "value": "WKScriptMessageHandler"
           },
           {
             "type": "text",
-            "value": "：H5 先在 window 注册回调；原生用 "
+            "value": " + "
+          },
+          {
+            "type": "code",
+            "value": "evaluateJavaScript"
+          },
+          {
+            "type": "text",
+            "value": "，Android 走 "
+          },
+          {
+            "type": "code",
+            "value": "addJavascriptInterface"
+          },
+          {
+            "type": "text",
+            "value": " 与 "
           },
           {
             "type": "code",
@@ -294,21 +164,13 @@
           },
           {
             "type": "text",
-            "value": " 触发回调，把数据传给页面。"
+            "value": "；两端要封装成同一套接口。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5）"
-          },
-          {
-            "type": "strong",
-            "value": "封装"
-          },
-          {
-            "type": "text",
-            "value": "：对外统一 "
+            "value": "5）封装：对外统一 "
           },
           {
             "type": "code",
@@ -317,66 +179,6 @@
           {
             "type": "text",
             "value": "，内部按环境分发，并处理超时与能力检测。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-proj-mp-track",
-      "navLabel": "埋点方案",
-      "question": "小程序里全埋点与自定义事件怎么配合才有用？",
-      "questionNote": "对应职责：全埋点与自定义事件上报。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "全埋点看行为基线；关键转化用自定义事件带业务字段；批量上报，敏感信息脱敏。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "全埋点"
-          },
-          {
-            "type": "text",
-            "value": "：覆盖启动、浏览、点击、分享等；敏感页可加黑名单，减少噪声。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "自定义"
-          },
-          {
-            "type": "text",
-            "value": "：下单成功等漏斗节点带业务维度；事件名统一治理，便于分析对齐。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "上报"
-          },
-          {
-            "type": "text",
-            "value": "：批量发送降频；登录后关联用户；曝光可采样，手机号等脱敏后再传。"
           }
         ]
       ]
@@ -442,70 +244,10 @@
       ]
     },
     {
-      "id": "q-proj-monorepo",
-      "navLabel": "Monorepo 工程化",
-      "question": "多个前端应用放同一仓库时，如何用 Workspace 和任务编排提效？",
-      "questionNote": "对应技术栈：pnpm workspace、Turborepo。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "共享能力进 packages；应用进 apps；用任务编排处理依赖顺序、增量缓存和按需构建。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "边界"
-          },
-          {
-            "type": "text",
-            "value": "：请求、埋点、Bridge 等进共享包；业务应用只依赖稳定 API。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "构建"
-          },
-          {
-            "type": "text",
-            "value": "：先构建被依赖包再启应用；无依赖任务并行；改动小范围用 filter 构建。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "注意"
-          },
-          {
-            "type": "text",
-            "value": "：软链解析异常时检查 peer 与 exports；联调前先确保共享包已构建。"
-          }
-        ]
-      ]
-    },
-    {
       "id": "q-proj-anti-replay",
       "navLabel": "接口防重放",
       "question": "中后台接口防重放，前端该做哪些、不该做哪些？",
-      "questionNote": "对应职责：签名防重放；技术点含 CryptoJS。",
+      "questionNote": "对应职责：签名防重放；技术点含 CryptoJS，并与 JSEncrypt 做加密选型对比。",
       "answer": [
         [
           {
@@ -514,49 +256,87 @@
           },
           {
             "type": "text",
-            "value": "前端带时间戳、随机串并参与签名；验签与去重在服务端；密钥不能长期放前端包。"
+            "value": "前端带时间戳与随机串并参与签名；验签与去重在服务端；密钥不能长期放在前端包里。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1）请求侧：每次生成 "
           },
           {
-            "type": "strong",
-            "value": "请求侧"
+            "type": "code",
+            "value": "nonce"
           },
           {
             "type": "text",
-            "value": "：每次生成 nonce，带时间戳；敏感字段可用 CryptoJS 等加密后传输。"
+            "value": " 并带时间戳，按约定规则参与签名；敏感字段可用 CryptoJS 等加密后传输。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2）服务端：校验时间窗、"
           },
           {
-            "type": "strong",
-            "value": "服务端"
+            "type": "code",
+            "value": "nonce"
           },
           {
             "type": "text",
-            "value": "：校验时间窗、nonce 是否用过、签名是否匹配；重复或过期拒收。"
+            "value": " 是否已用过、签名是否匹配；重复或过期直接拒收。"
+          },
+          {
+            "type": "code",
+            "value": "nonce"
+          },
+          {
+            "type": "text",
+            "value": " 一般存 Redis 并设与时间窗同量级的过期时间，到期自动清理。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
+            "value": "3）密钥从哪来：长期私钥不能进 bundle；签名密钥由服务端下发短时会话密钥，或改用登录态派生的票据，并定期轮换。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）边界：登录态仍走 Token，与防重放分层；前端加密只提高篡改成本，替代不了 HTTPS 与后端鉴权。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5）选型：签名与去重参数用哈希或对称摘要计算；确需前端加密的敏感小字段走服务端公钥。"
+          }
+        ],
+        [
           {
             "type": "strong",
-            "value": "边界"
+            "value": "CryptoJS："
           },
           {
             "type": "text",
-            "value": "：长期私钥不进 bundle；登录态仍走 Token，与防重放分层。"
+            "value": "提供 AES 等对称加密与 MD5、SHA 摘要，速度快，适合较大报文；但密钥在前端等于半公开，只能算防篡改的第一层。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "JSEncrypt："
+          },
+          {
+            "type": "text",
+            "value": "基于 RSA 非对称加密，公钥加密、私钥只在服务端解密，适合密码、证件号等小字段；受密钥长度限制不适合大报文，性能也远低于对称加密。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "两者都替代不了 HTTPS 与后端鉴权。"
           }
         ]
       ]
@@ -574,49 +354,25 @@
           },
           {
             "type": "text",
-            "value": "路由管能不能进页，菜单管看不看得到，按钮管能不能点；三者同源，最终以后端鉴权为准。"
+            "value": "路由管能不能进页、菜单管看不看得见、按钮管能不能点，三者同源。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "路由"
-          },
-          {
-            "type": "text",
-            "value": "：登录后拉权限，过滤路由表再动态注册；未授权进不了页面。"
+            "value": "1）路由：登录后拉权限码，过滤路由表再动态注册；刷新页面按登录态重拉，避免直接改路由表导致后续 404。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "菜单与按钮"
-          },
-          {
-            "type": "text",
-            "value": "：同一权限数据生成侧栏；页面内用权限码或指令控制按钮显隐。"
+            "value": "2）菜单与按钮：同一份权限数据生成侧栏；页面内用权限码统一判断按钮显隐，而不是散落写状态码比较。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "边界"
-          },
-          {
-            "type": "text",
-            "value": "：前端隐藏只改善体验；接口必须后端再鉴权；刷新后按登录态重拉权限。"
+            "value": "3）边界：前端隐藏只改善体验，接口必须由后端再鉴权。"
           }
         ]
       ]
@@ -685,7 +441,7 @@
       "id": "q-proj-print",
       "navLabel": "面单打印",
       "question": "后台面单打印有多种方案时，怎么选、怎么收口？",
-      "questionNote": "对应职责：菜鸟/CLodop/Web 打印与批量面单。",
+      "questionNote": "对应职责：电商云打印 / CLodop / Web 打印与批量面单。",
       "answer": [
         [
           {
@@ -702,21 +458,13 @@
           },
           {
             "type": "text",
-            "value": "、CLodop、电商云打印组件；云打印经 WebSocket 向组件下发指令。"
+            "value": "、CLodop、电商平台云打印组件；云打印经 WebSocket 向组件下发指令。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "Web 打印"
-          },
-          {
-            "type": "text",
-            "value": "："
+            "value": "1）Web 打印："
           },
           {
             "type": "code",
@@ -730,43 +478,25 @@
         [
           {
             "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "CLodop"
-          },
-          {
-            "type": "text",
-            "value": "：本机安装 Lodop/CLodop，JS 调模板套打，适合针式/标签机精准出纸。"
+            "value": "2）CLodop：本机安装 Lodop/CLodop，JS 调模板套打，适合针式、标签机精准出纸。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "云打印组件"
-          },
-          {
-            "type": "text",
-            "value": "：接入电商/菜鸟云打印组件；前端与组件建 WebSocket，推送模板、面单数据与打印指令。"
+            "value": "3）云打印组件：接入电商平台提供的云打印组件；前端与组件建 WebSocket，推送模板、面单数据与打印指令。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4）"
-          },
-          {
-            "type": "strong",
-            "value": "收口"
-          },
+            "value": "4）收口：统一打印服务按场景选通道；管连接、指令与失败重试，页面不散落调各家厂商 API。"
+          }
+        ],
+        [
           {
             "type": "text",
-            "value": "：统一打印服务按场景选通道；管连接、指令与失败重试，页面不散落调厂商 API。"
+            "value": "5）批量：批量打单走队列并限制并发，单张失败单独重试；成功回写单号，避免整批重来造成重复发货。"
           }
         ]
       ]
@@ -784,58 +514,34 @@
           },
           {
             "type": "text",
-            "value": "推送减少轮询；心跳判断死连接；断线退避重连；重连后补拉，避免只靠推送保证一致。"
+            "value": "推送减少轮询，但关键变更仍要以接口确认。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "推送"
-          },
-          {
-            "type": "text",
-            "value": "：订单状态、系统通知进消息通道；关键变更仍可用接口确认。"
+            "value": "1）推送：订单状态、系统通知走消息通道；收到后按业务主键去重再更新本地状态，避免重复推送造成状态抖动。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "保活"
-          },
-          {
-            "type": "text",
-            "value": "：定时心跳，超时主动断开；后台页可降频，回到前台再连。"
+            "value": "2）补拉：连上后按时间或序号补拉增量，不能只靠推送保证最终一致。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "重连"
-          },
-          {
-            "type": "text",
-            "value": "：指数退避并设上限；连上后按时间或序号补拉增量，按业务主键去重。"
+            "value": "3）降级：长连接不可用时退回轮询；后台页降频，回到前台再恢复。"
           }
         ]
       ]
     },
     {
-      "id": "q-proj-export-print",
-      "navLabel": "导出与打印",
-      "question": "报告导出 PDF/打印时，怎样减少和页面不一致？",
-      "questionNote": "对应职责：物流碳排报告导出与打印，减少预览偏差。",
+      "id": "q-proj-order-state",
+      "navLabel": "订单状态机",
+      "question": "寄递类订单状态多、还多端展示，状态机怎么设计才不散？",
+      "questionNote": "对应职责：设计订单状态机、状态判断工具与 UI 映射，消除多端渲染差异。",
       "answer": [
         [
           {
@@ -844,7 +550,73 @@
           },
           {
             "type": "text",
-            "value": "预览和导出尽量共用结构；固定纸张宽度；图表先转图再进 PDF；抽样对比关键字段。"
+            "value": "状态码在后端只有一份，前端拿枚举与迁移规则；判断做成纯函数、展示用映射表，多端共用同一份状态包。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）一份字典：状态码、文案、可执行动作与下一状态收口在一处，避免各页面自己写 "
+          },
+          {
+            "type": "code",
+            "value": "if/else"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）纯函数判断：对外只暴露 "
+          },
+          {
+            "type": "code",
+            "value": "isFinal"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "canCancel"
+          },
+          {
+            "type": "text",
+            "value": " 这类函数，UI 问「能不能」，不硬编码状态码比较。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）映射表展示：文案、颜色、按钮组走映射表；小程序、H5、自助机共用状态包，渠道只做布局差异。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）演进：新增状态先改字典再改 UI；状态包与后端枚举保持同一份来源，避免两端漂移。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-proj-order-sync",
+      "navLabel": "多平台订单同步",
+      "question": "ERP 要对接多个电商平台，订单同步与打单发货怎么做到不漏不重？",
+      "questionNote": "对应职责：多平台订单自动同步与打单发货。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "唯一键定幂等；增量拉取保证及时、定时对账兜底；打单走队列，失败可重试且不重复发货。"
           }
         ],
         [
@@ -854,11 +626,11 @@
           },
           {
             "type": "strong",
-            "value": "能力"
+            "value": "幂等"
           },
           {
             "type": "text",
-            "value": "：常用 html2canvas + jsPDF 导出；浏览器打印走打印组件；注意中英文切换。"
+            "value": "：平台订单号加店铺做唯一键，落库前先判重；重复拉取只更新不新增。"
           }
         ],
         [
@@ -868,11 +640,11 @@
           },
           {
             "type": "strong",
-            "value": "一致"
+            "value": "同步"
           },
           {
             "type": "text",
-            "value": "：共用同一内容区样式；图表导出前转图片嵌入，减少矢量差异。"
+            "value": "：定时增量拉取为主，按更新时间游标翻页；再用全量对账补漏单、修正状态漂移。"
           }
         ],
         [
@@ -882,20 +654,20 @@
           },
           {
             "type": "strong",
-            "value": "验收"
+            "value": "打单"
           },
           {
             "type": "text",
-            "value": "：分页、水印、语言切换后抽样对比；偏差大时先改共用模板。"
+            "value": "：取号、打印、回写单号拆成任务并限并发；单任务失败隔离重试，避免整批卡死。"
           }
         ]
       ]
     },
     {
       "id": "q-proj-tenant-theme",
-      "navLabel": "多租户主题",
-      "question": "SaaS 切换租户时，品牌信息与主题色怎么同步？",
-      "questionNote": "对应职责：多租户隔离与动态主题。",
+      "navLabel": "多租户配置化",
+      "question": "SaaS 多租户系统里，租户隔离、品牌主题与差异化配置应如何收口？",
+      "questionNote": "对应职责：多租户隔离、动态主题与配置化差异下发。",
       "answer": [
         [
           {
@@ -904,49 +676,37 @@
           },
           {
             "type": "text",
-            "value": "请求和状态都带租户；切换后下发 Logo、标题、主色；用 CSS 变量全局生效。"
+            "value": "租户标识贯穿请求与状态；品牌主题用 CSS 变量；表单等差异走配置下发，不在主干写死客户逻辑。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "隔离"
-          },
-          {
-            "type": "text",
-            "value": "：租户 ID 进 Token/请求头；菜单与数据都在该上下文下，防止串租。"
+            "value": "1）隔离：租户 ID 进 Token 或请求头，由拦截器统一注入；菜单与数据都限定在该租户上下文下，防止串租。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "主题"
-          },
-          {
-            "type": "text",
-            "value": "：主色等写入根节点 CSS 变量；一次切换，全站组件跟着变。"
+            "value": "2）主题：Logo、标题、主色等写入根节点 CSS 变量，一次切换全站组件跟着变；白标只开放约定好的配置项。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "边界"
-          },
+            "value": "3）配置化：字段元数据由后端按租户下发，前端用通用渲染器 + 组件注册表生成表单；新增差异优先改配置，而不是加代码分支。"
+          }
+        ],
+        [
           {
             "type": "text",
-            "value": "：白标只开放约定配置项；大改版用扩展能力，少在主干写死客户逻辑。"
+            "value": "4）多主体：主体标识决定下发哪份配置；配置带版本，启动时比对后更新缓存，缺失时用默认配置兜底保证可开页；配不动的死逻辑保留代码分支并文档化，避免配置无限膨胀。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5）治理与切换：配置按租户或机构维度版本化，可灰度可回滚；换主体后清空上一主体的购物车、草稿等缓存，再按新配置拉数据并做可达性校验。"
           }
         ]
       ]
@@ -1007,6 +767,20 @@
           {
             "type": "text",
             "value": "：表格列、按钮按英文长度弹性排布，避免挤版或截断。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）"
+          },
+          {
+            "type": "strong",
+            "value": "一致性"
+          },
+          {
+            "type": "text",
+            "value": "：切换语言后已渲染的校验提示、图表与导出要重新生成，缓存过的文案一并失效。"
           }
         ]
       ]
@@ -1074,7 +848,7 @@
     {
       "id": "q-proj-sse-assistant",
       "navLabel": "流式 AI 助手",
-      "question": "中后台接入流式问答助手，前端链路怎么串？",
+      "question": "中后台接入流式问答助手，前端还要额外处理哪些业务问题？",
       "questionNote": "对应职责：SSE 流式 AI 问答与 Markdown 渲染。",
       "answer": [
         [
@@ -1084,49 +858,31 @@
           },
           {
             "type": "text",
-            "value": "先上屏用户消息和空回复；再开 SSE；增量追加；可中断；Markdown 渲染；查询受权限约束。"
+            "value": "中后台接入流式助手，额外成本在鉴权、租户隔离、审计与降级，不在流式渲染本身。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "发与收"
-          },
-          {
-            "type": "text",
-            "value": "：POST 建流（如 fetch-event-source）；按块追加到助手气泡，结束标记后收尾。"
+            "value": "1）鉴权：助手入口跟随当前登录态与角色，无权限的菜单与数据源不进入可选范围。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "停止"
-          },
-          {
-            "type": "text",
-            "value": "：Abort 断开连接，并通知后端停生成，避免后台继续跑。"
+            "value": "2）租户隔离：会话与检索范围都限定在当前租户，跨租户数据不得进入提示词上下文。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "展示"
-          },
+            "value": "3）审计：提问与回答留痕便于追溯；敏感字段在展示与落库前脱敏。"
+          }
+        ],
+        [
           {
             "type": "text",
-            "value": "：流式 Markdown 渐进渲染；用户上滑不强行吸底；只查当前租户权限内数据。"
+            "value": "4）降级：模型不可用或超时要有兜底文案，不能把错误栈直接透给用户。"
           }
         ]
       ]
@@ -1135,7 +891,7 @@
       "id": "q-proj-token-refresh",
       "navLabel": "Token 刷新",
       "question": "多个接口同时 401 时，怎么刷新 Token 才不乱？",
-      "questionNote": "对应 SaaS 请求层常见深挖：与报告/助手等并发请求相关。",
+      "questionNote": "对应 SaaS 请求层常见深挖：多接口并发 401 场景。",
       "answer": [
         [
           {
@@ -1150,163 +906,25 @@
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "单飞"
-          },
-          {
-            "type": "text",
-            "value": "：第一个 401 触发 refresh，后续 401 共用同一个刷新 Promise。"
+            "value": "1）单飞：第一个 401 触发 refresh，后续 401 共用同一个刷新 Promise。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "重放"
-          },
-          {
-            "type": "text",
-            "value": "：成功后更新请求头，把排队请求重发一次。"
+            "value": "2）重放：成功后更新请求头，把排队请求重发一次；只重放一次，避免无限循环。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "失败"
-          },
-          {
-            "type": "text",
-            "value": "：refresh 也失败则清凭证跳登录；防止刷新接口再次触发刷新死循环。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-proj-mp-config",
-      "navLabel": "多主体配置",
-      "question": "一套小程序服务多个主体时，差异怎么做成可配置？",
-      "questionNote": "对应职责：动态配置满足多医院差异化。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "主体标识决定配置；表单和流程尽量配置驱动；缺配置有默认兜底。"
+            "value": "3）失败：refresh 也失败则清凭证跳登录；刷新接口本身返回 401 时直接登出，并把刷新请求标记为不可再触发刷新，防止死循环。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "配置"
-          },
-          {
-            "type": "text",
-            "value": "：字段显隐、校验、步骤差异用远程配置描述，代码做通用渲染引擎。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "发布"
-          },
-          {
-            "type": "text",
-            "value": "：配置带版本，启动比对后更新缓存；关键缺省用默认配置，保证可开页。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "边界"
-          },
-          {
-            "type": "text",
-            "value": "：配不动的死逻辑保留代码分支并文档化，避免配置无限膨胀。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-proj-mp-hospital-ctx",
-      "navLabel": "多医院上下文",
-      "question": "多医院小程序切换医院时，请求和状态如何隔离？",
-      "questionNote": "对应职责：多医院下单流程与差异化业务。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "当前医院进全局状态；请求头强制带医院标识；切换医院时清掉上一医院业务缓存。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "状态"
-          },
-          {
-            "type": "text",
-            "value": "：定位医院、服务类型等进 store；页面读写都基于当前医院上下文。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "请求"
-          },
-          {
-            "type": "text",
-            "value": "：拦截器注入医院 ID、Token、客户端版本，避免串医院数据。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "切换"
-          },
-          {
-            "type": "text",
-            "value": "：换医院后清空购物车/草稿类缓存，再按新配置拉表单与可达性校验。"
+            "value": "4）轮换：若后端启用 refresh token 轮换，旧 refresh token 会立即作废。多标签页或并发场景要串行化刷新，并把新 token 同步给其他标签页，否则会被判定为旧 token 复用而强制登出。"
           }
         ]
       ]
@@ -1324,49 +942,25 @@
           },
           {
             "type": "text",
-            "value": "主进程管窗口/外设/更新，渲染进程管 UI；preload 白名单 IPC；更新要校验并可回退。"
+            "value": "主进程管窗口、外设与更新，渲染进程管 UI；preload 白名单 IPC；更新要校验并可回退。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "搭建"
-          },
-          {
-            "type": "text",
-            "value": "：main / preload / renderer 分模块；开上下文隔离，关 nodeIntegration。"
+            "value": "1）可用性优先：终端机长期无人值守，更新失败必须能回到旧包，因此要保留双版本并做启动自检。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "IPC"
-          },
-          {
-            "type": "text",
-            "value": "：页面只调暴露的有限 API；主进程校验参数后再执行系统能力。"
+            "value": "2）权限收口：页面只拿到暴露的有限 API；所有系统能力由主进程校验参数后再执行，避免前端越权。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "发版更新"
-          },
-          {
-            "type": "text",
-            "value": "：流水线打安装包；检查新版本、校验后提示重启；可灰度，失败回退旧包。"
+            "value": "3）运维：可灰度分批升级，并留远程降级开关；出问题能靠日志与版本号定位到具体终端。"
           }
         ]
       ]
@@ -1390,103 +984,19 @@
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "分层"
-          },
-          {
-            "type": "text",
-            "value": "：页面不直连硬件驱动；经 preload 白名单 IPC 把请求交给主进程。"
+            "value": "1）分层：页面不直连硬件驱动，经 preload 白名单 IPC 把请求交给主进程，便于替换设备型号。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "取数"
-          },
-          {
-            "type": "text",
-            "value": "：主进程调本地中间件服务；由中间件对接读卡/扫码并返回证件信息。"
+            "value": "2）取数：主进程调本地中间件服务，由中间件对接读卡、扫码并返回证件信息。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "校验"
-          },
-          {
-            "type": "text",
-            "value": "：回传后校验格式再调业务接口；中间件不可用或超时要可感知提示。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-proj-kiosk-timeout",
-      "navLabel": "超时回首页",
-      "question": "自助终端无人操作超时后，如何回首页并处理好会话？",
-      "questionNote": "对应职责：全局倒计时、超时退出与会话回收。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "全局空闲计时，超时前提示；回首页清业务态与登录态，并结束外设会话。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "计时"
-          },
-          {
-            "type": "text",
-            "value": "：触控重置倒计时；关键步骤可暂停；超时前弹窗倒计时。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "清态"
-          },
-          {
-            "type": "text",
-            "value": "：回欢迎页清空表单、Token 和临时缓存，避免下一位用户看到隐私。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "外设"
-          },
-          {
-            "type": "text",
-            "value": "：通知主进程关闭读卡/扫码会话；离开页面时清定时器。"
+            "value": "3）校验与容错：回传后先校验格式再调业务接口；中间件不可用或超时要可感知提示，并支持重试与手动录入兜底。"
           }
         ]
       ]
@@ -1510,52 +1020,28 @@
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "配置"
-          },
-          {
-            "type": "text",
-            "value": "：菜单、字段、流程、主题尽量配置化，减少客户逻辑进主干。"
+            "value": "1）配置：菜单、字段、流程、主题尽量配置化，减少客户逻辑进主干。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "扩展"
-          },
-          {
-            "type": "text",
-            "value": "：预留插槽或策略注入；定制包按客户加载，升级时少打架。"
+            "value": "2）扩展：预留插槽或策略注入；定制包按客户加载，升级时少打架。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "治理"
-          },
-          {
-            "type": "text",
-            "value": "：客户分支定期同步标品；共性需求反哺主干，控制分叉成本。"
+            "value": "3）治理：客户分支定期同步标品；共性需求反哺主干，控制分叉成本。"
           }
         ]
       ]
     },
     {
-      "id": "q-proj-request-guard",
-      "navLabel": "请求拦截与鉴权",
-      "question": "中后台如何通过请求拦截、参数管控与权限校验降低越权风险？",
-      "questionNote": "对应职责：请求拦截、参数管控与权限校验；可点到 JSEncrypt。",
+      "id": "q-proj-micro-auth",
+      "navLabel": "微前端统一登录",
+      "question": "微前端基座聚合多套中后台子系统时，统一登录和权限怎么收口？",
+      "questionNote": "对应职责：统一登录认证与权限中心，基于 qiankun 聚合多套中后台子系统。",
       "answer": [
         [
           {
@@ -1564,7 +1050,7 @@
           },
           {
             "type": "text",
-            "value": "拦截器统一注入凭证与公共参数；敏感参数加密；入口按权限裁剪，最终以后端鉴权为准。"
+            "value": "登录态只放基座，子应用不各自维护；权限中心下发菜单与按钮码，基座管路由、子应用管按钮。"
           }
         ],
         [
@@ -1574,31 +1060,17 @@
           },
           {
             "type": "strong",
-            "value": "请求拦截"
+            "value": "登录"
           },
           {
             "type": "text",
-            "value": "：统一加 Token、组织/租户上下文；集中处理错误码与登出。"
+            "value": "：基座持有访问令牌与刷新逻辑，子应用统一走请求层；登录失效由基座统一跳转。"
           }
         ],
         [
           {
             "type": "text",
             "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "参数管控"
-          },
-          {
-            "type": "text",
-            "value": "：敏感字段可用 JSEncrypt 等加密传输；禁止前端随意改写服务端权威字段。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）"
           },
           {
             "type": "strong",
@@ -1606,93 +1078,7 @@
           },
           {
             "type": "text",
-            "value": "：路由/按钮层拦截无权限操作；接口仍须后端鉴权，前端只做体验层。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-proj-vue2-class",
-      "navLabel": "类组件写法",
-      "question": "遗留项目用 vue-class-component 等类写法时，三个库分别做什么？",
-      "questionNote": "对应技术栈：vue-class-component、vue-property-decorator、vuex-class。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "class-component 提供类组件底座；property-decorator 写 props/watch 等；vuex-class 映射 Vuex。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "vue-class-component"
-          },
-          {
-            "type": "text",
-            "value": "："
-          },
-          {
-            "type": "code",
-            "value": "@Component"
-          },
-          {
-            "type": "text",
-            "value": " 声明类组件，方法即 methods，编译结果仍是 Options。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "vue-property-decorator"
-          },
-          {
-            "type": "text",
-            "value": "："
-          },
-          {
-            "type": "code",
-            "value": "@Prop"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "@Watch"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "@Emit"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "@Ref"
-          },
-          {
-            "type": "text",
-            "value": " 对应选项式能力。"
+            "value": "：菜单与路由权限在基座按码生成；按钮级校验下发子应用，接口鉴权仍是最终边界。"
           }
         ],
         [
@@ -1702,57 +1088,11 @@
           },
           {
             "type": "strong",
-            "value": "vuex-class"
+            "value": "协作"
           },
           {
             "type": "text",
-            "value": "："
-          },
-          {
-            "type": "code",
-            "value": "@State"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "@Getter"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "@Action"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "@Mutation"
-          },
-          {
-            "type": "text",
-            "value": " 映射 store。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4）"
-          },
-          {
-            "type": "strong",
-            "value": "迁移"
-          },
-          {
-            "type": "text",
-            "value": "：可与普通 .vue 共存；新功能优先组合式，旧页按模块替换。"
+            "value": "：基座与子应用约定通信协议与公共依赖版本，避免样式和运行时互相污染。"
           }
         ]
       ]
@@ -1761,7 +1101,7 @@
       "id": "q-proj-cs-realtime",
       "navLabel": "客服实时会话",
       "question": "客服工作台里，实时消息收发和会话列表一般怎么做？",
-      "questionNote": "对应早期智能客服经历：PC/H5/小程序上的会话与推送，属高频追问。",
+      "questionNote": "对应早期智能客服经历：PC/H5/小程序上的会话与推送。",
       "answer": [
         [
           {
@@ -1770,49 +1110,39 @@
           },
           {
             "type": "text",
-            "value": "消息通道用 WebSocket；会话列表与消息区状态分离；断线重连后补拉，避免只靠推送。"
+            "value": "消息通道用 WebSocket；会话列表与消息区状态分离；断线重连后补拉，不能只靠推送保证一致。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "通道"
-          },
-          {
-            "type": "text",
-            "value": "：坐席在线收发走 WebSocket；心跳保活，断线退避重连，重连后按 lastMsgId 补历史。"
+            "value": "1）通道：坐席在线收发走 WebSocket。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2）可靠投递：每条消息带唯一 "
           },
           {
-            "type": "strong",
-            "value": "列表"
+            "type": "code",
+            "value": "msgId"
           },
           {
             "type": "text",
-            "value": "：会话列表只维护摘要（未读、最后一条）；点进会话再拉分页消息，降低首屏压力。"
+            "value": "，收发都按它去重；发送侧需服务端 ACK 才算成功，未 ACK 的按策略重发；乱序到达按序号落位，缺口补拉。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "体验"
-          },
+            "value": "3）列表：会话列表只维护摘要（未读、最后一条）；点进会话再拉分页消息，降低首屏压力。"
+          }
+        ],
+        [
           {
             "type": "text",
-            "value": "：发送先乐观上屏，失败回滚；图片/文件走上传再发消息体；未读角标与当前会话已读同步。"
+            "value": "4）体验：发送先乐观上屏，失败回滚；图片与文件先上传再发消息体；未读角标与当前会话已读状态同步。"
           }
         ]
       ]

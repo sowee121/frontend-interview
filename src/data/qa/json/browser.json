@@ -168,11 +168,55 @@
           },
           {
             "type": "strong",
-            "value": "阻塞式/交换式字体闪烁（FOIT/FOUT）"
+            "value": "字体阻塞显示（FOIT）/ 字体闪烁（FOUT）"
           },
           {
             "type": "text",
             "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "7）阻塞关系：CSS 不阻塞 DOM 解析，但会阻塞首次渲染（没有 CSSOM 就无法构建渲染树）；无 "
+          },
+          {
+            "type": "code",
+            "value": "defer"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "async"
+          },
+          {
+            "type": "text",
+            "value": " 的脚本既阻塞解析也阻塞渲染。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "8）两个常用时机："
+          },
+          {
+            "type": "code",
+            "value": "DOMContentLoaded"
+          },
+          {
+            "type": "text",
+            "value": " 在 DOM 解析完成、defer 脚本执行后触发；"
+          },
+          {
+            "type": "code",
+            "value": "load"
+          },
+          {
+            "type": "text",
+            "value": " 要等所有资源加载完才触发。"
           }
         ]
       ]
@@ -384,23 +428,7 @@
         [
           {
             "type": "text",
-            "value": "顺序：window → 目标（"
-          },
-          {
-            "type": "strong",
-            "value": "捕获阶段"
-          },
-          {
-            "type": "text",
-            "value": "）→ 目标 → 向上（"
-          },
-          {
-            "type": "strong",
-            "value": "冒泡阶段"
-          },
-          {
-            "type": "text",
-            "value": "）。"
+            "value": "顺序：捕获 window → 父级 → 目标，随后冒泡 目标 → 父级 → window。"
           }
         ],
         [
@@ -458,19 +486,19 @@
           },
           {
             "type": "code",
-            "value": "once: true"
-          },
-          {
-            "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
             "value": "passive: true"
           },
           {
             "type": "text",
-            "value": " 对滚动性能友好。"
+            "value": " 不阻塞滚动（滚动性能友好）；"
+          },
+          {
+            "type": "code",
+            "value": "once: true"
+          },
+          {
+            "type": "text",
+            "value": " 只是回调执行一次后自动移除监听，与滚动无关。"
           }
         ],
         [
@@ -518,7 +546,7 @@
           },
           {
             "type": "strong",
-            "value": "每次同站请求自动携带"
+            "value": "按 domain / path 匹配自动携带"
           },
           {
             "type": "text",
@@ -552,7 +580,7 @@
           },
           {
             "type": "text",
-            "value": "，适合会话标识或与后端约定的轻量标记。"
+            "value": "，适合会话标识或与后端约定的轻量标记。注意跨站请求同样可能带上 Cookie，这正是 CSRF 的前提。"
           }
         ],
         [
@@ -594,80 +622,6 @@
       ]
     },
     {
-      "id": "q-indexeddb",
-      "navLabel": "IndexedDB",
-      "question": "IndexedDB 与 localStorage 应如何选择？",
-      "questionNote": "容量、异步 API、结构化数据；离线缓存与大量前端数据场景。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "localStorage 适合小体积同步读写；IndexedDB 适合较大容量、结构化数据与异步读写。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "localStorage："
-          },
-          {
-            "type": "text",
-            "value": "同步 API、键值字符串、容量约数 MB，适合主题、草稿、轻量配置；大数据会阻塞主线程。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "IndexedDB："
-          },
-          {
-            "type": "text",
-            "value": "异步、可存对象/二进制，支持索引与事务，容量通常更大，适合离线资源、列表缓存、本地草稿库。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "选型："
-          },
-          {
-            "type": "text",
-            "value": "「读一次配置」用 localStorage；「查表/分页/大量记录」用 IndexedDB（或封装库降低样板代码）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4）"
-          },
-          {
-            "type": "strong",
-            "value": "边界："
-          },
-          {
-            "type": "text",
-            "value": "均受同源限制；勿存密钥与敏感明文；可与 Service Worker 配合做离线，但复杂度明显高于 localStorage。"
-          }
-        ]
-      ]
-    },
-    {
       "id": "q-cookie-samesite",
       "navLabel": "SameSite 详解",
       "question": "Cookie 的 SameSite=Lax 与 Strict 有何区别？",
@@ -680,7 +634,7 @@
           },
           {
             "type": "text",
-            "value": "Strict 最严仅同站导航带 Cookie；Lax 允许顶级 GET 导航；None 需 Secure 用于跨站嵌入。"
+            "value": "Strict 最严，仅同站请求带 Cookie；Lax 允许顶级 GET 跨站导航；None 不限制跨站，但必须配合 Secure。"
           }
         ],
         [
@@ -694,11 +648,11 @@
           },
           {
             "type": "strong",
-            "value": "仅同站导航"
+            "value": "仅同站请求"
           },
           {
             "type": "text",
-            "value": "才携带 Cookie；自邮件或外链首次进入时，可能呈现未登录状态。"
+            "value": "（含子资源，不限于导航）才携带 Cookie；自邮件或外链首次进入时，可能呈现未登录状态。"
           }
         ],
         [
@@ -726,7 +680,7 @@
           },
           {
             "type": "text",
-            "value": " 必须配合 "
+            "value": " 不限制跨站携带，必须配合 "
           },
           {
             "type": "code",
@@ -734,7 +688,23 @@
           },
           {
             "type": "text",
-            "value": "，用于跨站嵌入（如 SaaS 多子域），需评估 XSS 风险。"
+            "value": "。面向真正的跨站（第三方）嵌入场景；同一注册域下的多个子域属"
+          },
+          {
+            "type": "strong",
+            "value": "同站"
+          },
+          {
+            "type": "text",
+            "value": "，用 "
+          },
+          {
+            "type": "code",
+            "value": "Domain"
+          },
+          {
+            "type": "text",
+            "value": " 共享即可，不需要 None。开启后要评估 CSRF 与隐私合规风险。"
           }
         ]
       ]
@@ -870,31 +840,27 @@
           },
           {
             "type": "text",
-            "value": "浏览器限制脚本读取跨源 HTTP 响应；发请求与加载资源不受此限，跨域问题由此产生。"
+            "value": "同源策略限制脚本读取跨源 HTTP 响应；发请求与加载资源不受限，这正是跨域与 CSRF 成立的前提。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "浏览器限制页面脚本"
+            "value": "1）「源」= 协议 + 主机 + 端口，任一不同即跨源；限制的是"
           },
           {
             "type": "strong",
-            "value": "读取另一源的 HTTP 响应"
+            "value": "读取"
           },
           {
             "type": "text",
-            "value": "（XHR/fetch），即跨域资源共享（CORS）规则。"
+            "value": "（XHR/fetch 拿不到响应），不是发送。"
           }
         ],
         [
           {
-            "type": "strong",
-            "value": "不阻止发请求"
-          },
-          {
             "type": "text",
-            "value": "，也不阻止 "
+            "value": "2）不阻止 "
           },
           {
             "type": "code",
@@ -902,13 +868,13 @@
           },
           {
             "type": "text",
-            "value": " 等资源加载——跨站请求伪造（CSRF）由此成立。"
+            "value": " 这类资源加载，所以跨站请求伪造（CSRF）才成立。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "嵌 iframe：父读子 "
+            "value": "3）跨源窗口通信也受限：嵌 iframe 时父读子 "
           },
           {
             "type": "code",
@@ -916,7 +882,7 @@
           },
           {
             "type": "text",
-            "value": " 需同源；跨域用 "
+            "value": " 需同源，跨域只能 "
           },
           {
             "type": "code",
@@ -943,70 +909,6 @@
           {
             "type": "text",
             "value": " 不同源，本地调试时易因此触发跨域限制。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-visibility-page",
-      "navLabel": "Page Visibility",
-      "question": "document.visibilityState 有哪些典型用途？",
-      "questionNote": "比 blur/focus 更贴近「用户是否在看这个标签页」；常用于省资源与埋点。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "检测标签页可见性，在后台暂停轮询、视频与动画，回到前台再恢复，节省 CPU 与网络。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "document.hidden"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "visibilitychange"
-          },
-          {
-            "type": "text",
-            "value": "：页签切后台时暂停轮询、视频、动画以省 CPU/网络。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "回到 "
-          },
-          {
-            "type": "code",
-            "value": "visible"
-          },
-          {
-            "type": "text",
-            "value": " 再恢复；比 "
-          },
-          {
-            "type": "code",
-            "value": "blur/focus"
-          },
-          {
-            "type": "text",
-            "value": " 更准确反映标签页可见性。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "移动端切 App 也会触发；停留时长统计、心跳上报常与此 API 搭配。"
           }
         ]
       ]
@@ -1108,7 +1010,7 @@
         [
           {
             "type": "code",
-            "value": "// main\nconst w = new Worker('heavy.js')\nw.postMessage({ n: 1e7 })\nw.onmessage = (e) => console.log(e.data)\n\n// heavy.js\nonmessage = (e) => {\n  // 算完\n  postMessage(result)\n}"
+            "value": "// main\nconst w = new Worker('heavy.js')\nw.postMessage({ n: 1e7 })\nw.onmessage = (e) => console.log(e.data)\n\n// heavy.js\nonmessage = (e) => {\n  const result = heavyCompute(e.data.n)\n  postMessage(result)\n}"
           }
         ]
       ]
@@ -1208,7 +1110,7 @@
           },
           {
             "type": "text",
-            "value": "独立线程拦截 fetch 实现缓存策略，支撑 PWA 离线包与推送通知；须 HTTPS 注册。"
+            "value": "独立线程拦截 fetch 实现缓存策略，支撑渐进式 Web 应用（PWA）离线包与推送通知；须 HTTPS 注册。"
           }
         ],
         [
@@ -1232,11 +1134,43 @@
           },
           {
             "type": "code",
-            "value": "install → waiting → activate"
+            "value": "install → installed"
           },
           {
             "type": "text",
-            "value": "；新版本需设计 skipWaiting/clients.claim 或提示刷新。"
+            "value": "（若有旧版本控制页面则先 "
+          },
+          {
+            "type": "code",
+            "value": "waiting"
+          },
+          {
+            "type": "text",
+            "value": "，可用 "
+          },
+          {
+            "type": "code",
+            "value": "skipWaiting"
+          },
+          {
+            "type": "text",
+            "value": " 跳过）→ "
+          },
+          {
+            "type": "code",
+            "value": "activate → activated"
+          },
+          {
+            "type": "text",
+            "value": "；新版本需搭配 "
+          },
+          {
+            "type": "code",
+            "value": "clients.claim"
+          },
+          {
+            "type": "text",
+            "value": " 或提示用户刷新才能接管页面。"
           }
         ],
         [
@@ -1273,6 +1207,80 @@
           {
             "type": "text",
             "value": "典型模式：首屏壳离线 + 接口网络优先/兜底；Workbox 是常见封装，不必背每个 API。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-indexeddb",
+      "navLabel": "IndexedDB",
+      "question": "IndexedDB 与 localStorage 应如何选择？",
+      "questionNote": "容量、异步 API、结构化数据；离线缓存与大量前端数据场景。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "localStorage 适合小体积同步读写；IndexedDB 适合较大容量、结构化数据与异步读写。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）"
+          },
+          {
+            "type": "strong",
+            "value": "localStorage："
+          },
+          {
+            "type": "text",
+            "value": "同步 API、键值字符串、容量约数 MB，适合主题、草稿、轻量配置；大数据会阻塞主线程。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）"
+          },
+          {
+            "type": "strong",
+            "value": "IndexedDB："
+          },
+          {
+            "type": "text",
+            "value": "异步、可存对象/二进制，支持索引与事务，容量通常更大，适合离线资源、列表缓存、本地草稿库。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）"
+          },
+          {
+            "type": "strong",
+            "value": "选型："
+          },
+          {
+            "type": "text",
+            "value": "「读一次配置」用 localStorage；「查表/分页/大量记录」用 IndexedDB（或封装库降低样板代码）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）"
+          },
+          {
+            "type": "strong",
+            "value": "边界："
+          },
+          {
+            "type": "text",
+            "value": "均受同源限制；勿存密钥与敏感明文；可与 Service Worker 配合做离线，但复杂度明显高于 localStorage。"
           }
         ]
       ]

@@ -27,7 +27,7 @@
 
 | 特性 | 说明 |
 |------|------|
-| 18 个专题 | HTML/CSS、JavaScript、ES6、TypeScript、Vue、React、Node、小程序、浏览器、网络安全、工程化、性能、场景题、AI、Agent、Electron、项目题、编程手写题 |
+| 18 个专题 | HTML/CSS、JavaScript、ES6、TypeScript、Vue、React、小程序、浏览器、网络安全、后端、工程化、性能、场景题、AI、Agent、Electron、项目题、编程手写题 |
 | 章内目录 | 桌面端侧栏锚点 + sticky，点击跳转 `#question-id` |
 | 顶栏章节导航 | 顶栏可横向滑动的章节 tabs，跨章切换 |
 | 移动端 | ≤900px 隐藏侧栏；**左下** FAB 唤起底部章内目录，**右下** FAB 回到顶部 |
@@ -75,7 +75,7 @@ pnpm preview
 | `pnpm preview` | 预览 `dist/` |
 | `pnpm lint` | ESLint + Oxlint |
 | `pnpm format` | Prettier 格式化 `src/` |
-| `node scripts/lint-qa-copy.mjs` | 题库文案可读性扫描（只读，不改 JSON） |
+| `node scripts/lint-qa-copy.mjs` | 题库文案规范扫描（只读，不改 JSON） |
 
 ### 内容维护脚本（`scripts/`）
 
@@ -85,7 +85,7 @@ pnpm preview
 | `expand-cross-topic-qa.mjs` | 向现有章追加跨专题题目（埋点、i18n、WebSocket 等） |
 | `seed-agent-chapter.mjs` | 生成/更新 Agent 章 JSON |
 | `split-es6-chapter.mjs` | 从 javascript 章拆出 ES6 章（一次性迁移用） |
-| `lint-qa-copy.mjs` | 答案/题面文案规范扫描 |
+| `lint-qa-copy.mjs` | 答案/题面文案规范扫描：单段/单题体量、裸缩写、伪代码、`text` 段反引号残留、空段、隐私词、过时术语、同章 `navLabel` 重复 |
 
 ## 项目结构
 
@@ -217,7 +217,9 @@ Vite 构建产物为纯静态文件；GitHub Pages 以 `/frontend-interview/` �
 
 字段定义见 [`src/types/qa-content.ts`](src/types/qa-content.ts)（`QaItem`、`RichSegment` 等）。
 
-**文案规范**：维护 `answer`、`questionNote` 及章节 `lead`/`description` 时请遵循 [`docs/answer-style-guide.md`](docs/answer-style-guide.md)（面向约 5 年经验、缩写首处带中文释义）。提交前可运行 `node scripts/lint-qa-copy.mjs` 做可读性扫描。
+**文案规范**：维护 `answer`、`questionNote` 及章节 `lead`/`description` 时请遵循 [`docs/answer-style-guide.md`](docs/answer-style-guide.md)（面向约 5 年经验、缩写首处带中文释义、`text` 段禁写反引号、不写答题提示段）。提交前运行 `node scripts/lint-qa-copy.mjs` 做文案扫描：它还会拦截超长段落与单题、隐私词（真实公司/机构名）、过时术语（`.cursorrules`、`wx.getUserProfile` 等）与同章 `navLabel` 重复。
+
+**跨章重复题**：同一考点只在该主题所属专业章写一处详述；其他章删题或瘦身为本视角（项目题写落地取舍、场景题写业务约束）。正文不写「见 X 章某题」类指回提示，保证每题答案自足、复习不被打断。
 
 ```sh
 node scripts/reorder-qa-chapters.mjs   # 重排题目顺序

@@ -6,7 +6,8 @@
 
 - 默认读者写过业务、用过 Vue/React，不是零基础。
 - 先给结论，再补机制或场景；口语化，不堆术语墙。
-- 单段中文叙述不宜超过约 **120 字**，过长必须拆成多个 `answer[]` 项。
+- 单段中文叙述不宜超过约 **120 字**（`lint-qa-copy` 在单段超 **140 字** 时拦截），过长必须拆成多个 `answer[]` 项。
+- 单题叙事（`text` / `strong`，不含 `code`）建议 **200～450 字**；`lint-qa-copy` 在超 **520 字** 时提示压缩到口述体量。
 
 ## ES6 专有名词（对齐阮一峰《ES6 入门》）
 
@@ -14,11 +15,11 @@
 
 | 主题 | 书中常用说法 |
 |------|----------------|
-| let/const | 块级作用域、封闭作用域、暂时性死区（TDZ）、不存在变量提升 |
+| let/const | 块级作用域、封闭作用域、暂时性死区（TDZ）：**存在声明提升，但声明前不可访问** |
 | 数据结构 | Set 和 Map、WeakMap / WeakSet |
 | Iterator | 部署 Iterator 接口、遍历器（指针对象）、`for...of` 循环、可遍历结构 |
 | Generator | Generator 函数、`function*`、`yield` |
-| Promise | Promise 对象、`pending` / `fulfilled` / `rejected`、`resolve` / `reject`、`then`、resolved（已定型） |
+| Promise | Promise 对象、`pending` / `fulfilled` / `rejected`、`resolve` / `reject`、`then`、settled（已落定，成功或失败都算） |
 | async | async 函数、Generator 的语法糖、`await` |
 | Class | 类、`constructor` |
 | Module | Module 语法、`import`/`export`、编译阶段、动态引用（live binding） |
@@ -71,12 +72,30 @@
 1. **首段**：可选 `{ "type": "strong", "value": "一句话：" }` + 结论。
 2. **分步**：`1）` `2）` `3）` 每步占 **一个** `answer` 外层数组元素，段内不用 `；2）` 串联。
 3. **收尾**：一句面试边界或业务场景（可选单独一段）。
+4. **禁止答题提示段**：不写「答题时可以先说 X 再说 Y」「面试官追问可延伸」这类非知识内容的备考提示，只有知识本身才进答案。
+
+## 跨章去重
+
+同一考点在多章出现时，**只在所属专业章写一处详述**，其他章节删题或瘦身为本视角（项目题写落地取舍、场景题写业务约束）。
+
+- **正文不写指回提示**：不要写「见 X 章『某题』」「此处不展开」「这里只说…」这类编辑口吻。它们不提供知识，还会打断复习连贯性；读者按章顺序读下去自然会读到目标章。
+- **删减后保持自足**：被瘦身的题仍要能独立回答自己的题干，不依赖读者去别章找答案。
+- 不要复制粘贴同段落：重复题只保留一处完整口径，避免两处答案随维护逐步分叉。
+- 项目章不重复讲机制，只讲「我为什么这么选、踩过什么边界」。
+- `lint-qa-copy` 的 `cross-chapter-ref` 会拦截 `answer` / `questionNote` 中的指回文案。
+
+## 隐私与时效（lint 会拦截）
+
+- **禁止真实公司 / 产品 / 机构名**（如具体电商平台、医疗寄递、医院、大厂名），一律换成「小程序 / ERP / SaaS / 自助终端 / 中后台 / 电商平台云打印组件」等通用系统词。公开技术工具名（Nginx、Rollup、vxe-table 等）可保留。
+- **禁止已废弃用法**（如 `.cursorrules`、`wx.getUserProfile`、`Server Push`、以 FID 作为核心指标），除确需说明「已废弃」的语境。
+- 同一章内 `navLabel` 不得重复。
 
 ## RichSegment 约定
 
-- `text`：叙述
-- `strong`：小标题、强调结论
+- `text`：叙述；**段内禁止写反引号与 `**` 加粗**，标识符一律用 `code` segment，强调一律用 `strong` segment。
+- `strong`：小标题、强调结论；同样不要写 markdown 记号。
 - `code`：API、关键字、报文名、代码片段
+- 不要产出空 `text` 段（`value` 为空字符串）。
 
 编程题（`coding` 章）：`answer` 通常为单段 `code`，逻辑不改，**注释**与 `questionNote` 通俗化。
 

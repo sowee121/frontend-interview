@@ -1,0 +1,1697 @@
+{
+  "slug": "backend",
+  "title": "后端",
+  "documentTitle": "后端",
+  "description": "前端视角的后端基础：Node 运行时、中间件与 BFF，以及索引与事务、缓存与消息队列、幂等限流与接口协作入门。",
+  "lead": "把 Node 与后端基础合成一章：先建立请求链路与边界认知，再掌握 Node 服务、数据库、缓存与稳定性等高频后端概念，按「会用、会选」准备即可。",
+  "items": [
+    {
+      "id": "q-be-overview",
+      "navLabel": "前端与后端边界",
+      "question": "前端为什么需要了解后端基础？日常会接触到哪些部分？",
+      "questionNote": "了解边界即可，不必替代后端。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "了解后端不必替代后端，而是为了边界清晰：联调时能定位问题，也能自己写 BFF（Backend for Frontend，服务于前端的后端）或小脚本而不被卡住，但不替代后端做领域建模与高并发设计。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）日常接触：接口路径与状态码、数据库表结构、环境变量与部署方式。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）实际收益：接口报错时能判断是前端传参、服务端逻辑还是数据库查询的问题。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）边界：不参与领域建模与高并发设计，但能读懂 SQL、会改小脚本、能和后端对齐字段。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-http-flow",
+      "navLabel": "请求全链路",
+      "question": "一个请求从浏览器到数据库再返回，中间经过了哪些环节？",
+      "questionNote": "能说清链路，便于联调时定位是哪一段慢。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "浏览器 → 网关 → 应用服务 → 数据库，再逐层把结果转成 JSON 返回。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）请求经域名解析与网关（Nginx 等）转发，带上路径、方法、请求头与 body 到应用服务。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）应用服务匹配路由，先做鉴权与参数校验，再拼 SQL 到数据库查询。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）数据库返回结果集，服务端组装成 JSON 响应，浏览器收到后交给前端渲染。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）排查视角：接口慢要能区分是网络链路、服务端逻辑还是数据库查询导致。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-node-vs-browser",
+      "navLabel": "Node 与浏览器 JS",
+      "question": "Node 中的 JavaScript 与浏览器环境有哪些本质区别？",
+      "questionNote": "核心差异在运行环境与可用 API，而非 JavaScript 语法本身。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "语法同为 JavaScript；Node 运行于服务端，可访问文件系统与网络端口，不提供 DOM、BOM 等浏览器 API。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "浏览器环境："
+          },
+          {
+            "type": "text",
+            "value": "JavaScript 运行于页面上下文，可操作 DOM、发起网络请求并响应用户交互；执行环境提供 "
+          },
+          {
+            "type": "code",
+            "value": "window"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "document"
+          },
+          {
+            "type": "text",
+            "value": " 等全局对象。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "Node 环境："
+          },
+          {
+            "type": "text",
+            "value": "JavaScript 运行于服务器或本机进程，基于 "
+          },
+          {
+            "type": "code",
+            "value": "V8"
+          },
+          {
+            "type": "text",
+            "value": " 引擎与 "
+          },
+          {
+            "type": "code",
+            "value": "libuv"
+          },
+          {
+            "type": "text",
+            "value": " 处理文件、网络等 I/O；无窗口对象，全局入口为 "
+          },
+          {
+            "type": "code",
+            "value": "globalThis"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "前端学习价值："
+          },
+          {
+            "type": "text",
+            "value": "本地构建工具（Vite）、BFF 接口聚合、轻量后端服务均在 Node 中运行 JavaScript，无需另学语言。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-node-event-loop",
+      "navLabel": "Node 事件循环",
+      "question": "Node 的事件循环与浏览器有何不同？",
+      "questionNote": "与浏览器同为单线程配合异步 I/O，阶段调度由 libuv 负责。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "主线程仍为单条执行流；网络 I/O 走操作系统的多路复用通知（如 "
+          },
+          {
+            "type": "code",
+            "value": "epoll"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "kqueue"
+          },
+          {
+            "type": "text",
+            "value": "），文件读写、压缩等由 libuv 线程池承担，完成后回调入队，主线程不宜执行重计算。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "浏览器侧：宏任务（如 setTimeout）与微任务（Promise.then）交替调度——同步代码执行完毕后清空微任务队列，再取下一宏任务。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "Node 侧："
+          },
+          {
+            "type": "text",
+            "value": "由 "
+          },
+          {
+            "type": "code",
+            "value": "libuv"
+          },
+          {
+            "type": "text",
+            "value": " 管理 timers、poll、check 等阶段；每阶段结束后清空微任务队列，再进入下一阶段。现代 Node 在每个宏任务回调之后也会清空微任务；其中 "
+          },
+          {
+            "type": "code",
+            "value": "process.nextTick"
+          },
+          {
+            "type": "text",
+            "value": " 队列优先于 Promise 微任务，二者是两个独立队列。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "与业务开发："
+          },
+          {
+            "type": "text",
+            "value": "执行 "
+          },
+          {
+            "type": "code",
+            "value": "await fs.readFile"
+          },
+          {
+            "type": "text",
+            "value": " 时，读文件在后台进行，主线程可继续处理其他请求；完成后 Promise 进入微任务，"
+          },
+          {
+            "type": "code",
+            "value": "await"
+          },
+          {
+            "type": "text",
+            "value": " 后续代码才继续。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "常见陷阱："
+          },
+          {
+            "type": "text",
+            "value": "在接口处理中执行大量循环、压缩或加密会阻塞所有用户请求；此类 CPU 密集任务应使用 "
+          },
+          {
+            "type": "code",
+            "value": "worker_threads"
+          },
+          {
+            "type": "text",
+            "value": " 或独立服务。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-node-middleware",
+      "navLabel": "中间件",
+      "question": "如何理解 Koa / Express 中间件机制？",
+      "questionNote": "请求依次穿过多个处理函数，机制上可类比前端路由守卫。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "每个 HTTP 请求依次穿过多个中间件，完成日志记录、body 解析、鉴权等，最终到达业务 handler。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "Express（入门常见）："
+          },
+          {
+            "type": "text",
+            "value": "线性结构 "
+          },
+          {
+            "type": "code",
+            "value": "(req, res, next)"
+          },
+          {
+            "type": "text",
+            "value": "；调用 "
+          },
+          {
+            "type": "code",
+            "value": "next()"
+          },
+          {
+            "type": "text",
+            "value": " 交给下一个；不调用或已 "
+          },
+          {
+            "type": "code",
+            "value": "res.send"
+          },
+          {
+            "type": "text",
+            "value": " 则结束。适合快速编写 REST API。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "Koa（更现代）："
+          },
+          {
+            "type": "text",
+            "value": "洋葱模型 "
+          },
+          {
+            "type": "code",
+            "value": "async (ctx, next) => { ... await next(); ... }"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          },
+          {
+            "type": "code",
+            "value": "await next()"
+          },
+          {
+            "type": "text",
+            "value": " 之前的代码为「进入」阶段，之后为「返回」阶段，适合统一错误处理与链路日志。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "常见中间件："
+          },
+          {
+            "type": "text",
+            "value": "JSON body 解析、跨域资源共享（CORS）、请求日志、JSON Web Token（JWT）鉴权、统一异常捕获并返回 500。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-node-bff",
+      "navLabel": "BFF",
+      "question": "什么是 BFF？前端为何需要一层 Node 服务？",
+      "questionNote": "BFF（Backend For Frontend）为前端页面定制的接口聚合层，非完整领域服务。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "浏览器不直接调用多个微服务，而是请求 BFF 层，由 Node 完成聚合、字段裁剪与鉴权后返回页面所需数据。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "解决的问题："
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）减少浏览器直连多个服务带来的跨域与鉴权分散问题，内部服务也不必对公网暴露。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）将数据库密钥、内部 API Key 等敏感凭据保留在服务端。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）按页面视图组装字段，移动端与 Web 可分别维护独立 BFF。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "前端在 BFF 中的职责："
+          },
+          {
+            "type": "text",
+            "value": "用 "
+          },
+          {
+            "type": "code",
+            "value": "Express/Koa"
+          },
+          {
+            "type": "text",
+            "value": " 编写路由，"
+          },
+          {
+            "type": "code",
+            "value": "await"
+          },
+          {
+            "type": "text",
+            "value": " 调用下游 HTTP，合并结果后返回 JSON 给 Vue/React；TypeScript 类型可与前端共享。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "职责边界："
+          },
+          {
+            "type": "text",
+            "value": "BFF 不宜承担完整领域逻辑；复杂订单、支付规则仍应在领域服务中实现，BFF 仅做聚合与适配。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-node-env",
+      "navLabel": "环境变量",
+      "question": "Node 环境变量应如何管理？",
+      "questionNote": "按环境注入配置参数，敏感信息不得硬编码进源码。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "通过 "
+          },
+          {
+            "type": "code",
+            "value": "process.env.XXX"
+          },
+          {
+            "type": "text",
+            "value": " 读取配置；本地使用 "
+          },
+          {
+            "type": "code",
+            "value": ".env"
+          },
+          {
+            "type": "text",
+            "value": "，生产由运维或 CI 注入。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "例如 "
+          },
+          {
+            "type": "code",
+            "value": "process.env.PORT"
+          },
+          {
+            "type": "text",
+            "value": " 决定监听端口，"
+          },
+          {
+            "type": "code",
+            "value": "process.env.API_BASE"
+          },
+          {
+            "type": "text",
+            "value": " 决定转发到哪个下游。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "本地开发："
+          },
+          {
+            "type": "text",
+            "value": "可用 Node 20.6+ 原生的 --env-file 指定文件，或安装 "
+          },
+          {
+            "type": "code",
+            "value": "dotenv"
+          },
+          {
+            "type": "text",
+            "value": " 在启动时加载 "
+          },
+          {
+            "type": "code",
+            "value": ".env"
+          },
+          {
+            "type": "text",
+            "value": "（仅放开发用假数据）。"
+          },
+          {
+            "type": "code",
+            "value": ".env"
+          },
+          {
+            "type": "text",
+            "value": " 应加入 "
+          },
+          {
+            "type": "code",
+            "value": ".gitignore"
+          },
+          {
+            "type": "text",
+            "value": "，勿提交仓库。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "生产环境："
+          },
+          {
+            "type": "text",
+            "value": "在 Docker/K8s/云平台上配置环境变量；"
+          },
+          {
+            "type": "code",
+            "value": "NODE_ENV=production"
+          },
+          {
+            "type": "text",
+            "value": " 时关闭详细错误堆栈、收紧日志级别。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "与前端对应：Vite 的 "
+          },
+          {
+            "type": "code",
+            "value": "import.meta.env.VITE_XXX"
+          },
+          {
+            "type": "text",
+            "value": " 在打包时注入；Node 在运行时读取 "
+          },
+          {
+            "type": "code",
+            "value": "process.env"
+          },
+          {
+            "type": "text",
+            "value": "，概念类似但注入时机不同。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-node-security",
+      "navLabel": "Node 安全",
+      "question": "编写 Node 接口时，前端常需协作的安全要点有哪些？",
+      "questionNote": "BFF 对外暴露后须按正式后端标准落实鉴权、校验与限流。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "所有入参均不可信；密钥仅存服务端；浏览器侧仍须防范跨站脚本攻击（XSS）与跨站请求伪造（CSRF）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）校验与限流：对 body/query 做 schema 校验；登录、发短信接口加频率限制，防刷。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）CORS：仅允许公司前端域名，慎用 "
+          },
+          {
+            "type": "code",
+            "value": "Access-Control-Allow-Origin: *"
+          },
+          {
+            "type": "text",
+            "value": " 配合凭证。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）HTTP 头：可用 helmet 设置安全头；生产环境错误响应勿向外网返回完整堆栈。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）依赖：定期执行 "
+          },
+          {
+            "type": "code",
+            "value": "npm audit"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-node-vs-python",
+      "navLabel": "Node 与 Python",
+      "question": "Node 与 Python 做后端或脚本时如何选择？",
+      "questionNote": "Node 与前端同语言；Python 更适合数据处理脚本。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "Node 与前端同语言、可共用类型，适合写 BFF；Python 的数据处理与脚本生态更成熟。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）Node：与前端同栈，做 BFF、服务端渲染与 WebSocket 推送最顺，依赖由 "
+          },
+          {
+            "type": "code",
+            "value": "package.json"
+          },
+          {
+            "type": "text",
+            "value": " 统一管理。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）Python：数据清洗、报表导出、批量抓取与定时任务常用 "
+          },
+          {
+            "type": "code",
+            "value": "pandas"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "requests"
+          },
+          {
+            "type": "text",
+            "value": " 等库，同样的活代码更短。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）环境差异：Node 用 "
+          },
+          {
+            "type": "code",
+            "value": "nvm"
+          },
+          {
+            "type": "text",
+            "value": " 切换版本；Python 用 "
+          },
+          {
+            "type": "code",
+            "value": "venv"
+          },
+          {
+            "type": "text",
+            "value": " 隔离环境、用 "
+          },
+          {
+            "type": "code",
+            "value": "requirements.txt"
+          },
+          {
+            "type": "text",
+            "value": " 记录依赖。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）选型：团队只有前端就统一用 Node；为一个脚本单独引入 Python 要额外承担部署与运维成本。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-mysql-sqlite",
+      "navLabel": "MySQL 与 SQLite",
+      "question": "MySQL 与 SQLite 有何区别？各自适合什么场景？",
+      "questionNote": "SQLite 单文件零运维；MySQL 独立服务、支持并发与权限。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "SQLite 是单文件、零运维的嵌入式数据库；MySQL 是独立运行的网络数据库服务。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）SQLite：整个库就是一个文件，无需安装与启动服务，读写直接走本地文件。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）适合 SQLite：Electron 桌面端、自助终端、移动端本地缓存与单机工具。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）MySQL：独立进程运行，客户端通过网络连接，支持多并发、账号权限与备份恢复。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）适合 MySQL：多用户同时写入、需要事务与权限控制的服务端业务数据。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5）关键差异：SQLite 写入时会锁库，并发写能力弱，不适合作为多人在线服务的主库。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-sql-basics",
+      "navLabel": "SQL 基本用法",
+      "question": "前端写 SQL 时最需要掌握哪些基本用法？",
+      "questionNote": "会增删改查与联表即可，重点是参数化防注入。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "增删改查加联表查询就够日常使用，最需要注意的是防止 SQL 注入。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）增删改查："
+          },
+          {
+            "type": "code",
+            "value": "insert"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "select"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "update"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "delete"
+          },
+          {
+            "type": "text",
+            "value": "，删除与更新务必带 "
+          },
+          {
+            "type": "code",
+            "value": "where"
+          },
+          {
+            "type": "text",
+            "value": " 条件。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）联表：用 "
+          },
+          {
+            "type": "code",
+            "value": "join"
+          },
+          {
+            "type": "text",
+            "value": " 按外键把订单、用户等表关联，一次取回页面需要的字段。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）参数化：用 "
+          },
+          {
+            "type": "code",
+            "value": "?"
+          },
+          {
+            "type": "text",
+            "value": " 占位交给驱动传值，不要拼接字符串，否则存在 SQL 注入风险。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）性能：只 "
+          },
+          {
+            "type": "code",
+            "value": "select"
+          },
+          {
+            "type": "text",
+            "value": " 需要的列，"
+          },
+          {
+            "type": "code",
+            "value": "where"
+          },
+          {
+            "type": "text",
+            "value": " 条件尽量走索引，批量写入包在同一个事务里。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5）分页：数据量小用 "
+          },
+          {
+            "type": "code",
+            "value": "limit"
+          },
+          {
+            "type": "text",
+            "value": " 与 "
+          },
+          {
+            "type": "code",
+            "value": "offset"
+          },
+          {
+            "type": "text",
+            "value": "；翻到很深页码应改为基于游标的条件查询。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-pool-tx",
+      "navLabel": "连接池与事务",
+      "question": "Node 连接数据库时，连接池与事务要注意什么？",
+      "questionNote": "连接复用；事务必须在同一连接上完成并保证回滚。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "连接池复用连接以降低握手开销；事务要在同一条连接上完成，失败必须回滚。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）连接池：服务启动时建立一组连接反复复用，用最大连接数控制对数据库的压力。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）取还：从池中取连接执行完立即归还，异常也要在 "
+          },
+          {
+            "type": "code",
+            "value": "finally"
+          },
+          {
+            "type": "text",
+            "value": " 里释放，否则连接会被耗尽。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）事务："
+          },
+          {
+            "type": "code",
+            "value": "beginTransaction"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "commit"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "rollback"
+          },
+          {
+            "type": "text",
+            "value": " 必须作用在同一条连接上，跨连接回滚不会生效。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）典型坑：扣库存、转账这类操作中途报错却未回滚，会留下对不上的脏数据。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-index",
+      "navLabel": "索引",
+      "question": "数据库索引为什么能加速查询？哪些写法会让索引失效？",
+      "questionNote": "索引是有序结构，用空间换查询速度；写 SQL 时避免让索引失效。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "索引是给字段额外维护的有序结构，让查询能直接定位而不必全表扫描。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）常用 B+ 树：非叶子节点只存键值，叶子节点存数据并用链表相连，树很矮、范围查询也快。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）以 InnoDB 为例：主键是聚簇索引，叶子节点直接存整行数据；普通索引（二级索引）叶子只存主键值，查其他字段需要回表再查一次。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）常见失效：对字段做函数或运算、以 % 开头的模糊匹配、字段类型与传入值不一致、不满足联合索引的最左前缀。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）索引不是越多越好：占空间、拖慢写入，联合索引的顺序要按实际查询条件设计。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-acid",
+      "navLabel": "事务与隔离级别",
+      "question": "事务的四大特性是什么？隔离级别解决什么问题？",
+      "questionNote": "原子性、一致性、隔离性、持久性（ACID）；隔离级别用于权衡并发与一致性。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "事务把多个操作打包，要么全部成功，要么全部回滚，避免只改一半。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）原子性保证操作不可再分；一致性保证约束不被破坏；隔离性让并发事务互不干扰；持久性保证提交后不丢。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）并发会带来三类问题：脏读读到别人未提交的数据、不可重复读同一行前后不一致、幻读同一范围多出或少行。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）隔离级别从低到高依次是读未提交、读已提交、可重复读、串行化，级别越高越安全但并发越差。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）MySQL 默认可重复读，靠多版本并发控制（MVCC）实现；普通业务一般不必手动调整级别。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-db-lock",
+      "navLabel": "乐观锁与悲观锁",
+      "question": "乐观锁与悲观锁有何区别？库存扣减场景该怎么选？",
+      "questionNote": "悲观锁先锁再改，乐观锁提交时校验；按冲突概率选型。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "悲观锁假设一定冲突，先锁住再操作；乐观锁假设很少冲突，提交时再校验有没有被人改过。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）悲观锁：用 "
+          },
+          {
+            "type": "code",
+            "value": "select ... for update"
+          },
+          {
+            "type": "text",
+            "value": " 把目标行锁住，或加分布式锁。实现直观，但会阻塞其他请求、并发能力弱。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）乐观锁：表上加版本号字段，更新时带上旧版本比对；影响行数为 0 说明期间被人改过，重试即可。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）库存扣减更常用带条件的更新，让数据库自己保证：库存大于 0 才扣减，看影响行数判断是否成功。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）选型看冲突概率：秒杀这类热点写用悲观锁容易把请求排队堵死；读多写少时两种都可以。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-sharding",
+      "navLabel": "读写分离与分表",
+      "question": "数据库读写分离与分库分表分别在解决什么问题？",
+      "questionNote": "先读写分离缓解读压力，数据量真的很大再分表，不要过早拆分。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "读写分离解决读压力，分库分表解决单表数据量过大，两者是不同阶段的手段。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）主库负责写、从库负责读，主从复制同步数据；多数业务是读多写少，加从库就能显著分担压力。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）主从复制有延迟，刚写完立刻读从库可能读到旧值；对一致性敏感的查询要强制走主库。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）单表数据到千万级、加索引也救不动时再考虑分表，按范围或哈希把数据打散到多张表。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）拆分代价不小：跨库事务、分页与聚合都会变复杂，能用索引优化和数据归档解决就先别拆。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-redis",
+      "navLabel": "Redis 缓存",
+      "question": "Redis 是什么？为什么常放在数据库前面做缓存？",
+      "questionNote": "基于内存的键值数据库，读写极快；用于缓存与计数等可重建的数据。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "Redis 是基于内存的键值数据库，读写远快于磁盘数据库，常放在数据库前承担缓存。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）常用结构：字符串做缓存与计数、哈希存对象、列表做队列、集合与有序集合做去重和排行榜。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）除缓存外还常用来存登录态、分布式锁与限流计数，这些数据可以重建，放在内存里风险可控。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）内存容量有限，需要给键设置过期时间与淘汰策略，避免内存被写满。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）边界：Redis 的定位是加速，不是主存储；重要数据必须落库，缓存整体丢失时要能回源重建。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-cache-problems",
+      "navLabel": "缓存穿透击穿雪崩",
+      "question": "缓存穿透、击穿、雪崩分别是什么？如何应对？",
+      "questionNote": "三者成因不同：数据不存在、热点键过期、大批键同时失效。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "三者成因不同，解法各异，要能分清。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）穿透：查询的数据根本不存在，请求每次都绕开缓存直接打到数据库。可缓存空值，或用布隆过滤器提前拦截。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）击穿：某个热点键刚好过期，瞬间大量请求同时涌向数据库。可加互斥锁，只放一个请求去回源重建缓存。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）雪崩：大批键在同一时刻失效，或缓存服务整体不可用。给过期时间加随机值错开，并做多级缓存与降级兜底。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）共同思路：都不要让数据库直接承受全部并发，缓存层要能撑住并给数据库留出恢复时间。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-mq",
+      "navLabel": "消息队列",
+      "question": "消息队列解决什么问题？引入后要付出什么代价？",
+      "questionNote": "解耦、削峰、异步三大作用；代价是可靠性与顺序问题。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "消息队列（MQ）把「立刻要做的事」变成「稍后处理」，主要解决解耦、削峰和异步。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）解耦：下单后要发短信、记积分、发通知，改成投一条消息，各下游自行订阅，不再串成一条长链路。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）削峰：瞬时流量先写进队列，后端按自己的处理能力消费，避免数据库被突发流量打垮。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）异步：耗时操作放到后台执行，接口先返回结果，用户不必干等。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）代价：MQ 普遍只保证 at-least-once（至少投递一次），所以重复消费几乎必然发生，消费端必须做成幂等的；此外还要处理消息丢失、顺序与积压时的告警扩容。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-cache-consistency",
+      "navLabel": "缓存一致性",
+      "question": "缓存与数据库如何保持一致？先删缓存还是先更新库？",
+      "questionNote": "只能做到最终一致，以数据库为准；推荐先更新库再删缓存。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "缓存与数据库很难做到强一致，工程上追求最终一致，并始终以数据库的数据为准。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）推荐先更新数据库、再删除缓存；直接去更新缓存容易在并发下写出新旧颠倒的数据。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）删除失败要有兜底：重试并配合较短过期时间。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）高并发下仍可能短时间读到旧值；一致性要求更高时用延迟双删，或订阅数据库变更日志（如 binlog）来刷新缓存。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）边界：业务要能接受短暂不一致，若完全不能接受，这部分数据就绕过缓存直接读库。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-idempotent",
+      "navLabel": "接口幂等",
+      "question": "接口幂等指什么？写接口如何设计才能重复调用不出错？",
+      "questionNote": "同一请求执行多次结果不变；用请求号、唯一索引或状态机实现。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "幂等指同一个请求执行多次，结果与执行一次相同；所有写接口都要考虑这件事。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）常见做法：由前端生成唯一请求号随请求带上，服务端用它去重，命中已处理的记录就直接返回上次结果。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）数据库层用唯一索引兜底更可靠，重复插入会直接报错，比先查询再插入少一次并发窗口。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）状态机天然幂等：只允许从待处理流转到已处理，重复回调第二次会被状态校验拒绝。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）边界：查询接口本身幂等；支付、扣库存、发券、消息消费这类必须显式设计。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-rate-limit",
+      "navLabel": "限流",
+      "question": "常见的限流算法有哪些？各自适合什么场景？",
+      "questionNote": "计数器、滑动窗口、令牌桶、漏桶；限流是保护服务的手段。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "限流在流量超过服务处理能力前就拒绝或排队，是保护服务的最后一道手段。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）固定窗口计数器最简单，按时间窗口计数，但窗口交界处可能出现两倍于阈值的瞬时流量。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）滑动窗口把时间切得更细，缓解了边界问题，实现难度也不高，是常用的折中方案。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）令牌桶按固定速率往桶里放令牌，桶里积攒的令牌允许短时间的突发流量通过。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）漏桶以恒定速率向外流出，突发流量被削平，更强调输出平滑，适合保护脆弱的下游。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5）实践上按接口、用户或 IP 分别设阈值，被限流时返回统一提示并给出重试建议，避免前端反复重试加剧拥堵。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-log-trace",
+      "navLabel": "日志与链路追踪",
+      "question": "后端日志应该怎么打？前端联调时最有用的是什么？",
+      "questionNote": "日志分级 + 请求 ID；traceId 能把一次请求的整条链路串起来。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "后端排障主要靠日志；对前端联调最有价值的，是一个能串起整条链路的请求标识。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）日志分级：调试、信息、警告、错误。生产环境一般只保留信息以上，并做滚动与清理，避免刷爆磁盘。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）关键日志要带上请求标识、用户标识、接口路径与耗时，这样才能按一次请求把日志串起来看。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）服务拆多后需要链路追踪：请求进网关时生成 "
+          },
+          {
+            "type": "code",
+            "value": "traceId"
+          },
+          {
+            "type": "text",
+            "value": "，调用下游时透传，各服务日志都带上它。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）前端配合：报错时把 "
+          },
+          {
+            "type": "code",
+            "value": "traceId"
+          },
+          {
+            "type": "text",
+            "value": " 一起上报，后端能直接定位到那一次请求，省去来回对时间戳。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-lb",
+      "navLabel": "反向代理与负载均衡",
+      "question": "反向代理和负载均衡分别做什么？对前端有什么影响？",
+      "questionNote": "统一入口 + 分流多台后端；前端配代理、排 502 都在这一层。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "反向代理站在服务前做统一入口，负载均衡把进来的请求分发给多台后端实例。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）反向代理负责域名与证书、静态资源、路径转发，还能顺手做限流与缓存，Nginx 是最常见的选择。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）常见算法：轮询、加权轮询、最少连接、一致性哈希。一致性哈希需以用户标识等作为哈希键，才能让同一用户固定落到同一台；默认按连接或 IP 分配。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）配合健康检查，自动把故障实例摘掉，避免请求继续打到已经不可用的节点上。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）对前端的意义：本地开发配代理解决跨域、区分多环境地址、排查 502 与 504 都在这一层。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-microservice",
+      "navLabel": "微服务取舍",
+      "question": "微服务相比单体架构有哪些收益和代价？什么时候适合拆？",
+      "questionNote": "按业务边界拆，不是越拆越好；拆分带来分布式复杂度。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "微服务是把系统按业务边界拆成可独立部署的服务，它解决的是协作与扩展问题，不是性能问题。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）收益：各服务独立开发、独立发布、可按自身压力单独扩容，团队之间的边界也更清晰。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）代价：本地调用变成网络调用，随之带来超时、重试、序列化开销与数据一致性问题。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）拆分依据是业务边界与团队规模，不是代码行数；早期团队强行拆会明显拖慢迭代速度。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）前端相关：服务变多后需要网关与 BFF 收口，把接口聚合与鉴权前移，避免页面直接对接多个服务。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-rest-rpc",
+      "navLabel": "接口风格选型",
+      "question": "REST、RPC 与 GraphQL 应如何选择？",
+      "questionNote": "REST 通用、RPC 内部高频调用、GraphQL 按需取字段。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "REST 用资源与 HTTP 方法表达语义，RPC 像调函数一样调远端，GraphQL 由前端声明需要哪些字段。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）REST：路径用名词、方法表达动作，可被浏览器与缓存中间件直接理解，是前后端协作的默认选择。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）RPC：调用方式接近本地函数，传输更紧凑，适合服务之间的高频内部调用，但不便于浏览器直接消费。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）GraphQL：前端一次声明所需字段，避免多接口拼装与字段冗余；代价是服务端复杂度与缓存策略都更麻烦。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）选型：对外接口用 REST，内部服务间可上 RPC，字段需求多变且团队有能力维护时再引入 GraphQL。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-be-api-agree",
+      "navLabel": "接口约定",
+      "question": "前后端约定接口时，分页与响应结构应怎么设计？",
+      "questionNote": "统一响应结构与分页字段，避免联调反复改。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "路径写资源名词、用方法表达操作；响应结构统一，分页字段提前约定。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）路径与方法：查询、新增、更新、删除分别用 "
+          },
+          {
+            "type": "code",
+            "value": "GET"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "POST"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "PUT"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "DELETE"
+          },
+          {
+            "type": "text",
+            "value": "，路径用资源名词而非动词。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）分页：响应同时返回列表与总数两个字段，前端才能渲染总数与总页数；页码很靠后时 "
+          },
+          {
+            "type": "code",
+            "value": "limit"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "offset"
+          },
+          {
+            "type": "text",
+            "value": " 会变慢，需要后端配合改成游标查询。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）响应结构：统一约定业务码、提示文案与数据三个字段，前端只写一套解包逻辑，不必每个接口各写一套。"
+          }
+        ]
+      ]
+    }
+  ]
+}

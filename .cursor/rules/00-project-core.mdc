@@ -8,8 +8,10 @@ alwaysApply: true
 - **沟通语言**：始终用中文（简体）输出。
 - **站点名称**：展示名为「前端面试手册」，常量 `SITE_NAME` 在 `src/config/site.ts`；勿与旧名「前端面试速记」混用。
 - **项目定位**：纯静态 SPA；构建时把 `src/data/qa/json/*.json` 打包进前端，运行时不依赖后端 API。
-- **章节规模**：共 18 章，顺序以 `src/data/constants.ts` 的 `CHAPTER_ORDER` 为准（含 `vue`、`es6`、`node`、`miniprogram`、`ai`、`electron`、`agent`、`project` 等）；内容注册以 `src/data/qa/registry.ts` 静态 import 为准。Vue 2 / Vue 3 合并为单章 `vue`，题目按先 2 后 3 排列。
-- **项目题隐私**：`project` 章及全库题干/答案禁止写真实公司名、产品名、内部包名；场景只用「小程序 / ERP / SaaS / 自助终端 / 中后台 / 后台管理系统」等通用系统词。
+- **章节规模**：共 18 章，顺序以 `src/data/constants.ts` 的 `CHAPTER_ORDER` 为准（含 `vue`、`es6`、`backend`、`miniprogram`、`ai`、`electron`、`agent`、`project` 等）；内容注册以 `src/data/qa/registry.ts` 静态 import 为准。Vue 2 / Vue 3 合并为单章 `vue`，题目按先 2 后 3 排列。`backend`（后端）已合并原 `node` 章，含 Node 运行时、中间件与 BFF，以及索引与事务、缓存与消息队列、幂等限流与接口协作入门，只考边界与常见坑，不考数据库原理。
+- **章节排序依据**：18 章按「语言与样式（`html-css`、`javascript`、`es6`、`typescript`）→ 框架与端（`vue`、`react`、`miniprogram`）→ 运行原理（`browser`、`network`）→ 服务端与工程（`backend`、`engineering`、`performance`）→ 主题与场景（`scenario`、`ai`、`agent`、`electron`）→ 简历与手写（`project`、`coding`）」六组由底向上排列，`backend` 位于 `network` 之后。页面不展示分组标题，分组仅作为排序依据。
+- **项目题隐私**：`project` 章及全库题干/答案禁止写真实公司名、产品名、机构名、内部包名；场景只用「小程序 / ERP / SaaS / 自助终端 / 中后台 / 后台管理系统」等通用系统词。`scripts/lint-qa-copy.mjs` 会拦截隐私词与过时术语（`.cursorrules`、`wx.getUserProfile` 等）。
+- **跨章重复题**：同一考点只在该主题所属专业章写一处详述；其他章删题或瘦身为本视角（项目章讲取舍与边界），**正文不写「见 X 章『某题』」类指回文案**，每题答案保持自足（`scripts/lint-qa-copy.mjs` 的 `cross-chapter-ref` 会拦截）。
 - **改动优先级**：优先改 `src/data/qa/json/` 维护内容；仅在渲染能力缺失、交互缺陷或样式结构性问题时改组件与样式。
 - **答案渲染约束**：题库答案禁止写 HTML 字符串；使用 `RichSegment[][]`（见 `src/types/qa-content.ts`）；章节可选 `leadLink` 外链。
 - **工程习惯**：保持改动小而可验证；避免无关重构、避免一次性大范围格式化。

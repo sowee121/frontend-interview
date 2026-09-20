@@ -2,8 +2,8 @@
   "slug": "performance",
   "title": "性能",
   "documentTitle": "性能",
-  "description": "优化维度与白屏首屏、拆包懒加载与长列表，以及主线程卡顿、图片优化与性能监控。",
-  "lead": "用白屏/首屏/卡顿等业务说法组织答案，配合拆包、懒加载与监控验收。",
+  "description": "优化维度与白屏首屏、拆包懒加载与长列表，以及主线程卡顿、图片优化与以 LCP / INP / CLS 为核心的性能监控。",
+  "lead": "用白屏/首屏/卡顿等业务说法组织答案，配合拆包、懒加载与监控验收。核心网页指标以 LCP、INP、CLS 三项为准。",
   "items": [
     {
       "id": "q-longtask",
@@ -15,6 +15,10 @@
           {
             "type": "strong",
             "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "交互卡不卡，核心指标里由交互到下次绘制（INP）体现；用 "
           },
           {
             "type": "code",
@@ -30,7 +34,7 @@
           },
           {
             "type": "text",
-            "value": "；火焰图看黄色长条；真实用户监控（RUM）统计超 50ms 任务次数。"
+            "value": " 定位，火焰图看黄色长条，真实用户监控（RUM）统计超 50ms 任务的次数。"
           }
         ],
         [
@@ -410,7 +414,7 @@
         [
           {
             "type": "strong",
-            "value": "原则："
+            "value": "要点："
           },
           {
             "type": "text",
@@ -488,37 +492,13 @@
         [
           {
             "type": "text",
-            "value": "1）指标：首字节时间（TTFB）、首次内容绘制（FCP）、最大内容绘制（LCP）、长任务、接口 P95、白屏率。"
+            "value": "1）指标：先看核心网页指标（Core Web Vitals）——最大内容绘制（LCP）、交互到下次绘制（INP，2024 年起取代首次输入延迟 FID）、累积布局偏移（CLS）；再补首字节时间（TTFB）、首次内容绘制（FCP）、长任务、接口 P95 与白屏率。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）实现："
-          },
-          {
-            "type": "code",
-            "value": "PerformanceObserver"
-          },
-          {
-            "type": "text",
-            "value": " 监听 "
-          },
-          {
-            "type": "code",
-            "value": "largest-contentful-paint"
-          },
-          {
-            "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "longtask"
-          },
-          {
-            "type": "text",
-            "value": " 等。"
+            "value": "2）实现：用 PerformanceObserver 监听 largest-contentful-paint、longtask，用 web-vitals 库采集 INP / CLS 更省事。"
           }
         ],
         [
@@ -546,7 +526,7 @@
         [
           {
             "type": "strong",
-            "value": "一句话："
+            "value": "要点："
           },
           {
             "type": "text",
@@ -574,11 +554,7 @@
           },
           {
             "type": "strong",
-            "value": "性能监控（RUM）"
-          },
-          {
-            "type": "text",
-            "value": "：Web Vitals、接口耗时、白屏率；用 "
+            "value": "性能监控（RUM）：Core Web Vitals（LCP、INP、CLS）、接口耗时、白屏率；用 "
           },
           {
             "type": "code",
@@ -627,6 +603,16 @@
       "answer": [
         [
           {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "资源提示（Resource Hints）按「解析 → 建连 → 本页关键 → 下页预取」递进使用，越靠前收益越直接、成本越低。"
+          }
+        ],
+        [
+          {
             "type": "code",
             "value": "dns-prefetch"
           },
@@ -671,16 +657,6 @@
           {
             "type": "text",
             "value": "：空闲预取下一路由 chunk。可与网络安全章 DNS/TLS 优化一起答。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "常用 hint 对照。"
           }
         ],
         [
@@ -756,11 +732,7 @@
           },
           {
             "type": "strong",
-            "value": "验收："
-          },
-          {
-            "type": "text",
-            "value": "看白屏/首屏时间、卡顿与接口耗时；有监控或前后对比数据更有说服力。"
+            "value": "验收：看 LCP、INP、CLS 三项与白屏/首屏时间、接口耗时；有监控或前后对比数据更有说服力。"
           }
         ]
       ]
@@ -848,35 +820,7 @@
           },
           {
             "type": "strong",
-            "value": "图片："
-          },
-          {
-            "type": "text",
-            "value": "进入视口再赋"
-          },
-          {
-            "type": "code",
-            "value": "src"
-          },
-          {
-            "type": "text",
-            "value": "，可用"
-          },
-          {
-            "type": "code",
-            "value": "IntersectionObserver"
-          },
-          {
-            "type": "text",
-            "value": "或"
-          },
-          {
-            "type": "code",
-            "value": "loading=\"lazy\""
-          },
-          {
-            "type": "text",
-            "value": "；注意占位高度防布局抖动。"
+            "value": "图片：进入视口再赋 src，可用 IntersectionObserver 或 loading=\"lazy\"；注意占位高度，防止布局抖动。"
           }
         ],
         [
@@ -887,10 +831,6 @@
           {
             "type": "strong",
             "value": "路由："
-          },
-          {
-            "type": "text",
-            "value": ""
           },
           {
             "type": "code",

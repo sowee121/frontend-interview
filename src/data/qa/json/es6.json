@@ -321,7 +321,15 @@
           },
           {
             "type": "text",
-            "value": " 由定义时外层词法环境决定，适合回调、定时器；不适合需要动态绑定的对象方法（可改类字段箭头或 bind）。"
+            "value": " 由定义时外层词法环境决定，适合回调、定时器；不适合需要动态绑定的对象方法（可改类字段箭头或 "
+          },
+          {
+            "type": "code",
+            "value": "bind"
+          },
+          {
+            "type": "text",
+            "value": "）。"
           }
         ],
         [
@@ -335,7 +343,15 @@
           },
           {
             "type": "text",
-            "value": "；未传或传 `undefined` 时生效。与解构默认值可组合处理「配置对象」参数。"
+            "value": "；未传或传 "
+          },
+          {
+            "type": "code",
+            "value": "undefined"
+          },
+          {
+            "type": "text",
+            "value": " 时生效。与解构默认值可组合处理「配置对象」参数。"
           }
         ],
         [
@@ -352,69 +368,6 @@
           {
             "type": "code",
             "value": "const obj = {\n  n: 1,\n  // 不推荐：箭头拿不到 obj 当 this\n  bad: () => this.n,\n  // 推荐：普通方法\n  ok() { return this.n },\n  // 默认参数\n  add(x, y = 1) { return x + y },\n}"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-symbol",
-      "navLabel": "Symbol",
-      "question": "Symbol 解决什么问题？与字符串属性名有何区别？",
-      "answer": [
-        [
-          {
-            "type": "text",
-            "value": "ES6 "
-          },
-          {
-            "type": "strong",
-            "value": "Symbol"
-          },
-          {
-            "type": "text",
-            "value": " 是唯一、不可变的基本类型，常用作对象「避免键名冲突」的键（如内置遍历器 "
-          },
-          {
-            "type": "code",
-            "value": "Symbol.iterator"
-          },
-          {
-            "type": "text",
-            "value": "）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "code",
-            "value": "Symbol.for(key)"
-          },
-          {
-            "type": "text",
-            "value": " 全局登记；"
-          },
-          {
-            "type": "code",
-            "value": "Symbol.keyFor"
-          },
-          {
-            "type": "text",
-            "value": " 反查。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）`for...in` / `Object.keys` 枚举不到 Symbol 键；需要 `Object.getOwnPropertySymbols`。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）Well-known Symbol 定制语言行为（迭代、toStringTag 等），与 Iterator 接口强相关。"
           }
         ]
       ]
@@ -448,12 +401,16 @@
             "value": "new Set(arr)"
           },
           {
+            "type": "text",
+            "value": " 与 "
+          },
+          {
             "type": "code",
             "value": "[...set]"
           },
           {
             "type": "text",
-            "value": " 与数组互转。"
+            "value": " 可互相转换。"
           }
         ],
         [
@@ -469,7 +426,7 @@
         [
           {
             "type": "text",
-            "value": "对象当「哈希表」只有字符串/Symbol 键；Map 保持插入顺序，语义更清晰。弱引用版本见 WeakMap/WeakSet 题。"
+            "value": "对象当「哈希表」只有字符串/Symbol 键；Map 保持插入顺序，语义更清晰。"
           }
         ]
       ]
@@ -571,6 +528,24 @@
         ],
         [
           {
+            "type": "code",
+            "value": "WeakSet"
+          },
+          {
+            "type": "text",
+            "value": "：只能存对象（不能存原始值），同样不可遍历、无 "
+          },
+          {
+            "type": "code",
+            "value": "size"
+          },
+          {
+            "type": "text",
+            "value": "，用于标记「某对象是否已处理过」，如避免重复初始化。"
+          }
+        ],
+        [
+          {
             "type": "text",
             "value": "典型：DOM 节点挂扩展数据、第三方实例缓存；Vue 3 用 WeakMap 关联 "
           },
@@ -643,7 +618,7 @@
           },
           {
             "type": "text",
-            "value": " 等性能足够且好，状态更新里最常见。"
+            "value": " 等，开销小、写法直观，状态更新里最常见。"
           }
         ],
         [
@@ -661,7 +636,7 @@
           },
           {
             "type": "text",
-            "value": " 会丢 "
+            "value": " 的局限："
           },
           {
             "type": "code",
@@ -669,7 +644,7 @@
           },
           {
             "type": "text",
-            "value": "、函数、"
+            "value": "、函数与 Symbol 会被丢弃，"
           },
           {
             "type": "code",
@@ -677,7 +652,7 @@
           },
           {
             "type": "text",
-            "value": "、"
+            "value": " 会变成 ISO 字符串，"
           },
           {
             "type": "code",
@@ -685,7 +660,15 @@
           },
           {
             "type": "text",
-            "value": "，且无法处理循环引用。"
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "Set"
+          },
+          {
+            "type": "text",
+            "value": " 会变成空对象，且无法处理循环引用。"
           }
         ],
         [
@@ -723,7 +706,7 @@
         [
           {
             "type": "code",
-            "value": "const a = { n: 1, o: { x: 2 } }\nconst shallow = { ...a }       // o 仍共享引用\nconst deep = structuredClone(a) // 现代环境深拷贝\n// JSON.parse(JSON.stringify(a)) 会丢 Date/undefined/函数"
+            "value": "const a = { n: 1, o: { x: 2 } }\nconst shallow = { ...a }       // o 仍共享引用\nconst deep = structuredClone(a) // 现代环境深拷贝\n// JSON.parse(JSON.stringify(a))：Date 变字符串、Map 变空对象"
           }
         ]
       ]
@@ -774,7 +757,7 @@
           },
           {
             "type": "text",
-            "value": " 等字符串索引，还可能带上 "
+            "value": " 等字符串索引（"
           },
           {
             "type": "code",
@@ -782,7 +765,7 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": " 属不可枚举属性，不会被遍历到）。"
           }
         ],
         [
@@ -901,13 +884,13 @@
           },
           {
             "type": "text",
-            "value": "Promise 状态落定后不变；all/race/allSettled/any 分别对应全成功、竞速、全落定、任一成功。"
+            "value": "Promise 状态落定后不变；all / race / allSettled / any 分别对应全成功、竞速、全落定、任一成功。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "Promise 对象有三种状态："
+            "value": "Promise 有三种状态："
           },
           {
             "type": "code",
@@ -915,7 +898,7 @@
           },
           {
             "type": "text",
-            "value": "（进行中）、"
+            "value": "（等待中）、"
           },
           {
             "type": "code",
@@ -931,15 +914,7 @@
           },
           {
             "type": "text",
-            "value": "（已失败）；状态一旦落定（resolved）就不会再变。组合方法建立在 "
-          },
-          {
-            "type": "code",
-            "value": "then"
-          },
-          {
-            "type": "text",
-            "value": " 之上。"
+            "value": "（已失败）；一旦 settled（已落定，成功或失败都算）就不再变。"
           }
         ],
         [
@@ -949,21 +924,7 @@
           },
           {
             "type": "text",
-            "value": "：全部 "
-          },
-          {
-            "type": "strong",
-            "value": "全部 fulfilled（成功）"
-          },
-          {
-            "type": "text",
-            "value": " 才 resolve；任一项变成 rejected（失败）就立刻 reject。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "适合多接口强依赖、缺一不可的场景（如详情页需同时拉用户与权限）。注意：一个失败整批失败，要有降级或重试策略。"
+            "value": "：全部 fulfilled 才 resolve，任一项 rejected 立即 reject。适合多接口强依赖、缺一不可的场景，但一个失败整批失败，要有降级或重试策略。"
           }
         ],
         [
@@ -977,11 +938,11 @@
           },
           {
             "type": "strong",
-            "value": "谁先 settled（落定）"
+            "value": "谁先 settled"
           },
           {
             "type": "text",
-            "value": " 就用谁（fulfilled 或 rejected 都算）。典型：超时封装 "
+            "value": " 就用谁（成功或失败都算）。典型是超时封装 "
           },
           {
             "type": "code",
@@ -999,23 +960,15 @@
           },
           {
             "type": "text",
-            "value": "：等全部 settled 才返回，每项是 "
+            "value": "：等全部 settled 才返回，每项带 "
           },
           {
             "type": "code",
-            "value": "{ status: 'fulfilled', value }"
+            "value": "status: 'fulfilled' | 'rejected'"
           },
           {
             "type": "text",
-            "value": " 或 "
-          },
-          {
-            "type": "code",
-            "value": "{ status: 'rejected', reason }"
-          },
-          {
-            "type": "text",
-            "value": "。适合批量上报、多源拉取——单项 rejected 不影响其余结果汇总。"
+            "value": "。适合批量上报、多源拉取，单项失败不影响其余结果汇总。"
           }
         ],
         [
@@ -1041,7 +994,7 @@
           },
           {
             "type": "text",
-            "value": "。适合多 CDN/多镜像任意一个可用即可的兜底。"
+            "value": "。适合多 CDN / 多镜像任一可用即可的兜底。"
           }
         ],
         [
@@ -1164,7 +1117,15 @@
         [
           {
             "type": "text",
-            "value": "应说明「返回新 Promise 及返回值/异常如何改变状态」；线上宜在链尾添加 "
+            "value": "每个 "
+          },
+          {
+            "type": "code",
+            "value": "then"
+          },
+          {
+            "type": "text",
+            "value": " 返回新 Promise，其返回值或抛错决定下游状态；线上宜在链尾添加 "
           },
           {
             "type": "code",
@@ -1390,25 +1351,113 @@
           },
           {
             "type": "text",
-            "value": " 大多是语法糖，底层仍基于原型：`class` 的 `prototype` 在 `constructor` 上，`extends` 建立原型链。"
+            "value": " 大多是语法糖，底层仍基于原型："
+          },
+          {
+            "type": "code",
+            "value": "class"
+          },
+          {
+            "type": "text",
+            "value": " 的 "
+          },
+          {
+            "type": "code",
+            "value": "prototype"
+          },
+          {
+            "type": "text",
+            "value": " 在 "
+          },
+          {
+            "type": "code",
+            "value": "constructor"
+          },
+          {
+            "type": "text",
+            "value": " 上，"
+          },
+          {
+            "type": "code",
+            "value": "extends"
+          },
+          {
+            "type": "text",
+            "value": " 建立原型链。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）`constructor` 初始化实例；类字段、静态方法 `static` 支持声明式写法。"
+            "value": "1）"
+          },
+          {
+            "type": "code",
+            "value": "constructor"
+          },
+          {
+            "type": "text",
+            "value": " 初始化实例；类字段、静态方法 "
+          },
+          {
+            "type": "code",
+            "value": "static"
+          },
+          {
+            "type": "text",
+            "value": " 支持声明式写法。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）`extends` + `super()` 调用父构造；`super.method()` 调父类原型方法。"
+            "value": "2）"
+          },
+          {
+            "type": "code",
+            "value": "extends"
+          },
+          {
+            "type": "text",
+            "value": " + "
+          },
+          {
+            "type": "code",
+            "value": "super()"
+          },
+          {
+            "type": "text",
+            "value": " 调用父构造；"
+          },
+          {
+            "type": "code",
+            "value": "super.method()"
+          },
+          {
+            "type": "text",
+            "value": " 调父类原型方法。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）不存在变量提升；本质仍是 `typeof Class === \"function\"`。手写继承实现见 JavaScript 章「继承」题。"
+            "value": "3）存在声明提升但处于暂时性死区，声明前访问抛 "
+          },
+          {
+            "type": "code",
+            "value": "ReferenceError"
+          },
+          {
+            "type": "text",
+            "value": "；本质仍是 "
+          },
+          {
+            "type": "code",
+            "value": "typeof Class === \"function\""
+          },
+          {
+            "type": "text",
+            "value": "。"
           }
         ],
         [
@@ -1658,7 +1707,7 @@
         [
           {
             "type": "text",
-            "value": "Bundler 对动态路径往往只打包匹配到的模块集合；加载失败需 "
+            "value": "打包器（bundler）对动态路径往往只打包匹配到的模块集合；加载失败需 "
           },
           {
             "type": "code",
@@ -1842,6 +1891,52 @@
           {
             "type": "text",
             "value": " 会把 0 误当成「未设置」。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "注意："
+          },
+          {
+            "type": "code",
+            "value": "??"
+          },
+          {
+            "type": "text",
+            "value": " 不能与 "
+          },
+          {
+            "type": "code",
+            "value": "||"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "&&"
+          },
+          {
+            "type": "text",
+            "value": " 直接混用，"
+          },
+          {
+            "type": "code",
+            "value": "a ?? b || c"
+          },
+          {
+            "type": "text",
+            "value": " 会报语法错误，需写成 "
+          },
+          {
+            "type": "code",
+            "value": "(a ?? b) || c"
+          },
+          {
+            "type": "text",
+            "value": "。"
           }
         ],
         [

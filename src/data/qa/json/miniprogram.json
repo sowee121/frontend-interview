@@ -9,7 +9,7 @@
       "id": "q-mp-vs-h5",
       "navLabel": "小程序 vs H5",
       "question": "小程序、H5 与原生 App 有何区别？为何需要小程序这一形态？",
-      "questionNote": "作答时先区分三端（小程序/H5/原生 App）定位，再补充微信侧实现约束。",
+      "questionNote": "三端（小程序/H5/原生 App）定位不同，微信侧另有实现约束。",
       "answer": [
         [
           {
@@ -138,8 +138,8 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "App："
+            "type": "text",
+            "value": "1）App："
           },
           {
             "type": "code",
@@ -163,13 +163,29 @@
           },
           {
             "type": "text",
-            "value": "（前后台切换）。"
+            "value": "（前后台切换），另有 "
+          },
+          {
+            "type": "code",
+            "value": "onError"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "onPageNotFound"
+          },
+          {
+            "type": "text",
+            "value": "。"
           }
         ],
         [
           {
-            "type": "strong",
-            "value": "Page："
+            "type": "text",
+            "value": "2）Page："
           },
           {
             "type": "code",
@@ -177,7 +193,15 @@
           },
           {
             "type": "text",
-            "value": "（入参 options）、"
+            "value": "（入参 "
+          },
+          {
+            "type": "code",
+            "value": "options"
+          },
+          {
+            "type": "text",
+            "value": "）、"
           },
           {
             "type": "code",
@@ -209,13 +233,13 @@
           },
           {
             "type": "text",
-            "value": "（页面出栈销毁）。"
+            "value": "（出栈销毁）。"
           }
         ],
         [
           {
-            "type": "strong",
-            "value": "Component："
+            "type": "text",
+            "value": "3）Component："
           },
           {
             "type": "code",
@@ -239,13 +263,75 @@
           },
           {
             "type": "text",
-            "value": "，对应挂载、就绪与卸载阶段。"
+            "value": "，对应挂载、就绪与卸载；另有 "
+          },
+          {
+            "type": "code",
+            "value": "pageLifetimes"
+          },
+          {
+            "type": "text",
+            "value": "（"
+          },
+          {
+            "type": "code",
+            "value": "show"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "hide"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "resize"
+          },
+          {
+            "type": "text",
+            "value": "）用于感知所在页面的显隐。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "实践建议：页面每次可见时在 "
+            "value": "4）页面级交互：下拉刷新 "
+          },
+          {
+            "type": "code",
+            "value": "onPullDownRefresh"
+          },
+          {
+            "type": "text",
+            "value": "、触底 "
+          },
+          {
+            "type": "code",
+            "value": "onReachBottom"
+          },
+          {
+            "type": "text",
+            "value": "、滚动 "
+          },
+          {
+            "type": "code",
+            "value": "onPageScroll"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5）实践：每次可见时在 "
           },
           {
             "type": "code",
@@ -253,7 +339,7 @@
           },
           {
             "type": "text",
-            "value": " 拉取数据；在 "
+            "value": " 拉数据；在 "
           },
           {
             "type": "code",
@@ -261,7 +347,7 @@
           },
           {
             "type": "text",
-            "value": " 读取路由参数；"
+            "value": " 读路由参数；在 "
           },
           {
             "type": "code",
@@ -444,13 +530,51 @@
           },
           {
             "type": "text",
-            "value": "；超长列表宜采用分包渲染、虚拟列表组件或自定义渲染方案。"
+            "value": "；超长列表改用分页加载或虚拟列表组件，而不是把整表塞进 "
+          },
+          {
+            "type": "code",
+            "value": "data"
+          },
+          {
+            "type": "text",
+            "value": "——分包（"
+          },
+          {
+            "type": "code",
+            "value": "subPackages"
+          },
+          {
+            "type": "text",
+            "value": "）是代码包拆分，与列表渲染无关。"
           }
         ],
         [
           {
             "type": "text",
             "value": "原因：跨线程通信存在序列化与调度开销，频繁调用或单次数据过大会导致掉帧与交互迟滞。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "边界："
+          },
+          {
+            "type": "code",
+            "value": "setData"
+          },
+          {
+            "type": "text",
+            "value": " 会同步更新 "
+          },
+          {
+            "type": "code",
+            "value": "this.data"
+          },
+          {
+            "type": "text",
+            "value": "，但视图更新是异步的，需等回调；单次数据量超过 1MB 会直接报错。"
           }
         ],
         [
@@ -535,7 +659,39 @@
           },
           {
             "type": "text",
-            "value": "；需要样式穿透时使用 externalClasses 或 :host 选择器。"
+            "value": "；要让组件内能用外部或全局样式，可设为 "
+          },
+          {
+            "type": "code",
+            "value": "'shared'"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "'apply-shared'"
+          },
+          {
+            "type": "text",
+            "value": "，或用 "
+          },
+          {
+            "type": "code",
+            "value": "externalClasses"
+          },
+          {
+            "type": "text",
+            "value": " 暴露类名给父组件。"
+          },
+          {
+            "type": "code",
+            "value": ":host"
+          },
+          {
+            "type": "text",
+            "value": " 用于在组件内部选中组件自身节点，不是样式穿透手段。"
           }
         ],
         [
@@ -614,13 +770,13 @@
           },
           {
             "type": "text",
-            "value": " 禁止下发至客户端。token 置于请求头，过期后须重新发起 login。"
+            "value": " 禁止下发至客户端。token 置于请求头，过期后须重新发起 login。code 仅能使用一次、5 分钟内有效。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "获取用户信息须通过 "
+            "value": "获取用户信息不能再依赖 "
           },
           {
             "type": "code",
@@ -628,7 +784,45 @@
           },
           {
             "type": "text",
-            "value": " 等合规接口主动授权，不得静默获取头像与昵称。"
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "wx.getUserInfo"
+          },
+          {
+            "type": "text",
+            "value": "——这两个接口已只返回匿名数据（灰头像与「微信用户」昵称）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "现行做法是"
+          },
+          {
+            "type": "strong",
+            "value": "头像昵称填写能力"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "code",
+            "value": "<button open-type=\"chooseAvatar\">"
+          },
+          {
+            "type": "text",
+            "value": " 配合 "
+          },
+          {
+            "type": "code",
+            "value": "<input type=\"nickname\">"
+          },
+          {
+            "type": "text",
+            "value": " 让用户主动填写，提交服务端后再做内容安全校验。"
           }
         ]
       ]
@@ -645,19 +839,65 @@
           },
           {
             "type": "text",
-            "value": "须在小程序管理后台配置 request 合法域名（HTTPS）；不存在浏览器式跨域，由客户端校验域名白名单。"
+            "value": "必须用 HTTPS，且域名要在小程序后台配置白名单；不存在浏览器式跨域，由客户端校验域名。默认最多 10 个并发请求。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "开发者工具可勾选「不校验合法域名」仅用于本地调试；Cookie 行为与 H5 不同，登录态通常通过 header 传递 token。"
+            "value": "1）配置："
+          },
+          {
+            "type": "code",
+            "value": "request"
+          },
+          {
+            "type": "text",
+            "value": " 合法域名需在管理后台登记（"
+          },
+          {
+            "type": "code",
+            "value": "HTTPS"
+          },
+          {
+            "type": "text",
+            "value": "）；开发者工具可勾选「不校验合法域名」，仅用于本地调试。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "可配置超时、"
+            "value": "2）差异：返回的 "
+          },
+          {
+            "type": "code",
+            "value": "res.data"
+          },
+          {
+            "type": "text",
+            "value": " 已按 "
+          },
+          {
+            "type": "code",
+            "value": "content-type"
+          },
+          {
+            "type": "text",
+            "value": " 解析好，不用自己 "
+          },
+          {
+            "type": "code",
+            "value": "JSON.parse"
+          },
+          {
+            "type": "text",
+            "value": "；也没有 Cookie 那一套，登录态通常放 header 传 token。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）控制：可配置超时、"
           },
           {
             "type": "code",
@@ -665,7 +905,7 @@
           },
           {
             "type": "text",
-            "value": " 等；上传下载分别使用 "
+            "value": "；上传下载分别用 "
           },
           {
             "type": "code",
@@ -681,10 +921,41 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "，它们是独立的并发额度。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）取消："
+          },
+          {
+            "type": "code",
+            "value": "wx.request"
+          },
+          {
+            "type": "text",
+            "value": " 返回 "
+          },
+          {
+            "type": "code",
+            "value": "RequestTask"
+          },
+          {
+            "type": "text",
+            "value": "，可调用 "
+          },
+          {
+            "type": "code",
+            "value": "abort()"
+          },
+          {
+            "type": "text",
+            "value": " 取消；页面卸载或搜索联想场景要及时取消，避免回调落到已销毁的页面。"
           }
         ]
-      ]
+      ],
+      "questionNote": "HTTPS + 域名白名单；res.data 已解析；默认 10 并发；RequestTask.abort() 可取消。"
     },
     {
       "id": "q-mp-storage",
@@ -743,7 +1014,7 @@
       "id": "q-mp-subpackage",
       "navLabel": "分包加载",
       "question": "什么是分包？主包、分包与独立分包有何区别？",
-      "questionNote": "包体积限制与首屏加载时间为常见考点。",
+      "questionNote": "包体积限制与首屏加载时间是两大瓶颈。",
       "answer": [
         [
           {
@@ -760,43 +1031,39 @@
           },
           {
             "type": "text",
-            "value": "，用户进入对应路由时再按需下载分包。"
+            "value": "，用户进入对应路由时再按需下载。"
           }
         ],
         [
           {
-            "type": "strong",
-            "value": "主包："
+            "type": "text",
+            "value": "1）主包：默认包含 tabBar 页面与公共资源。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）分包：按需加载的子包，进入对应路由时下载。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）独立分包：可不依赖主包独立启动，适用于活动页等独立入口；但独立分包内不能引用主包的 JS 与组件，也拿不到 "
+          },
+          {
+            "type": "code",
+            "value": "app.globalData"
           },
           {
             "type": "text",
-            "value": "默认包含 tabBar 页面与公共资源。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "分包："
-          },
-          {
-            "type": "text",
-            "value": "按需加载的子包，进入对应路由时下载。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "独立分包："
-          },
-          {
-            "type": "text",
-            "value": "可不依赖主包独立启动，适用于活动页等独立入口场景。"
+            "value": " 等全局状态，必须完全自包含。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "配置写在 "
+            "value": "4）配置写在 "
           },
           {
             "type": "code",
@@ -804,7 +1071,7 @@
           },
           {
             "type": "text",
-            "value": "；公共组件与静态资源须合理规划归属，避免主包超出 2MB 等平台限制（以当前规则为准）。"
+            "value": "；公共组件与静态资源要合理规划归属，避免主包超出 2MB 等平台限制（以当前规则为准）。"
           }
         ]
       ]
@@ -821,7 +1088,7 @@
           },
           {
             "type": "text",
-            "value": "从启动、渲染、网络请求与监控四个维度系统作答，每点给出可落地的工程措施。"
+            "value": "优化围绕启动速度、渲染效率、网络请求与监控四个维度展开。"
           }
         ],
         [

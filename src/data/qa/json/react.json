@@ -24,27 +24,29 @@
         [
           {
             "type": "text",
-            "value": "若在 "
+            "value": "1）仅在组件或自定义 hook 的顶层调用 hook，不要放进 "
           },
           {
             "type": "code",
-            "value": "if (x) useEffect(...)"
+            "value": "if"
           },
           {
             "type": "text",
-            "value": " 中条件跳过某次 hook，下次渲染顺序错位，状态会灌入错误的 hook，引发异常行为。"
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "for"
+          },
+          {
+            "type": "text",
+            "value": " 或嵌套函数。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）仅在组件或自定义 hook 顶层调用 hook，不宜放在 if/for/嵌套函数中。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）条件逻辑应放入 "
+            "value": "2）条件逻辑应放进 "
           },
           {
             "type": "code",
@@ -60,7 +62,7 @@
           },
           {
             "type": "text",
-            "value": "，而非包裹 hook 调用本身。"
+            "value": "，而不是包裹 hook 调用本身。"
           }
         ],
         [
@@ -76,7 +78,7 @@
         [
           {
             "type": "code",
-            "value": "// 错\nif (flag) useEffect(() => {}, [])\n// 对：钩子顶层无条件，条件移进 effect 内\nuseEffect(() => {\n  if (!flag) return\n  // ...\n}, [flag])"
+            "value": "// 错\nif (flag) useEffect(() => {}, [])\n\n// 对：钩子顶层无条件，条件移进 effect 内\nuseEffect(() => {\n  if (!flag) return\n  // ...\n}, [flag])"
           }
         ]
       ]
@@ -380,33 +382,15 @@
         [
           {
             "type": "text",
-            "value": "先用 React DevTools Profiler 找真正慢的子树再包；到处 useCallback 反而增加依赖心智负担。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "何时用 / 常见误区："
-          },
-          {
-            "type": "text",
-            "value": "依赖真会变才包 "
+            "value": "何时用：先用 React DevTools Profiler 找真正慢的子树再包；依赖真会变才包 "
           },
           {
             "type": "code",
-            "value": "useMemo/useCallback"
+            "value": "useMemo"
           },
           {
             "type": "text",
-            "value": "；依赖遗漏或每次新建对象则无效。子组件未 "
-          },
-          {
-            "type": "code",
-            "value": "memo"
-          },
-          {
-            "type": "text",
-            "value": " 时，父级 "
+            "value": " / "
           },
           {
             "type": "code",
@@ -414,7 +398,53 @@
           },
           {
             "type": "text",
-            "value": " 收益有限。"
+            "value": "，依赖遗漏或每次新建对象都无效；子组件未 "
+          },
+          {
+            "type": "code",
+            "value": "memo"
+          },
+          {
+            "type": "text",
+            "value": " 时父级 "
+          },
+          {
+            "type": "code",
+            "value": "useCallback"
+          },
+          {
+            "type": "text",
+            "value": " 收益有限。到处包反而增加依赖心智负担。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "React Compiler 的影响：React 19 起官方编译器可在构建期自动插入等价于 "
+          },
+          {
+            "type": "code",
+            "value": "useMemo"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "useCallback"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "memo"
+          },
+          {
+            "type": "text",
+            "value": " 的缓存。项目若已启用编译器，为性能而手写的这些包装多数可以交给编译器，但依赖数组的正确性、引用稳定的语义要求依然存在。"
           }
         ]
       ]
@@ -501,6 +531,12 @@
           {
             "type": "text",
             "value": " 存最新值。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "清理时机：依赖变化时，React 会先执行上一次的清理函数，再运行新的 effect；组件卸载时执行最后一次清理。所以清理函数必须可重复执行，不要假设它只跑一次。"
           }
         ],
         [
@@ -684,6 +720,36 @@
             "type": "text",
             "value": " 稳定对象引用；读侧用 use-context-selector 或 Zustand/Jotai 做细粒度订阅。"
           }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "React 19 起可直接用 "
+          },
+          {
+            "type": "code",
+            "value": "use(Context)"
+          },
+          {
+            "type": "text",
+            "value": " 读取，且允许写在条件分支里（这是 "
+          },
+          {
+            "type": "code",
+            "value": "use"
+          },
+          {
+            "type": "text",
+            "value": " 与普通 Hook 的不同之处）；老项目仍用 "
+          },
+          {
+            "type": "code",
+            "value": "useContext"
+          },
+          {
+            "type": "text",
+            "value": "，注意它必须在组件顶层调用。"
+          }
         ]
       ]
     },
@@ -694,6 +760,20 @@
       "questionNote": "简单标量用 useState；下一状态依赖 action 类型和多字段时用 useReducer。",
       "answer": [
         [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "简单标量用 useState；下一状态依赖「动作类型 + 多字段」时用 useReducer。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）"
+          },
           {
             "type": "code",
             "value": "useState"
@@ -712,6 +792,10 @@
           }
         ],
         [
+          {
+            "type": "text",
+            "value": "2）"
+          },
           {
             "type": "code",
             "value": "useReducer"
@@ -732,7 +816,7 @@
         [
           {
             "type": "text",
-            "value": "复杂表单、多步向导、状态机式 UI 可减轻 effect 中大量 "
+            "value": "3）复杂表单、多步向导、状态机式 UI 用它可减少 effect 里的大量 "
           },
           {
             "type": "code",
@@ -746,7 +830,7 @@
         [
           {
             "type": "text",
-            "value": "规模更大时可选用 Zustand/Redux；不宜为用而用 reducer。"
+            "value": "4）规模更大时选 Zustand / Redux；不宜为用而用 reducer。"
           }
         ]
       ]
@@ -1076,15 +1160,7 @@
           },
           {
             "type": "text",
-            "value": "React 16 起将更新拆成小工作单元（Fiber 节点），协调过程可"
-          },
-          {
-            "type": "strong",
-            "value": "暂停、恢复、丢弃"
-          },
-          {
-            "type": "text",
-            "value": "，把长任务切片到多帧，避免阻塞主线程。"
+            "value": "React 16 起把更新拆成小工作单元（Fiber 节点），协调过程可暂停、恢复、丢弃，把长任务切片到多帧，避免阻塞主线程。"
           }
         ],
         [
@@ -1107,12 +1183,6 @@
           {
             "type": "text",
             "value": " 延迟展示派生值等。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "口述时说明「可中断 + 优先级调度」即可，无需展开 Fiber 链表细节。"
           }
         ]
       ]

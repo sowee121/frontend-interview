@@ -3,13 +3,13 @@
   "title": "工程化",
   "documentTitle": "工程化",
   "description": "模块化与 Vite/Webpack、Tree-shaking、Monorepo 与 CI，以及 husky、微前端与转译工具。",
-  "lead": "构建选型与协作门禁为主；Monorepo/微前端按有无经历深挖。",
+  "lead": "构建选型与协作门禁为主；Monorepo 与微前端侧重选型与边界。",
   "items": [
     {
       "id": "q-module",
       "navLabel": "模块化",
       "question": "CommonJS 与 ES Module 有何区别？",
-      "questionNote": "CommonJS 运行时 require；ES 模块（ESM）静态结构利于摇树；互操作了解基本原理即可。",
+      "questionNote": "CommonJS 运行时 require；ES 模块（ESM）静态结构利于摇树；互操作了解基本原理即可。注意 Node 侧 type/.mjs 边界。",
       "answer": [
         [
           {
@@ -22,25 +22,25 @@
           },
           {
             "type": "code",
-            "value": "require/module.exports"
+            "value": "require / module.exports"
           },
           {
             "type": "text",
-            "value": " 运行时解析；ESM 用 "
+            "value": "，运行时加载、导出是值的拷贝；ESM 用 "
           },
           {
             "type": "code",
-            "value": "import/export"
+            "value": "import / export"
           },
           {
             "type": "text",
-            "value": " 编译期静态分析，导入为 live binding，更利于摇树优化。"
+            "value": "，编译期静态分析，导入是实时绑定（live binding），更利于摇树。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1）导出语义："
           },
           {
             "type": "code",
@@ -56,27 +56,13 @@
           },
           {
             "type": "text",
-            "value": " 混用易导致导出异常，面试可结合实例说明。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "ES6 Module 语法（ESM）："
-          },
-          {
-            "type": "code",
-            "value": "import/export"
-          },
-          {
-            "type": "text",
-            "value": " 在编译阶段静态分析；导入导出为动态绑定（live binding）。"
+            "value": " 混用易导致导出异常；CJS 导出后模块内再改变量，外部拿到的是旧值。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "利于摇树优化（Tree-shaking）；支持顶层 "
+            "value": "2）ESM：编译阶段确定依赖图，支持顶层 "
           },
           {
             "type": "code",
@@ -84,13 +70,7 @@
           },
           {
             "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "浏览器可用 "
+            "value": "；浏览器用 "
           },
           {
             "type": "code",
@@ -98,27 +78,37 @@
           },
           {
             "type": "text",
-            "value": " 按 ESM 规范加载。"
+            "value": " 加载。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "互操作：打包器常将 CJS 预构建为 ESM；循环依赖宜通过拆分模块规避，无需熟记完整规范。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "ESM 静态结构更利于 tree-shaking；Node 里 "
+            "value": "3）Node 边界："
           },
           {
             "type": "code",
-            "value": "\"type\":\"module\""
+            "value": "package.json"
           },
           {
             "type": "text",
-            "value": " / "
+            "value": " 的 "
+          },
+          {
+            "type": "code",
+            "value": "\"type\": \"module\""
+          },
+          {
+            "type": "text",
+            "value": " 决定 "
+          },
+          {
+            "type": "code",
+            "value": ".js"
+          },
+          {
+            "type": "text",
+            "value": " 按哪种模块解析，"
           },
           {
             "type": "code",
@@ -126,7 +116,15 @@
           },
           {
             "type": "text",
-            "value": " 与 CJS "
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": ".cjs"
+          },
+          {
+            "type": "text",
+            "value": " 可显式指定；老项目常见的 "
           },
           {
             "type": "code",
@@ -134,7 +132,21 @@
           },
           {
             "type": "text",
-            "value": " 混用要认清边界（详见 Node 章模块题）。"
+            "value": " 是运行时同步加载，新项目优先 ESM。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）互操作：打包器会把 CJS 预构建成 ESM；在 ESM 中引用 CJS 可用 "
+          },
+          {
+            "type": "code",
+            "value": "createRequire"
+          },
+          {
+            "type": "text",
+            "value": " 桥接；循环依赖宜靠拆分模块规避。"
           }
         ]
       ]
@@ -166,19 +178,19 @@
         [
           {
             "type": "text",
-            "value": "1）依赖里的 CJS 包用 esbuild 预构建一次，后续走缓存。"
+            "value": "1）依赖预构建会把用到的 node_modules 依赖（不只是 CJS 包）用 esbuild 打成 ESM 并缓存，目的是转格式、合并请求数。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）Webpack 入口增多时开发构建更慢；但复杂 loader、微前端与 Legacy 生态更成熟。"
+            "value": "2）Webpack 入口增多时开发构建更慢；但复杂 loader、微前端与遗留（Legacy）生态更成熟。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）生产环境 Vite 用 Rollup 产出摇树后的 bundle，速度取决于项目体积与配置，不宜一概而论。"
+            "value": "3）生产环境 Vite 用 Rollup 产出摇树后的 bundle，速度取决于项目体积与配置，不宜一概而论（Vite 正在迁移到 Rust 版 Rolldown，默认构建引擎以当前版本为准）。"
           }
         ]
       ]
@@ -249,16 +261,6 @@
           {
             "type": "text",
             "value": " 或按路径引入。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "具名导入利于裁剪。"
           }
         ],
         [
@@ -413,7 +415,7 @@
       "id": "q-pnpm",
       "navLabel": "pnpm 特点",
       "question": "pnpm 相比 npm/yarn 经典版有哪些差异？",
-      "questionNote": "内容寻址 store + 非扁平 node_modules；幽灵依赖是常考点。",
+      "questionNote": "内容寻址 store + 非扁平 node_modules；需理解幽灵依赖成因。",
       "answer": [
         [
           {
@@ -651,7 +653,7 @@
       "id": "q-micro",
       "navLabel": "微前端",
       "question": "请简述微前端的概念、实现方式与常见挑战。",
-      "questionNote": "子应用独立发布 + 基座统一壳；要能列 iframe/qiankun/模块联邦取舍与痛点。",
+      "questionNote": "子应用独立发布 + 基座统一壳；要能列 iframe/qiankun/无界（wujie）/模块联邦的取舍，并说清 qiankun 与无界在隔离、改造、通信、调试上的差异。",
       "answer": [
         [
           {
@@ -674,7 +676,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1）方案谱系："
           },
           {
             "type": "code",
@@ -690,19 +692,47 @@
           },
           {
             "type": "text",
-            "value": " JS 沙箱 + 样式隔离。"
+            "value": " 在同一文档内渲染，靠 JS 沙箱 + 样式隔离；Webpack 模块联邦（Module Federation）共享依赖、运行时远程加载。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）Webpack 模块联邦（Module Federation）共享依赖、运行时远程加载。"
+            "value": "2）qiankun：JS 用 Proxy 沙箱拦截 window，样式用 scoped 或 shadow DOM。生态成熟、文档多，但沙箱可被定时器与全局事件逃逸；子应用必须导出 "
+          },
+          {
+            "type": "code",
+            "value": "bootstrap / mount / unmount"
+          },
+          {
+            "type": "text",
+            "value": " 生命周期。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）痛点：样式泄漏、全局变量污染、路由 history 冲突、公共依赖版本；也要能说何时 monorepo 单体更合适。"
+            "value": "3）无界（wujie）：WebComponent 套 iframe 做原生隔离——JS 在 iframe 内运行、天然独立 window，DOM 再投影到 shadow DOM。隔离彻底、子应用几乎零改造，代价是多一层调试链路，弹窗挂载与路由同步都要额外适配。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）通信：qiankun 用 props 传参与 "
+          },
+          {
+            "type": "code",
+            "value": "initGlobalState"
+          },
+          {
+            "type": "text",
+            "value": " 做全局状态，无界用 bus 事件总线。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5）选型与挑战：共同痛点是样式泄漏、全局变量污染与公共依赖版本；隔离诉求强选无界，要细粒度共享依赖选 qiankun 加模块联邦，团队小、耦合紧密时 monorepo 单体更省事。"
           }
         ]
       ]
@@ -779,6 +809,66 @@
           {
             "type": "text",
             "value": "；生产摇树在 bundler，不是 Babel 单独完成。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-release-gray",
+      "navLabel": "灰度与回滚",
+      "question": "前端静态资源要支持灰度发版和快速回滚，工程上怎么做？",
+      "questionNote": "对应职责：多环境流水线部署、灰度发版与生产回滚全链路。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "入口页短缓存、带 hash 的静态资源长缓存；每次发布产出独立版本目录，切换入口版本就能实现灰度与回滚。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）"
+          },
+          {
+            "type": "strong",
+            "value": "缓存"
+          },
+          {
+            "type": "text",
+            "value": "入口 HTML 不缓存或短缓存；JS/CSS 带内容 hash 后设长缓存，内容没变就不重复下载。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）"
+          },
+          {
+            "type": "strong",
+            "value": "发布"
+          },
+          {
+            "type": "text",
+            "value": "构建产物按版本号归档；网关或配置中心按用户、比例把入口指向新版本，天然支持灰度。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）"
+          },
+          {
+            "type": "strong",
+            "value": "回滚"
+          },
+          {
+            "type": "text",
+            "value": "出问题把入口切回上一版本，秒级生效；避免覆盖式发布造成新页面配到旧资源。"
           }
         ]
       ]

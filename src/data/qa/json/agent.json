@@ -112,11 +112,11 @@
           },
           {
             "type": "code",
-            "value": ".cursorrules"
+            "value": ".cursor/rules/*.mdc"
           },
           {
             "type": "text",
-            "value": "（Cursor）、"
+            "value": "（Cursor；旧的单文件 .cursorrules 已废弃）、"
           },
           {
             "type": "code",
@@ -140,7 +140,7 @@
     {
       "id": "q-ai-rules",
       "navLabel": "三份规则文件",
-      "question": "Cursor 的 .cursorrules、Claude Code 的 CLAUDE.md、Codex 的 AGENTS.md 各承担什么职责？如何撰写才有效？",
+      "question": "Cursor、Claude Code、Codex 各自的规则文件承担什么职责？如何撰写才有效？",
       "questionNote": "三工具各一份项目级 Agent 说明；内容宜对齐、可执行，勿与 README 重复堆砌无效信息。",
       "answer": [
         [
@@ -168,19 +168,19 @@
           },
           {
             "type": "code",
+            "value": ".cursor/rules/*.mdc"
+          },
+          {
+            "type": "text",
+            "value": "（旧的单文件 "
+          },
+          {
+            "type": "code",
             "value": ".cursorrules"
           },
           {
             "type": "text",
-            "value": "（或新版 "
-          },
-          {
-            "type": "code",
-            "value": ".cursor/rules"
-          },
-          {
-            "type": "text",
-            "value": " 目录）约定命名、目录、必跑命令。"
+            "value": " 已废弃）约定命名、目录、必跑命令。"
           }
         ],
         [
@@ -212,7 +212,7 @@
           },
           {
             "type": "strong",
-            "value": "Codex"
+            "value": "跨工具通用"
           },
           {
             "type": "text",
@@ -224,7 +224,11 @@
           },
           {
             "type": "text",
-            "value": " 给桌面 Agent/Skills 用；三文件核心约定建议同步维护，避免 Cursor 让用 pnpm、Codex 文档写 npm。"
+            "value": " 是开放约定，Cursor 与 Codex 都会读，可做为各工具共用的那份说明；"
+          },
+          {
+            "type": "text",
+            "value": "三份文件的核心约定建议同步维护，避免一份让用 pnpm、另一份写 npm。"
           }
         ],
         [
@@ -256,7 +260,15 @@
           },
           {
             "type": "text",
-            "value": "须确认是否真正解决问题、scope 是否悄然扩大，以及错误与空状态处理。"
+            "value": "须确认是否真正解决问题、改动范围（"
+          },
+          {
+            "type": "code",
+            "value": "scope"
+          },
+          {
+            "type": "text",
+            "value": "）是否悄然扩大，以及错误态与空状态是否处理。"
           }
         ],
         [
@@ -268,7 +280,7 @@
         [
           {
             "type": "text",
-            "value": "2）安全：XSS、密钥、权限只藏 UI。"
+            "value": "2）安全：XSS、密钥硬编码，以及「权限只在 UI 隐藏、后端并未校验」。"
           }
         ],
         [
@@ -396,7 +408,29 @@
           },
           {
             "type": "text",
-            "value": "模型上下文协议（MCP）让 AI 通过标准接口调外部工具，不只靠训练记忆。"
+            "value": "模型上下文协议（MCP）让 AI 通过标准接口调用外部能力，不只靠训练记忆。它对外提供 tools、resources、prompts 三类能力。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "传输分两层：本地进程走 "
+          },
+          {
+            "type": "code",
+            "value": "stdio"
+          },
+          {
+            "type": "text",
+            "value": "，远程走 "
+          },
+          {
+            "type": "code",
+            "value": "Streamable HTTP"
+          },
+          {
+            "type": "text",
+            "value": "（2025-03 起取代早先的 HTTP+服务端发送事件（SSE）传输），远程接入用 OAuth 2.1 授权。"
           }
         ],
         [
@@ -414,7 +448,7 @@
         [
           {
             "type": "text",
-            "value": "3）和 RAG 互补：MCP 偏执行动作，RAG 偏检索知识；和 Agent 间协作见同章「A2A 与 MCP」。"
+            "value": "3）和检索增强生成（RAG）互补：MCP 偏执行动作，RAG 偏检索知识。"
           }
         ]
       ]
@@ -486,7 +520,7 @@
         [
           {
             "type": "text",
-            "value": "3）面试可对标：规格驱动（Spec）→ Agent 实现 → 测试/人审，比纯「口头指令直接改代码」可控。"
+            "value": "3）工程上对标规格驱动（Spec）→ Agent 实现 → 测试/人审，比纯「口头指令直接改代码」可控。"
           }
         ]
       ]
@@ -516,13 +550,13 @@
         [
           {
             "type": "text",
-            "value": "2）Codex worktree、本地沙箱限制网络与系统目录，降低「执行失控」成本。"
+            "value": "2）隔离靠工具提供的能力：支持 worktree 的本地 Agent 会为任务开独立工作区；云端 Agent 则跑在容器或沙箱里，限制网络与系统目录访问。两者都能降低「执行失控」的成本。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）面试口径：自主度 ↑ 必须配可回滚（git）与证据（日志/测试），不是关掉所有确认。"
+            "value": "3）自主度越高，越必须配可回滚（git）与证据（日志/测试），而不是关掉所有确认。"
           }
         ]
       ]

@@ -137,6 +137,10 @@
             "value": "要点："
           },
           {
+            "type": "text",
+            "value": "Electron 12 起 "
+          },
+          {
             "type": "code",
             "value": "contextIsolation: true"
           },
@@ -150,15 +154,7 @@
           },
           {
             "type": "text",
-            "value": "，页面中不应直接 "
-          },
-          {
-            "type": "code",
-            "value": "require"
-          },
-          {
-            "type": "text",
-            "value": " Node 模块。"
+            "value": " 已是默认值，安全基线是「别把它们关掉」，并只经 contextBridge 暴露白名单 API。"
           }
         ],
         [
@@ -172,7 +168,15 @@
           },
           {
             "type": "text",
-            "value": " 为 true 时，页面脚本等同握有本机能力；一旦出现跨站脚本攻击（XSS），风险极大。"
+            "value": " 为 true 时，页面脚本等同握有本机能力；一旦出现跨站脚本攻击（XSS），风险极大。新版还默认开启 "
+          },
+          {
+            "type": "code",
+            "value": "sandbox"
+          },
+          {
+            "type": "text",
+            "value": "，让渲染进程跑在系统沙箱里，除非有特殊需求否则不要关闭。"
           }
         ],
         [
@@ -186,7 +190,7 @@
           },
           {
             "type": "text",
-            "value": " 将 preload 与页面上下文隔离，只能通过 "
+            "value": " 将 preload 与页面上下文隔离，只能用 "
           },
           {
             "type": "code",
@@ -194,13 +198,67 @@
           },
           {
             "type": "text",
-            "value": " 显式挂载少量 API。"
+            "value": " 显式挂载少量 API；不要将整个 "
+          },
+          {
+            "type": "code",
+            "value": "ipcRenderer"
+          },
+          {
+            "type": "text",
+            "value": " 挂到 "
+          },
+          {
+            "type": "code",
+            "value": "window"
+          },
+          {
+            "type": "text",
+            "value": "。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）进一步收紧：少开远程 URL、校验更新包、能力白名单；勿将整个 ipcRenderer 挂到 window。"
+            "value": "3）进一步收紧：不加载远程 URL；拦截 "
+          },
+          {
+            "type": "code",
+            "value": "will-navigate"
+          },
+          {
+            "type": "text",
+            "value": " 与 "
+          },
+          {
+            "type": "code",
+            "value": "setWindowOpenHandler"
+          },
+          {
+            "type": "text",
+            "value": "，禁止应用内跳到外部站点或随意新开窗口；给页面加 "
+          },
+          {
+            "type": "code",
+            "value": "Content-Security-Policy"
+          },
+          {
+            "type": "text",
+            "value": "，少用 "
+          },
+          {
+            "type": "code",
+            "value": "unsafe-inline"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）其余：校验更新包签名、能力白名单、敏感操作一律在主进程再校验参数。"
           }
         ],
         [
@@ -210,13 +268,13 @@
           },
           {
             "type": "text",
-            "value": "创建窗口时的安全三项。"
+            "value": "创建窗口时的安全配置（多为默认值，重点是不要改）。"
           }
         ],
         [
           {
             "type": "code",
-            "value": "new BrowserWindow({\n  webPreferences: {\n    preload: path.join(__dirname, 'preload.js'),\n    contextIsolation: true,\n    nodeIntegration: false,\n  },\n})"
+            "value": "new BrowserWindow({\n  webPreferences: {\n    preload: path.join(__dirname, 'preload.js'),\n    contextIsolation: true,   // 默认即 true\n    nodeIntegration: false,   // 默认即 false\n    sandbox: true,            // 默认即 true\n  },\n})"
           }
         ]
       ]
@@ -225,7 +283,7 @@
       "id": "q-electron-ipc",
       "navLabel": "IPC 通信与示例",
       "question": "主进程与渲染进程如何通信？请用代码说明 invoke/handle 这条安全链路。",
-      "questionNote": "推荐：页面 → preload（contextBridge）→ ipcRenderer.invoke → ipcMain.handle。",
+      "questionNote": "推荐：页面 → preload（contextBridge）→ ipcRenderer.invoke → ipcMain.handle；注意进程间通信（IPC）只支持结构化克隆。",
       "answer": [
         [
           {
@@ -234,33 +292,49 @@
           },
           {
             "type": "text",
-            "value": "请求-响应用 invoke/handle；主进程主动推送用 webContents.send + preload 转发的 on。"
+            "value": "请求-响应用 "
+          },
+          {
+            "type": "code",
+            "value": "invoke/handle"
+          },
+          {
+            "type": "text",
+            "value": "；主进程主动推送用 "
+          },
+          {
+            "type": "code",
+            "value": "webContents.send"
+          },
+          {
+            "type": "text",
+            "value": " + preload 转发的 "
+          },
+          {
+            "type": "code",
+            "value": "on"
+          },
+          {
+            "type": "text",
+            "value": "。"
           }
         ],
         [
           {
-            "type": "strong",
-            "value": "主进程注册："
-          },
-          {
             "type": "text",
-            "value": "通道名固定，参数校验后再执行敏感操作。"
+            "value": "主进程注册：通道名固定，参数校验后再执行敏感操作。"
           }
         ],
         [
           {
             "type": "code",
-            "value": "// main.js\nconst { ipcMain, dialog } = require('electron');\n\n// 渲染过来：选文件（示例）\nipcMain.handle('dialog:openFile', async () => {\n  const { canceled, filePaths } = await dialog.showOpenDialog({\n    properties: ['openFile'],\n  });\n  if (canceled) return null;\n  return filePaths[0]; // 只回路径，勿暴露整个 fs\n});\n\n// 渲染过来：设备相关意图（示意，真外设放主进程驱动）\nipcMain.handle('device:scan', async (_event, payload) => {\n  if (!payload || typeof payload.type !== 'string') {\n    throw new Error('invalid payload');\n  }\n  // return await scanHardware(payload.type);\n  return { ok: true, type: payload.type };\n});"
+            "value": "// main.js\nconst { ipcMain, dialog } = require('electron')\n\nipcMain.handle('dialog:openFile', async () => {\n  const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openFile'] })\n  if (canceled) return null\n  return filePaths[0] // 只回路径，勿暴露整个 fs\n})\n\nipcMain.handle('device:scan', async (_event, payload) => {\n  if (!payload || typeof payload.type !== 'string') throw new Error('invalid payload')\n  return { ok: true, type: payload.type }\n})"
           }
         ],
         [
           {
-            "type": "strong",
-            "value": "preload 白名单："
-          },
-          {
             "type": "text",
-            "value": "只暴露业务方法，不暴露裸 "
+            "value": "preload 白名单：只暴露业务方法，不暴露裸 "
           },
           {
             "type": "code",
@@ -268,23 +342,19 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "；订阅要返回取消函数，避免泄漏。"
           }
         ],
         [
           {
             "type": "code",
-            "value": "// preload.js\nconst { contextBridge, ipcRenderer } = require('electron');\n\ncontextBridge.exposeInMainWorld('api', {\n  openFile: () => ipcRenderer.invoke('dialog:openFile'),\n  scan: (type) => ipcRenderer.invoke('device:scan', { type }),\n  // 主 → 渲染：订阅时返回取消函数，避免泄漏\n  onUpdateProgress: (cb) => {\n    const listener = (_e, data) => cb(data);\n    ipcRenderer.on('update:progress', listener);\n    return () => ipcRenderer.removeListener('update:progress', listener);\n  },\n});"
+            "value": "// preload.js\nconst { contextBridge, ipcRenderer } = require('electron')\n\ncontextBridge.exposeInMainWorld('api', {\n  openFile: () => ipcRenderer.invoke('dialog:openFile'),\n  scan: (type) => ipcRenderer.invoke('device:scan', { type }),\n  onUpdateProgress: (cb) => {\n    const listener = (_e, data) => cb(data)\n    ipcRenderer.on('update:progress', listener)\n    return () => ipcRenderer.removeListener('update:progress', listener)\n  },\n})"
           }
         ],
         [
           {
-            "type": "strong",
-            "value": "渲染进程调用："
-          },
-          {
             "type": "text",
-            "value": "业务代码只访问 "
+            "value": "渲染进程只访问 "
           },
           {
             "type": "code",
@@ -292,19 +362,7 @@
           },
           {
             "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "// renderer（Vue/React 里）\nasync function onPickFile() {\n  const filePath = await window.api.openFile();\n  if (filePath) console.log('picked', filePath);\n}\n\nasync function onScan() {\n  const res = await window.api.scan('barcode');\n  console.log(res);\n}\n\n// 主进程推送进度\nconst off = window.api.onUpdateProgress((p) => {\n  console.log('progress', p.percent);\n});\n// 组件卸载时：off();"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "主进程推送示意："
+            "value": "；主进程推送用 "
           },
           {
             "type": "code",
@@ -312,7 +370,29 @@
           },
           {
             "type": "text",
-            "value": "。单向通知用 send/on；要返回值优先 invoke/handle。"
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "边界：IPC 只能传"
+          },
+          {
+            "type": "strong",
+            "value": "结构化克隆（structured clone）"
+          },
+          {
+            "type": "text",
+            "value": "支持的数据，函数、类实例、"
+          },
+          {
+            "type": "code",
+            "value": "Symbol"
+          },
+          {
+            "type": "text",
+            "value": "、DOM 节点都传不过去，复杂对象要先序列化。"
           }
         ]
       ]
@@ -466,11 +546,11 @@
           },
           {
             "type": "strong",
-            "value": "校验"
+            "value": "签名与校验"
           },
           {
             "type": "text",
-            "value": "：库会按发布元数据校验文件完整性；正式环境应配代码签名，防篡改。"
+            "value": "：Windows 需代码签名；macOS 必须同时完成代码签名与公证（notarization），否则新版本装上后会被系统直接拦下。两类系统都应配置签名，兼顾防篡改与可安装。"
           }
         ],
         [
@@ -510,7 +590,7 @@
           },
           {
             "type": "text",
-            "value": "上一用户离开后，下一用户不应看到其账号与草稿。"
+            "value": "上一用户离开后，下一用户不应看到其账号与草稿，核心是「超时回首页 + 彻底清态」。"
           }
         ],
         [

@@ -55,7 +55,7 @@
         [
           {
             "type": "code",
-            "value": "// 串行：for...of + await，每次循环会等上一个 await 结束再往下走\nconst runSeries = async (tasks) => {\n  const out = [];\n  for (const t of tasks) {\n    out.push(await t()); // await 会暂停当前 async 函数，让出线程\n  }\n  return out;\n};"
+            "value": "// 串行：for...of + await，每次循环会等上一个 await 结束再往下走\nconst runSeries = async (tasks) => {\n  const out = [];\n  for (const t of tasks) {\n    out.push(await t()); // await 会暂停当前 async 函数，后续代码作为微任务继续\n  }\n  return out;\n};"
           }
         ]
       ],
@@ -69,11 +69,11 @@
         [
           {
             "type": "code",
-            "value": "// 重试：try/catch 配合递归；attempts 表示剩余重试次数\nconst retry = async (fn, attempts = 3, delayMs = 0) => {\n  try {\n    return await fn();\n  } catch (e) {\n    if (attempts <= 1) throw e; // 次数耗尽，原样抛出\n    if (delayMs) await new Promise((r) => setTimeout(r, delayMs)); // 两次尝试间等待\n    return retry(fn, attempts - 1, delayMs); // 递归：次数减一后重试\n  }\n};"
+            "value": "// 重试：try/catch 配合递归；attempts 为总尝试次数（含首次）\nconst retry = async (fn, attempts = 3, delayMs = 0) => {\n  try {\n    return await fn();\n  } catch (e) {\n    if (attempts <= 1) throw e; // 次数耗尽，原样抛出\n    if (delayMs) await new Promise((r) => setTimeout(r, delayMs)); // 两次尝试间等待\n    return retry(fn, attempts - 1, delayMs); // 递归：次数减一后重试\n  }\n};"
           }
         ]
       ],
-      "questionNote": "考察要点：fn 为无参异步函数，失败时最多再重试 attempts-1 次；可选 delayMs 设置重试间隔；末次仍失败则原样抛出。适用于网络抖动场景下的幂等请求重试。"
+      "questionNote": "考察要点：fn 为无参异步函数，attempts 为总尝试次数（含首次），失败时最多再重试 attempts-1 次；可选 delayMs 设置重试间隔；末次仍失败则原样抛出。适用于网络抖动场景下的幂等请求重试。"
     },
     {
       "id": "q-impl-my-promise-lite",
@@ -83,11 +83,11 @@
         [
           {
             "type": "code",
-            "value": "// 教学示意：仅演示 fulfilled 路径；完整实现须符合 Promise/A+（含 thenable 展开）\nclass MyPromise {\n  constructor(executor) {\n    this._state = 'pending'; // 等待中\n    this._value = undefined;\n    this._cb = [];\n    const resolve = (v) => {\n      if (this._state !== 'pending') return;\n      this._state = 'fulfilled'; // resolve → fulfilled\n      this._value = v;\n      queueMicrotask(() => this._cb.splice(0).forEach((fn) => fn()));\n    };\n    try {\n      executor(resolve, () => {}); // reject → rejected，此处占位\n    } catch (e) { /* 同步 throw → rejected */ }\n  }\n  then(onFulfilled) {\n    return new MyPromise((resolve) => {\n      const run = () =>\n        resolve(onFulfilled != null ? onFulfilled(this._value) : this._value);\n      this._state === 'fulfilled'\n        ? queueMicrotask(run)\n        : this._cb.push(run); // 仍为 pending 则入队\n    });\n  }\n}"
+            "value": "// 教学示意：演示 pending → fulfilled / rejected 两条路径与微任务调度\nclass MyPromise {\n  constructor(executor) {\n    this._state = 'pending' // 等待中\n    this._value = undefined\n    this._cb = []\n    const settle = (state, v) => {\n      if (this._state !== 'pending') return\n      this._state = state\n      this._value = v\n      queueMicrotask(() => this._cb.splice(0).forEach((fn) => fn()))\n    }\n    const resolve = (v) => settle('fulfilled', v)\n    const reject = (e) => settle('rejected', e)\n    try {\n      executor(resolve, reject)\n    } catch (e) {\n      reject(e) // executor 同步 throw → rejected\n    }\n  }\n  then(onFulfilled, onRejected) {\n    return new MyPromise((resolve, reject) => {\n      const run = () => {\n        const fn = this._state === 'fulfilled' ? onFulfilled : onRejected\n        // 回调缺失则把状态与值透传给下一环\n        if (fn == null) {\n          ;(this._state === 'fulfilled' ? resolve : reject)(this._value)\n          return\n        }\n        try {\n          // 简化：未做 thenable 展开，完整实现见 Promise/A+\n          resolve(fn(this._value))\n        } catch (e) {\n          reject(e)\n        }\n      }\n      this._state === 'pending' ? this._cb.push(run) : queueMicrotask(run)\n    })\n  }\n  catch(onRejected) {\n    return this.then(null, onRejected)\n  }\n}"
           }
         ]
       ],
-      "questionNote": "考察要点：constructor 接收 executor(resolve, reject)，then 须返回新 Promise。本版仅演示 pending→fulfilled 与微任务队列；完整实现还须覆盖 rejected、catch 及 then 返回 Promise 的展开规则。"
+      "questionNote": "考察要点：constructor 接收 executor(resolve, reject)，then 须返回新 Promise。本版演示 fulfilled 与 rejected 两条路径、then 返回新 Promise 与 catch 兜底；仍未实现 thenable 展开，完整版须符合 Promise/A+。"
     },
     {
       "id": "q-impl-get-type",
@@ -111,11 +111,11 @@
         [
           {
             "type": "code",
-            "value": "// myCall：将待调用函数临时挂载至 ctx，使 this 指向 ctx\nFunction.prototype.myCall = function (ctx, ...args) {\n  const o = ctx == null ? globalThis : Object(ctx); // null/undefined 绑定全局对象；原始值自动装箱\n  const k = Symbol('__fn__'); // 唯一键，降低与对象自有属性冲突概率\n  o[k] = this; // 当前函数变为 o 的方法\n  try {\n    return o[k](...args); // 以方法形式调用，this === o\n  } finally {\n    delete o[k]; // 无论成败均清理临时属性\n  }\n};\n\n// myApply：第二参为数组或类数组，展开后复用 myCall\nFunction.prototype.myApply = function (ctx, arr) {\n  return this.myCall(ctx, ...Array.from(arr ?? []));\n};"
+            "value": "// myCall：将待调用函数临时挂载至 ctx，使 this 指向 ctx\nFunction.prototype.myCall = function (ctx, ...args) {\n  const o = ctx == null ? globalThis : Object(ctx); // 非严格模式：null/undefined 绑定全局对象、原始值装箱；严格模式原样保留 thisArg\n  const k = Symbol('__fn__'); // 唯一键，降低与对象自有属性冲突概率\n  o[k] = this; // 当前函数变为 o 的方法\n  try {\n    return o[k](...args); // 以方法形式调用，this === o\n  } finally {\n    delete o[k]; // 无论成败均清理临时属性\n  }\n};\n\n// myApply：第二参为数组或类数组，展开后复用 myCall\nFunction.prototype.myApply = function (ctx, arr) {\n  return this.myCall(ctx, ...Array.from(arr ?? []));\n};"
           }
         ]
       ],
-      "questionNote": "考察要点：在指定 this 上调用原函数并传入参数；this 为 null/undefined 时绑定全局对象；通过临时属性修改 this，调用后须删除以免污染；apply 将类数组第二参展开后复用 call。"
+      "questionNote": "考察要点：在指定 this 上调用原函数并传入参数；this 为 null/undefined 时，非严格模式绑定全局对象、严格模式保留原值；通过临时属性修改 this，调用后须删除以免污染；apply 将类数组第二参展开后复用 call。"
     },
     {
       "id": "q-impl-bind",
@@ -125,11 +125,11 @@
         [
           {
             "type": "code",
-            "value": "// myBind：闭包保存原函数 fn 与预设参数 a1\nFunction.prototype.myBind = function (ctx, ...a1) {\n  const fn = this;\n  const bound = function (...a2) {\n    // new bound() 时 this 为实例，走构造路径；普通调用使用绑定的 ctx\n    return fn.apply(this instanceof bound ? this : ctx, [...a1, ...a2]);\n  };\n  // 使 bound 实例能 instanceof 原构造函数：共享原型链\n  bound.prototype = Object.create(fn.prototype);\n  return bound;\n};"
+            "value": "// myBind：闭包保存原函数 fn 与预设参数 a1\nFunction.prototype.myBind = function (ctx, ...a1) {\n  const fn = this;\n  const bound = function (...a2) {\n    // new bound() 时 this 为实例，走构造路径；普通调用使用绑定的 ctx\n    return fn.apply(this instanceof bound ? this : ctx, [...a1, ...a2]);\n  };\n  // 使 bound 实例能 instanceof 原构造函数：共享原型链（fn 无 prototype 时跳过）\n  if (fn.prototype) bound.prototype = Object.create(fn.prototype);\n  return bound;\n};"
           }
         ]
       ],
-      "questionNote": "考察要点：返回新函数以固定 this 与部分参数；若以 new 调用返回函数，应忽略绑定的 this，且实例须能继承原函数原型链。"
+      "questionNote": "考察要点：返回新函数以固定 this 与部分参数；若以 new 调用返回函数，应忽略绑定的 this，且实例须能继承原函数原型链。边界：箭头函数无 prototype，建原型链前须判空；原生 bound 函数自身也没有 prototype 属性。"
     },
     {
       "id": "q-impl-new",
@@ -167,7 +167,7 @@
         [
           {
             "type": "code",
-            "value": "// 深比较：先 ===（同一引用或严格相等；NaN 需题面单独约定）\nconst isEqual = (a, b) => {\n  if (a === b) return true; // 同一引用或严格相等（NaN 仍不相等）\n  if (a == null || b == null || typeof a !== 'object' || typeof b !== 'object') return false;\n  const ak = Object.keys(a),\n    bk = Object.keys(b);\n  if (ak.length !== bk.length) return false; // 可枚举键数量要一致\n  return ak.every((k) => k in b && isEqual(a[k], b[k])); // 键名和子值都递归比较\n};"
+            "value": "// 深比较：先 ===（同一引用或严格相等；NaN 需题面单独约定）\nconst isEqual = (a, b) => {\n  if (a === b) return true; // 同一引用或严格相等（NaN 仍不相等）\n  if (a == null || b == null || typeof a !== 'object' || typeof b !== 'object') return false;\n  const ak = Object.keys(a),\n    bk = Object.keys(b);\n  if (ak.length !== bk.length) return false; // 可枚举键数量要一致\n  return ak.every((k) => Object.hasOwn(b, k) && isEqual(a[k], b[k])); // 键名与子值都递归比较；用 hasOwn 只看自有属性\n};"
           }
         ]
       ],

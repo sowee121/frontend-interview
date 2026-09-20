@@ -4,13 +4,13 @@ import type { ChapterSlug } from '@/data/constants'
 import agent from './json/agent.json'
 import ai from './json/ai.json'
 import browser from './json/browser.json'
+import backend from './json/backend.json'
 import coding from './json/coding.json'
 import engineering from './json/engineering.json'
 import htmlCss from './json/html-css.json'
 import es6 from './json/es6.json'
 import javascript from './json/javascript.json'
 import network from './json/network.json'
-import node from './json/node.json'
 import performance from './json/performance.json'
 import project from './json/project.json'
 import react from './json/react.json'
@@ -29,7 +29,7 @@ export const chapterPayloads: Record<ChapterSlug, ChapterPayload> = {
   'html-css': htmlCss as ChapterPayload,
   browser: browser as ChapterPayload,
   network: network as ChapterPayload,
-  node: node as ChapterPayload,
+  backend: backend as ChapterPayload,
   performance: performance as ChapterPayload,
   engineering: engineering as ChapterPayload,
   react: react as ChapterPayload,
