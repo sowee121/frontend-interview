@@ -3,13 +3,13 @@
   "title": "工程化",
   "documentTitle": "工程化",
   "description": "模块化与 Vite/Webpack、Tree-shaking、Monorepo 与 CI，以及 husky、微前端与转译工具。",
-  "lead": "构建选型与协作门禁为主；Monorepo 与微前端侧重选型与边界。",
+  "lead": "工程化两条线：构建与模块化的选型，以及 CI 门禁与 Monorepo、微前端的协作边界。",
   "items": [
     {
       "id": "q-module",
       "navLabel": "模块化",
       "question": "CommonJS 与 ES Module 有何区别？",
-      "questionNote": "CommonJS 运行时 require；ES 模块（ESM）静态结构利于摇树；互操作了解基本原理即可。注意 Node 侧 type/.mjs 边界。",
+      "questionNote": "CommonJS 运行时 require；ES 模块（ESM）静态结构利于摇树；注意 Node 侧 type/.mjs 边界。",
       "answer": [
         [
           {
@@ -415,7 +415,7 @@
       "id": "q-pnpm",
       "navLabel": "pnpm 特点",
       "question": "pnpm 相比 npm/yarn 经典版有哪些差异？",
-      "questionNote": "内容寻址 store + 非扁平 node_modules；需理解幽灵依赖成因。",
+      "questionNote": "内容寻址 store + 非扁平 node_modules；代价是幽灵依赖。",
       "answer": [
         [
           {
@@ -477,7 +477,7 @@
       "id": "q-monorepo",
       "navLabel": "Monorepo",
       "question": "什么是 Monorepo？前端采用它能获得哪些收益？",
-      "questionNote": "单仓多包与任务编排；须说明 CI 增量策略与发布流成本。",
+      "questionNote": "单仓多包与任务编排；配套需要 CI 增量策略与统一的发布流。",
       "answer": [
         [
           {
@@ -611,7 +611,7 @@
       "id": "q-ci-quality",
       "navLabel": "CI 与质量门禁",
       "question": "PR 合并前通常需要执行哪些质量检查？",
-      "questionNote": "lint、类型检查、测试、体积预算；本地 hook 与 CI 互补关系要说清。",
+      "questionNote": "lint、类型检查、测试、体积预算；本地 hook 与 CI 是互补关系。",
       "answer": [
         [
           {
@@ -653,7 +653,7 @@
       "id": "q-micro",
       "navLabel": "微前端",
       "question": "请简述微前端的概念、实现方式与常见挑战。",
-      "questionNote": "子应用独立发布 + 基座统一壳；要能列 iframe/qiankun/无界（wujie）/模块联邦的取舍，并说清 qiankun 与无界在隔离、改造、通信、调试上的差异。",
+      "questionNote": "子应用独立发布 + 基座统一壳；主流方案 iframe/qiankun/无界（wujie）/模块联邦各有取舍，差异集中在隔离、改造、通信与调试。",
       "answer": [
         [
           {
@@ -817,7 +817,6 @@
       "id": "q-release-gray",
       "navLabel": "灰度与回滚",
       "question": "前端静态资源要支持灰度发版和快速回滚，工程上怎么做？",
-      "questionNote": "对应职责：多环境流水线部署、灰度发版与生产回滚全链路。",
       "answer": [
         [
           {

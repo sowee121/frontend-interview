@@ -3,7 +3,7 @@
   "title": "Electron",
   "documentTitle": "Electron",
   "description": "进程模型与安全隔离、IPC 通信，以及打包发版、自动更新与自助终端超时回首页。",
-  "lead": "无桌面经历可略读；有项目则抓住进程隔离、IPC 与发版更新三条线。",
+  "lead": "进程隔离与安全边界、IPC 通信、打包发版与远程更新，以及自助终端类的超时与运维。",
   "items": [
     {
       "id": "q-electron-why",
@@ -268,7 +268,7 @@
           },
           {
             "type": "text",
-            "value": "创建窗口时的安全配置（多为默认值，重点是不要改）。"
+            "value": "创建窗口时的安全配置（多为默认值，不宜改动）。"
           }
         ],
         [
@@ -401,7 +401,7 @@
       "id": "q-electron-pack",
       "navLabel": "打包实现",
       "question": "Electron 打包应如何实现？electron-builder 一般如何配置？",
-      "questionNote": "讲清产物：安装包 + 更新用的最新版元数据；asar 与平台 target。",
+      "questionNote": "产物是安装包 + 更新用的最新版元数据；asar 与平台 target。",
       "answer": [
         [
           {
@@ -483,7 +483,7 @@
       "id": "q-electron-update",
       "navLabel": "自动更新实现",
       "question": "Electron 自动更新应如何实现？检查、下载、安装如何串联？",
-      "questionNote": "常用 electron-updater；讲清主进程流程与失败回退，不背死版本号。",
+      "questionNote": "常用 electron-updater；主进程负责更新流程与失败回退。",
       "answer": [
         [
           {

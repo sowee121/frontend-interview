@@ -3,7 +3,7 @@
   "title": "TypeScript",
   "documentTitle": "TypeScript",
   "description": "基础类型、type/interface、any/unknown、泛型与工具类型，以及 strict 与声明文件。",
-  "lead": "说清类型怎么选、怎么收窄，以及工程里 strict 与 .d.ts 怎么用。",
+  "lead": "类型系统的取舍：怎么选类型、怎么收窄，以及工程里 strict 与声明文件怎么落地。",
   "items": [
     {
       "id": "q-why",
@@ -79,7 +79,6 @@
       "id": "q-type-interface",
       "navLabel": "type 和 interface",
       "question": "type 与 interface 应如何选择？",
-      "questionNote": "掌握一条选型规则即可，无需深究二者性能差异。",
       "answer": [
         [
           {
@@ -413,7 +412,7 @@
       "id": "q-generics",
       "navLabel": "泛型",
       "question": "请说明泛型的作用，并举例说明典型用法。",
-      "questionNote": "理解「类型占位符，使输入与输出类型保持一致」即可。",
+      "questionNote": "泛型是类型占位符，使输入与输出类型保持一致。",
       "answer": [
         [
           {
@@ -625,7 +624,7 @@
       "id": "q-strict-config",
       "navLabel": "tsconfig strict",
       "question": "开启 tsconfig strict 后，常见编译报错有哪些？",
-      "questionNote": "strict 是一组子开关的合集，先熟悉最常见的两项即可。",
+      "questionNote": "strict 是一组子开关的合集。",
       "answer": [
         [
           {

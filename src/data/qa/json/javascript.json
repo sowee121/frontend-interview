@@ -3,7 +3,7 @@
   "title": "JavaScript",
   "documentTitle": "JavaScript",
   "description": "类型与作用域、原型与 this、事件循环，以及防抖节流、事件委托与常见内存泄漏。",
-  "lead": "先吃透运行时机制，ES6+ 语法细节转到「ES6」章对照。",
+  "lead": "运行时三条主线：作用域与类型、原型与 this、事件循环；再落到防抖节流、事件委托与内存泄漏。",
   "items": [
     {
       "id": "q-null-undefined",

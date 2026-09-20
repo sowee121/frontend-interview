@@ -3,13 +3,13 @@
   "title": "Vue",
   "documentTitle": "Vue",
   "description": "先 Vue 2 生命周期与响应式边界，再 Diff/key 与 Vue 3 组合式、Pinia 等差异。",
-  "lead": "题目顺序为 Vue 2 → 对比总览 → Vue 3；Diff/key 已合并，结合项目经历展开。Vue 2 已于 2023-12-31 结束官方支持，存量项目维护时注意。",
+  "lead": "先 Vue 2 的生命周期与响应式边界，再对比总览，最后是 Vue 3 组合式 API 与 Pinia 生态。",
   "items": [
     {
       "id": "q-ref-reactive",
       "navLabel": "ref 和 reactive",
       "question": "Vue 3 中 ref 与 reactive 应如何选择？",
-      "questionNote": "无需背诵 API 清单，说清「基本类型 vs 对象」与「解构丢失响应式」两个要点即可。",
+      "questionNote": "「基本类型 vs 对象」与「解构丢失响应式」两个要点。",
       "answer": [
         [
           {
@@ -287,7 +287,7 @@
       "id": "q-reactivity-track",
       "navLabel": "依赖收集",
       "question": "请说明 Vue 3 响应式中「依赖收集 / 触发更新」的机制。",
-      "questionNote": "抓住 get 收集、set 触发、调度队列批量刷新三条主线，无需背诵源码。",
+      "questionNote": "三条主线：get 收集、set 触发、调度队列批量刷新。",
       "answer": [
         [
           {
@@ -333,7 +333,7 @@
       "id": "q-vue2-lifecycle",
       "navLabel": "生命周期",
       "question": "Vue 2 生命周期有哪些？各阶段适合执行哪些操作？",
-      "questionNote": "重点说明「何时有 DOM、何时适合请求/绑事件/清理」，比背诵钩子名单更重要。",
+      "questionNote": "主线是「何时有 DOM、何时适合请求/绑事件/清理」，而非钩子名单顺次。",
       "answer": [
         [
           {
@@ -805,7 +805,7 @@
       "id": "q-vue2-vuex",
       "navLabel": "Vuex",
       "question": "Vuex 核心概念有哪些？与组件内 data 如何分工？",
-      "questionNote": "Vue 2 已于 2023-12-31 结束官方支持（EOL），仅在维护存量项目时还会用到 Vuex；新项目优先 Pinia。",
+      "questionNote": "Vuex 仅用于维护存量 Vue 2 项目；新项目优先 Pinia。",
       "answer": [
         [
           {
@@ -1225,7 +1225,7 @@
       "id": "q-vue3-vs-vue2-overview",
       "navLabel": "相对 Vue2 变化",
       "question": "Vue 3 相对 Vue 2 的关键变化有哪些？（只做总览，不展开重复题）",
-      "questionNote": "总览题说 3～4 个维度即可：响应式、编译优化、API 与生态。",
+      "questionNote": "维度：响应式、编译优化、API 与生态。",
       "answer": [
         [
           {

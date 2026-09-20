@@ -3,13 +3,13 @@
   "title": "HTML/CSS",
   "documentTitle": "HTML/CSS",
   "description": "语义化、盒模型、Flex/Grid、BFC 与层叠，以及移动端 1px、viewport 与 rem/em 适配。",
-  "lead": "初面高频样式题：先结论后写法，偏实用布局与移动端注意点。",
+  "lead": "布局与视觉的基础层：语义化与盒模型、Flex/Grid 与 BFC、层叠与定位，移动端看 viewport、1px 与 rem/em。",
   "items": [
     {
       "id": "q-semantic",
       "navLabel": "语义化",
       "question": "语义化标签有哪些作用？",
-      "questionNote": "覆盖无障碍、搜索引擎优化（SEO）与可维护性三方面，无需罗列全部 HTML5 标签。",
+      "questionNote": "覆盖无障碍、搜索引擎优化（SEO）与可维护性三方面。",
       "answer": [
         [
           {
@@ -235,7 +235,7 @@
       "id": "q-grid",
       "navLabel": "Grid 入门",
       "question": "CSS Grid 与 Flex 如何分工？各自适用哪些场景？",
-      "questionNote": "Flex 负责一维主轴分配，Grid 负责二维行列；说清适用场景比背诵属性表更重要。",
+      "questionNote": "Flex 负责一维主轴分配，Grid 负责二维行列；一维布局用 Flex，二维用 Grid。",
       "answer": [
         [
           {
@@ -413,7 +413,7 @@
       "id": "q-bfc",
       "navLabel": "BFC",
       "question": "什么是块级格式化上下文（BFC）？有哪些典型作用？",
-      "questionNote": "块级格式化上下文（BFC）是一块相对隔离的布局区域；能说清触发条件与典型效果即可。",
+      "questionNote": "块级格式化上下文（BFC）是一块相对隔离的布局区域；其触发条件决定了能解决哪些布局问题。",
       "answer": [
         [
           {

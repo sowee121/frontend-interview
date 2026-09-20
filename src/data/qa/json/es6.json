@@ -3,7 +3,7 @@
   "title": "ES6",
   "documentTitle": "ES6",
   "description": "let/const、解构与箭头函数、Promise/async、Class 与 Proxy，以及 Set/Map 与可选链。",
-  "lead": "按语法点过一遍即可；Promise 与异步、Class/Proxy 是追问重点。",
+  "lead": "语法层面的增量：let/const 与解构、箭头函数、Promise/async、Class/Proxy，以及 Set/Map 与可选链。",
   "leadLink": {
     "href": "https://es6.ruanyifeng.com",
     "label": "阮一峰《ES6 入门》"
@@ -1483,7 +1483,7 @@
           },
           {
             "type": "text",
-            "value": " 连接原型；class 是同一机制的语法糖，掌握核心即可。"
+            "value": " 连接原型；class 是同一机制的语法糖。"
           }
         ],
         [

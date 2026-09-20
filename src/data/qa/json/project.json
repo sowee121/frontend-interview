@@ -2,14 +2,13 @@
   "slug": "project",
   "title": "项目题",
   "documentTitle": "项目题",
-  "description": "对照简历职责的项目深挖题：小程序/Hybrid、ERP、SaaS 多租户配置化、自助终端、客服会话与在线考试。",
-  "lead": "用通用系统词表述；按机制、取舍与边界口述，不背诵项目说明文案。",
+  "description": "项目经历深挖题：小程序/Hybrid、ERP、SaaS 多租户配置化、自助终端、客服会话与在线考试。",
+  "lead": "从项目机制讲到取舍与边界：小程序/Hybrid、多租户配置化、订单与打印、实时会话与自助终端。",
   "items": [
     {
       "id": "q-proj-hybrid-login",
       "navLabel": "内嵌 H5 登录态",
       "question": "小程序或 App 内嵌 H5 时，登录态怎么打通更稳妥？",
-      "questionNote": "对应职责：共享 H5 登录鉴权。",
       "answer": [
         [
           {
@@ -67,7 +66,6 @@
       "id": "q-proj-webview-sdk",
       "navLabel": "WebView 通信",
       "question": "内嵌 H5 与小程序/原生如何互相调用对方的方法？",
-      "questionNote": "对应职责：共享 H5 与原生通信。",
       "answer": [
         [
           {
@@ -187,7 +185,6 @@
       "id": "q-proj-mp-ci",
       "navLabel": "多环境与发布",
       "question": "小程序多环境切换和自动上传，你会怎么做？",
-      "questionNote": "对应职责：多环境命令脚本与 miniprogram-ci 自动上传。",
       "answer": [
         [
           {
@@ -247,7 +244,6 @@
       "id": "q-proj-anti-replay",
       "navLabel": "接口防重放",
       "question": "中后台接口防重放，前端该做哪些、不该做哪些？",
-      "questionNote": "对应职责：签名防重放；技术点含 CryptoJS，并与 JSEncrypt 做加密选型对比。",
       "answer": [
         [
           {
@@ -345,7 +341,6 @@
       "id": "q-proj-rbac",
       "navLabel": "动态权限",
       "question": "后台里动态路由、菜单和按钮权限分别管什么？",
-      "questionNote": "对应职责：路由守卫、动态菜单与按钮鉴权。",
       "answer": [
         [
           {
@@ -381,7 +376,6 @@
       "id": "q-proj-virtual-table",
       "navLabel": "虚拟表格",
       "question": "ERP 大表格卡顿时，虚拟滚动要注意什么？",
-      "questionNote": "对应职责：vxe-table 虚拟滚动优化订单列表。",
       "answer": [
         [
           {
@@ -441,7 +435,6 @@
       "id": "q-proj-print",
       "navLabel": "面单打印",
       "question": "后台面单打印有多种方案时，怎么选、怎么收口？",
-      "questionNote": "对应职责：电商云打印 / CLodop / Web 打印与批量面单。",
       "answer": [
         [
           {
@@ -505,7 +498,6 @@
       "id": "q-proj-ws-push",
       "navLabel": "WebSocket 推送",
       "question": "中后台用 WebSocket 推业务状态，断线后怎么处理？",
-      "questionNote": "对应职责：WebSocket 推送订单状态与系统通知。",
       "answer": [
         [
           {
@@ -541,7 +533,6 @@
       "id": "q-proj-order-state",
       "navLabel": "订单状态机",
       "question": "寄递类订单状态多、还多端展示，状态机怎么设计才不散？",
-      "questionNote": "对应职责：设计订单状态机、状态判断工具与 UI 映射，消除多端渲染差异。",
       "answer": [
         [
           {
@@ -607,7 +598,6 @@
       "id": "q-proj-order-sync",
       "navLabel": "多平台订单同步",
       "question": "ERP 要对接多个电商平台，订单同步与打单发货怎么做到不漏不重？",
-      "questionNote": "对应职责：多平台订单自动同步与打单发货。",
       "answer": [
         [
           {
@@ -667,7 +657,6 @@
       "id": "q-proj-tenant-theme",
       "navLabel": "多租户配置化",
       "question": "SaaS 多租户系统里，租户隔离、品牌主题与差异化配置应如何收口？",
-      "questionNote": "对应职责：多租户隔离、动态主题与配置化差异下发。",
       "answer": [
         [
           {
@@ -715,7 +704,6 @@
       "id": "q-proj-i18n",
       "navLabel": "国际化",
       "question": "中后台做中英文切换，前端要盯哪些细节？",
-      "questionNote": "对应职责：国际化与中英文界面适配。",
       "answer": [
         [
           {
@@ -789,7 +777,6 @@
       "id": "q-proj-echarts",
       "navLabel": "图表封装",
       "question": "中后台封装 ECharts 时，生命周期和性能怎么管？",
-      "questionNote": "对应职责：ECharts 视口懒加载、自适应与实例销毁。",
       "answer": [
         [
           {
@@ -849,7 +836,6 @@
       "id": "q-proj-sse-assistant",
       "navLabel": "流式 AI 助手",
       "question": "中后台接入流式问答助手，前端还要额外处理哪些业务问题？",
-      "questionNote": "对应职责：SSE 流式 AI 问答与 Markdown 渲染。",
       "answer": [
         [
           {
@@ -891,7 +877,6 @@
       "id": "q-proj-token-refresh",
       "navLabel": "Token 刷新",
       "question": "多个接口同时 401 时，怎么刷新 Token 才不乱？",
-      "questionNote": "对应 SaaS 请求层常见深挖：多接口并发 401 场景。",
       "answer": [
         [
           {
@@ -933,7 +918,6 @@
       "id": "q-proj-electron-delivery",
       "navLabel": "Electron 搭建与更新",
       "question": "自助终端 Electron 如何做进程划分、IPC 与远程更新？",
-      "questionNote": "对应职责：框架搭建、主渲染 IPC、打包发版与远程更新。",
       "answer": [
         [
           {
@@ -969,7 +953,6 @@
       "id": "q-proj-kiosk-device",
       "navLabel": "外设认证",
       "question": "自助终端读卡、扫码做身份认证，前端链路怎么走？",
-      "questionNote": "对应职责：对接读卡器、扫码器完成身份认证。",
       "answer": [
         [
           {
@@ -1005,7 +988,6 @@
       "id": "q-proj-standard-custom",
       "navLabel": "标品与定制",
       "question": "ToB 既有标品又有定制时，前端怎么控差异？",
-      "questionNote": "对应职责：标准产品迭代与商业化定制交付。",
       "answer": [
         [
           {
@@ -1041,7 +1023,6 @@
       "id": "q-proj-micro-auth",
       "navLabel": "微前端统一登录",
       "question": "微前端基座聚合多套中后台子系统时，统一登录和权限怎么收口？",
-      "questionNote": "对应职责：统一登录认证与权限中心，基于 qiankun 聚合多套中后台子系统。",
       "answer": [
         [
           {
@@ -1101,7 +1082,6 @@
       "id": "q-proj-cs-realtime",
       "navLabel": "客服实时会话",
       "question": "客服工作台里，实时消息收发和会话列表一般怎么做？",
-      "questionNote": "对应早期智能客服经历：PC/H5/小程序上的会话与推送。",
       "answer": [
         [
           {
@@ -1151,7 +1131,6 @@
       "id": "q-proj-exam-state",
       "navLabel": "在线考试答卷",
       "question": "在线考试场景下，倒计时与答卷状态如何做得可靠？",
-      "questionNote": "对应培训考试平台经历：倒计时、刷新/断网不丢答是高频点。",
       "answer": [
         [
           {

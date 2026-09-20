@@ -3,7 +3,7 @@
   "title": "Agent",
   "documentTitle": "Agent",
   "description": "补全与 Agent 差异、提问与上下文、审代码与防幻觉，以及规则文件、MCP 与人在回路。",
-  "lead": "「Agent」泛指编码助手；侧重会用、会审、会控风险，流式产品实现见「AI」章。",
+  "lead": "「Agent」泛指编码助手：多步闭环与人在回路、规则文件与上下文供给、审代码与防幻觉，以及权限与密钥边界。",
   "items": [
     {
       "id": "q-ai-complete-vs-agent",
@@ -295,7 +295,7 @@
       "id": "q-ai-hallucination",
       "navLabel": "幻觉与验证",
       "question": "使用编码 Agent 写代码时，如何发现并避免编造不存在的 API 或依赖？",
-      "questionNote": "查文档、类型、build；勿轻信口述。",
+      "questionNote": "查文档、类型、build；勿轻信口头说法。",
       "answer": [
         [
           {
@@ -456,7 +456,7 @@
     {
       "id": "q-agent-loop",
       "navLabel": "Agent 闭环",
-      "question": "面试常问：什么是 Agent？与「聊天补全 / 单次 Tool Call」有何区别？",
+      "question": "什么是 Agent？与「聊天补全 / 单次 Tool Call」有何区别？",
       "questionNote": "观察-思考-行动循环；能多步直到达标或失败。",
       "answer": [
         [

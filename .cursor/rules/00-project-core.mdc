@@ -12,6 +12,7 @@ alwaysApply: true
 - **章节排序依据**：18 章按「语言与样式（`html-css`、`javascript`、`es6`、`typescript`）→ 框架与端（`vue`、`react`、`miniprogram`）→ 运行原理（`browser`、`network`）→ 服务端与工程（`backend`、`engineering`、`performance`）→ 主题与场景（`scenario`、`ai`、`agent`、`electron`）→ 简历与手写（`project`、`coding`）」六组由底向上排列，`backend` 位于 `network` 之后。页面不展示分组标题，分组仅作为排序依据。
 - **项目题隐私**：`project` 章及全库题干/答案禁止写真实公司名、产品名、机构名、内部包名；场景只用「小程序 / ERP / SaaS / 自助终端 / 中后台 / 后台管理系统」等通用系统词。`scripts/lint-qa-copy.mjs` 会拦截隐私词与过时术语（`.cursorrules`、`wx.getUserProfile` 等）。
 - **跨章重复题**：同一考点只在该主题所属专业章写一处详述；其他章删题或瘦身为本视角（项目章讲取舍与边界），**正文不写「见 X 章『某题』」类指回文案**，每题答案保持自足（`scripts/lint-qa-copy.mjs` 的 `cross-chapter-ref` 会拦截）。
+- **只写知识，不写备考**：`answer`、`questionNote` 与章节 `lead`/`description` 只写知识本身，不写「考察要点：/对应职责：/对应经历：」元信息、简历映射、时效提示（如 EOL 日期）与备考口吻（`面试`/`追问`/`背诵`/`要说清`/`须说明`/`…即可`）。`questionNote` 只放知识点，正文不写答题指引；章节 `lead` 只写该章知识主线（`editorial-hint` 会拦截）。
 - **改动优先级**：优先改 `src/data/qa/json/` 维护内容；仅在渲染能力缺失、交互缺陷或样式结构性问题时改组件与样式。
 - **答案渲染约束**：题库答案禁止写 HTML 字符串；使用 `RichSegment[][]`（见 `src/types/qa-content.ts`）；章节可选 `leadLink` 外链。
 - **工程习惯**：保持改动小而可验证；避免无关重构、避免一次性大范围格式化。

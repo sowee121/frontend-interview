@@ -3,7 +3,7 @@
   "title": "React",
   "documentTitle": "React",
   "description": "Hooks 规则、渲染批处理与 memo、Effect 与 Context，以及 Redux/Zustand、Fiber 与懒加载。",
-  "lead": "抓住 Hooks 规则、更新批处理与性能优化三条线，再补状态库与架构口述。",
+  "lead": "Hooks 规则与依赖数组、更新批处理与 memo 优化，再到状态库选型、Fiber 与懒加载。",
   "items": [
     {
       "id": "q-hooks",
@@ -893,7 +893,7 @@
       "id": "q-zustand",
       "navLabel": "Zustand",
       "question": "Zustand 与 Redux 应如何选择？",
-      "questionNote": "Jotai/Recoil 偏原子化，面试提到 Zustand 即可。",
+      "questionNote": "Jotai/Recoil 偏原子化。",
       "answer": [
         [
           {
@@ -928,7 +928,7 @@
         [
           {
             "type": "text",
-            "value": "3）低频配置用 Context；组件内简单状态用 useState/useReducer。与 Context 题、useReducer 题配合记忆。"
+            "value": "3）低频配置用 Context；组件内简单状态用 useState/useReducer。"
           }
         ]
       ]
@@ -992,7 +992,7 @@
           },
           {
             "type": "text",
-            "value": " 可作为普通 prop 传入，forwardRef 使用场景在收窄，面试仍常问旧写法。"
+            "value": " 可作为普通 prop 传入，forwardRef 使用场景在收窄。"
           }
         ]
       ]
@@ -1151,7 +1151,7 @@
       "id": "q-fiber",
       "navLabel": "Fiber 架构",
       "question": "如何理解 React Fiber 架构？",
-      "questionNote": "React 16 起的可中断协调架构；说清「可暂停、有优先级」即可，无需画链表。",
+      "questionNote": "React 16 起的可中断协调架构；核心是「可暂停、有优先级」。",
       "answer": [
         [
           {

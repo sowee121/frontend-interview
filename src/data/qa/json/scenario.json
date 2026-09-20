@@ -3,7 +3,7 @@
   "title": "场景题",
   "documentTitle": "场景题",
   "description": "搜索防抖、鉴权与上传、WebSocket/SSE，以及错误上报、埋点采样与 SSR/SSG 选型。",
-  "lead": "先方案再边界再验证；鉴权、上传、实时通道与渲染模式是常见深挖点。",
+  "lead": "场景题落在方案与边界：鉴权、文件上传、实时通道、渲染模式与埋点降本。",
   "items": [
     {
       "id": "q-debounce-search",
@@ -187,7 +187,7 @@
       "id": "q-error",
       "navLabel": "错误上报",
       "question": "线上错误应如何采集与上报？",
-      "questionNote": "全局 error/unhandledrejection + 框架钩子；上报体字段与 map 安全要提到。",
+      "questionNote": "全局 error/unhandledrejection + 框架钩子；上报体需带字段与安全的 source map。",
       "answer": [
         [
           {
@@ -363,7 +363,7 @@
       "id": "q-auth",
       "navLabel": "登录态",
       "question": "前端应如何管理登录态？访问令牌应存放在哪里？",
-      "questionNote": "HttpOnly Cookie 与内存 access + refresh 对比；401 单飞刷新队列是关键细节。",
+      "questionNote": "HttpOnly Cookie 与内存 access + refresh 对比；401 单飞刷新队列用于并发场景。",
       "answer": [
         [
           {
@@ -549,7 +549,7 @@
       "id": "q-upload-big",
       "navLabel": "大文件上传",
       "question": "大文件上传的断点续传应如何实现？",
-      "questionNote": "分片、并发窗口与秒传校验；须说明进度展示与幂等重试。",
+      "questionNote": "分片、并发窗口与秒传校验；进度展示与幂等重试。",
       "answer": [
         [
           {
@@ -995,7 +995,6 @@
       "id": "q-saas-zero-to-one",
       "navLabel": "SaaS 从 0 到 1",
       "question": "从 0 到 1 搭一个中后台 SaaS，前端前期要定哪些事？",
-      "questionNote": "对应经历：主导 SaaS 平台从 0 到 1 搭建；侧重决策顺序与取舍。",
       "answer": [
         [
           {

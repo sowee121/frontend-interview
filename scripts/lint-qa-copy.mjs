@@ -70,6 +70,16 @@ const NARRATIVE_MAX = 520
 const CROSS_CHAPTER_REF =
   /(?<![常意遇可而])见\s*(?:本章|同章|场景题|编程题|「[^」]{1,12}」\s*章|[\u4e00-\u9fffA-Za-z0-9./\s]{0,12}?章)/
 
+/** 出题人/备考视角文字：不提供知识，只增加阅读噪音，正文与备注都不该出现 */
+const EDITORIAL_HINT =
+  /(考察要点：|对应职责：|对应经历：|面试|追问|答题|背诵|得分|加分点|要说清|须说明|需理解|要提到|要能列|不必背|少背|硬背|口述)/
+
+/** 章节引语只写知识主线，不写复习指引 */
+const LEAD_HINT = /(略读|口述|准备|深挖点|为主|转到|见「|即可|背诵|面试|追问)/
+
+/** 备注里的弱指令词：正文中的「X 即可」多为技术表述，只在 questionNote 里视为指引 */
+const NOTE_HINT = /(即可|无需|不必)/
+
 /** 隐私词：真实公司/机构/业务名一律用通用系统词替代 */
 const PRIVACY_WORDS = ['菜鸟', '医院', '诊所', '医疗寄递', '字节跳动']
 
@@ -112,6 +122,15 @@ function lintFile(filePath) {
     const t = data[field] ?? ''
     if (t.length > 80 && !/[\u4e00-\u9fff]/.test(t.slice(0, 20))) {
       issues.push({ file: base, id: '(chapter)', kind: 'lead/description', snippet: t.slice(0, 60) })
+    }
+    const leadHit = t.match(LEAD_HINT)
+    if (leadHit) {
+      issues.push({
+        file: base,
+        id: '(chapter)',
+        kind: 'editorial-hint',
+        snippet: `${field} 含复习指引「${leadHit[0]}」，应改为知识主线`,
+      })
     }
   }
 
@@ -185,6 +204,15 @@ function lintFile(filePath) {
             snippet: `正文含指回提示「…${ref[0]}…」，应删除并保持本题自足`,
           })
         }
+        const hint = seg.value.match(EDITORIAL_HINT)
+        if (hint) {
+          issues.push({
+            file: base,
+            id: item.id,
+            kind: 'editorial-hint',
+            snippet: `正文含备考口吻「${hint[0]}」，应改为知识陈述`,
+          })
+        }
       }
     }
     if (item.questionNote) {
@@ -195,6 +223,15 @@ function lintFile(filePath) {
           id: item.id,
           kind: 'cross-chapter-ref',
           snippet: `questionNote 含指回提示「…${ref[0]}…」，应删除`,
+        })
+      }
+      const hint = item.questionNote.match(EDITORIAL_HINT) ?? item.questionNote.match(NOTE_HINT)
+      if (hint) {
+        issues.push({
+          file: base,
+          id: item.id,
+          kind: 'editorial-hint',
+          snippet: `questionNote 含答题指引「${hint[0]}」，应改为知识陈述或删除`,
         })
       }
     }

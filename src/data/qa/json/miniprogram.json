@@ -3,7 +3,7 @@
   "title": "小程序",
   "documentTitle": "小程序",
   "description": "双线程架构、生命周期与路由、setData 与登录请求，以及分包、性能与跨端框架选型。",
-  "lead": "默认你会写 H5；重点在双线程、setData、登录域名与分包体积。",
+  "lead": "双线程架构与生命周期是基础，性能与工程落在 setData、登录域名与分包体积。",
   "items": [
     {
       "id": "q-mp-vs-h5",
@@ -1256,7 +1256,6 @@
       "id": "q-mp-taro-uni",
       "navLabel": "Taro / uni-app",
       "question": "Taro、uni-app 与原生小程序开发应如何选择？",
-      "questionNote": "说明跨端编译方案的能力边界与选型依据即可。",
       "answer": [
         [
           {

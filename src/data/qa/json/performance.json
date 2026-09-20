@@ -3,7 +3,7 @@
   "title": "性能",
   "documentTitle": "性能",
   "description": "优化维度与白屏首屏、拆包懒加载与长列表，以及主线程卡顿、图片优化与以 LCP / INP / CLS 为核心的性能监控。",
-  "lead": "用白屏/首屏/卡顿等业务说法组织答案，配合拆包、懒加载与监控验收。核心网页指标以 LCP、INP、CLS 三项为准。",
+  "lead": "以白屏/首屏/卡顿为入口：拆包与懒加载解决加载，主线程与长列表解决运行，验收看 LCP、INP、CLS。",
   "items": [
     {
       "id": "q-longtask",
@@ -409,7 +409,7 @@
       "id": "q-third-party",
       "navLabel": "第三方脚本",
       "question": "统计/广告脚本拖慢页面怎么办？",
-      "questionNote": "延后加载、异步属性、审计体积；Partytown 等按兼容性提及即可。",
+      "questionNote": "延后加载、异步属性、审计体积；Partytown 等受兼容性限制。",
       "answer": [
         [
           {
@@ -521,7 +521,7 @@
       "id": "q-observability",
       "navLabel": "埋点与可观测",
       "question": "埋点、性能监控和错误上报怎么分工？",
-      "questionNote": "三者都上报，但目的不同；面试能说清指标类型与谁消费。",
+      "questionNote": "三者都上报，但目的不同：指标类型与消费方各异。",
       "answer": [
         [
           {
@@ -680,7 +680,7 @@
           },
           {
             "type": "text",
-            "value": "按「加载变快、交互更顺、可量化验收」组织，避免只背零散技巧。"
+            "value": "常从加载、运行时、网络与验收四个维度展开。"
           }
         ],
         [
@@ -732,7 +732,7 @@
           },
           {
             "type": "strong",
-            "value": "验收：看 LCP、INP、CLS 三项与白屏/首屏时间、接口耗时；有监控或前后对比数据更有说服力。"
+            "value": "验收：看 LCP、INP、CLS 三项与白屏/首屏时间、接口耗时；有监控或前后对比数据更可靠。"
           }
         ]
       ]
@@ -801,7 +801,7 @@
       "id": "q-lazyload",
       "navLabel": "懒加载",
       "question": "图片懒加载与路由懒加载分别解决什么问题？如何实现？",
-      "questionNote": "加载优化高频；说明进入视口再请求、路由级拆包即可。",
+      "questionNote": "进入视口再请求、路由级拆包。",
       "answer": [
         [
           {

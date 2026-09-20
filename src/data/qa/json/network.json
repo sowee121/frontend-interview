@@ -3,7 +3,7 @@
   "title": "网络安全",
   "documentTitle": "网络安全",
   "description": "HTTP 缓存与版本差异、HTTPS 与跨域预检，以及 JWT、XSS/CSRF/CSP 与请求取消。",
-  "lead": "站在浏览器与业务请求一侧：缓存、跨域、鉴权存放与页面安全，少背纯计网。",
+  "lead": "从浏览器与业务请求一侧看：HTTP 缓存与版本差异、HTTPS 与跨域预检、鉴权存放与页面安全。",
   "items": [
     {
       "id": "q-dns",
@@ -65,7 +65,7 @@
       "id": "q-http-versions",
       "navLabel": "HTTP/1 和 2",
       "question": "HTTP/1.1 与 HTTP/2 的主要差异有哪些？",
-      "questionNote": "从前端资源加载角度理解即可：为何少做域名分片、雪碧图等历史优化。",
+      "questionNote": "从资源加载角度：为何少做域名分片、雪碧图等历史优化。",
       "answer": [
         [
           {
@@ -137,7 +137,7 @@
       "id": "q-https",
       "navLabel": "HTTPS",
       "question": "HTTPS 相比 HTTP 为何更安全？前端侧通常还要配合什么？",
-      "questionNote": "掌握加密与证书防中间人即可；握手细节不必背。前端侧关注 HSTS、混合内容与 Cookie Secure。",
+      "questionNote": "加密与证书防中间人；前端侧关注 HSTS、混合内容与 Cookie Secure。",
       "answer": [
         [
           {
