@@ -73,6 +73,8 @@ const CHAPTERS = {
       'q-safe-area',
       'q-mobile-viewport',
       'q-rem-em',
+      'q-css-preprocessor',
+      'q-tailwind',
     ],
     newItems: [
       {
@@ -221,9 +223,12 @@ const CHAPTERS = {
       'q-pnpm',
       'q-monorepo',
       'q-husky',
+      'q-git-collab',
       'q-ci-quality',
+      'q-frontend-test',
       'q-micro',
       'q-babel-swc',
+      'q-deploy-static',
       'q-release-gray',
     ],
     newItems: [

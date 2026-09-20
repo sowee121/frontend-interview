@@ -2,8 +2,8 @@
   "slug": "html-css",
   "title": "HTML/CSS",
   "documentTitle": "HTML/CSS",
-  "description": "语义化、盒模型、Flex/Grid、BFC 与层叠，以及移动端 1px、viewport 与 rem/em 适配。",
-  "lead": "布局与视觉的基础层：语义化与盒模型、Flex/Grid 与 BFC、层叠与定位，移动端看 viewport、1px 与 rem/em。",
+  "description": "语义化、盒模型、Flex/Grid、BFC 与层叠，移动端适配，以及预处理器与原子化 CSS 的取舍。",
+  "lead": "布局与视觉的基础层：语义化与盒模型、Flex/Grid 与 BFC、层叠与定位；移动端看 viewport、1px 与 rem/em，样式工程看 Sass/Less 与 Tailwind。",
   "items": [
     {
       "id": "q-semantic",
@@ -1001,6 +1001,102 @@
           {
             "type": "text",
             "value": " 兜底。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-css-preprocessor",
+      "navLabel": "Sass / Less",
+      "question": "Sass、Less 这类预处理器解决了什么问题？与 CSS 变量如何分工？",
+      "questionNote": "预处理器管编译期复用，CSS 变量管运行时主题。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "预处理器补的是编译期能力：嵌套、变量、mixin、函数与模块拆分；运行时换主题要靠原生自定义属性。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）复用：颜色、间距、断点收进变量文件，mixin 封装清除浮动、文本截断、媒体查询等重复写法，改一处全站生效。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）组织：按模块拆文件并用 @use 引入，命名空间避免冲突；@import 会重复产出且已不推荐。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）分工：预处理变量编译后就不存在，无法运行时切换；换主题、换品牌色要在根节点用 CSS 自定义属性覆盖。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）取舍：原生嵌套、自定义属性与 :is 等能力已较完善，简单项目可以少引一层编译；复杂主题体系仍靠预处理器组织。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5）调试：开启 source map 映射回源文件；产物侧注意别把整份变量与未用 mixin 打进样式。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-tailwind",
+      "navLabel": "Tailwind CSS",
+      "question": "Tailwind CSS 原子化的取舍是什么？与组件库、预处理器如何共存？",
+      "questionNote": "原子化把「命名成本」换成「模板长度」，收益是数据一致性与产物体积。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "原子类省去「给每个样式起类名」的成本，样式值统一来自配置；代价是模板变长、条件样式可读性下降。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1）一致性：间距、色板、字号、断点定义在配置里，团队只能从既有刻度取值，视觉差异自然收敛。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2）产物：按需扫描模板生成用到的类，未用样式不进产物；比全量引入组件库样式更小，但要保证模板在扫描范围内。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3）共存：组件库负责复杂交互与无障碍，原子类负责布局、间距与细节覆盖；两者都会改样式时先约定优先级，避免互相打补丁。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4）陷阱：按变量动态拼接类名扫描不到，需改成固定映射表，或把这类类名显式列入白名单。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5）取舍：条件复杂的样式回退到组件类或少量复用类，模板里保留可读结构；团队需要约定书写顺序与命名边界。"
           }
         ]
       ]
