@@ -115,7 +115,6 @@ const CHAPTERS = {
       'q-sop',
       'q-web-worker',
       'q-intersection-resize',
-
       'q-indexeddb',
     ],
     newItems: [
@@ -150,7 +149,6 @@ const CHAPTERS = {
       'q-preflight',
       'q-jwt-basics',
       'q-xss-csrf',
-
       'q-fetch-abort',
       'q-websocket-basics',
       'q-biz-login-code',
@@ -272,6 +270,11 @@ const CHAPTERS = {
       'q-mp-performance',
       'q-mp-share',
       'q-mp-taro-uni',
+      'q-mp-taro',
+      'q-mp-uniapp',
+      'q-mp-cloud-overview',
+      'q-mp-cloud-function',
+      'q-mp-cloud-db',
     ],
   },
   react: {

@@ -6,17 +6,17 @@ export const CHAPTER_ORDER = [
   'vue',
   'react',
   'miniprogram',
+  'electron',
   'browser',
   'network',
-  'backend',
-  'engineering',
   'performance',
+  'engineering',
   'scenario',
-  'ai',
-  'agent',
-  'electron',
   'project',
   'coding',
+  'backend',
+  'ai',
+  'agent',
 ] as const
 
 export type ChapterSlug = (typeof CHAPTER_ORDER)[number]
