@@ -824,7 +824,7 @@
     {
       "id": "q-safe-area",
       "navLabel": "安全区",
-      "question": "刘海屏与底部 Home Indicator 应如何适配？",
+      "question": "刘海屏与底部主屏幕指示器应如何适配？",
       "questionNote": "配合 env(safe-area-inset-*) 与 viewport-fit=cover 使用。",
       "answer": [
         [
@@ -857,12 +857,6 @@
           {
             "type": "text",
             "value": " 给固定底栏留白。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）与 1px 细线、100vh/dvh 同属移动端适配经典问题。"
           }
         ]
       ]

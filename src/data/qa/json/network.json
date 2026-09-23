@@ -1,8 +1,8 @@
 {
   "slug": "network",
-  "title": "网络安全",
-  "documentTitle": "网络安全",
-  "description": "HTTP 缓存与版本差异、HTTPS 与跨域预检，以及 JWT、XSS/CSRF/CSP 与请求取消。",
+  "title": "网络",
+  "documentTitle": "网络",
+  "description": "HTTP 缓存与版本差异、HTTPS 与跨域预检，以及 JWT、XSS/CSRF 与请求取消。",
   "lead": "从浏览器与业务请求一侧看：HTTP 缓存与版本差异、HTTPS 与跨域预检、鉴权存放与页面安全。",
   "items": [
     {
@@ -943,136 +943,6 @@
           {
             "type": "text",
             "value": " 头（不会自动携带）。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-csp",
-      "navLabel": "CSP",
-      "question": "Content-Security-Policy 的作用是什么？如何配置才不至于全站异常？",
-      "questionNote": "CSP 从加载源收紧 XSS 面；上线先用 Report-Only 收集违规再 enforce。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "响应头声明可加载的脚本、样式、图片、接口来源，收紧 XSS 攻击面；上线先用 Report-Only。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "响应头声明"
-          },
-          {
-            "type": "strong",
-            "value": "哪些来源的脚本、样式、图片、接口可加载/执行"
-          },
-          {
-            "type": "text",
-            "value": "，从根上收紧 XSS 面。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "默认 "
-          },
-          {
-            "type": "code",
-            "value": "default-src 'self'"
-          },
-          {
-            "type": "text",
-            "value": "；内联脚本需 "
-          },
-          {
-            "type": "code",
-            "value": "'nonce-xxx'"
-          },
-          {
-            "type": "text",
-            "value": " 或 "
-          },
-          {
-            "type": "code",
-            "value": "'sha256-...'"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "第三方统计域名要显式列入 "
-          },
-          {
-            "type": "code",
-            "value": "script-src"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "connect-src"
-          },
-          {
-            "type": "text",
-            "value": "，漏配会导致功能静默失败。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "先用 "
-          },
-          {
-            "type": "code",
-            "value": "Content-Security-Policy-Report-Only"
-          },
-          {
-            "type": "text",
-            "value": " + "
-          },
-          {
-            "type": "code",
-            "value": "report-uri / report-to"
-          },
-          {
-            "type": "text",
-            "value": " 收集违规，再切 enforce；"
-          },
-          {
-            "type": "code",
-            "value": "'unsafe-inline'"
-          },
-          {
-            "type": "text",
-            "value": " 能不开就不开。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "偏严的 CSP 起步策略。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "Content-Security-Policy:\n  default-src 'self';\n  script-src 'self';\n  img-src 'self' https: data:;\n  connect-src 'self' https://api.example.com"
           }
         ]
       ]

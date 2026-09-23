@@ -479,7 +479,7 @@
       "id": "q-mp-setdata",
       "navLabel": "setData",
       "question": "setData 的作用是什么？为何不宜频繁调用或传入过大数据？",
-      "questionNote": "可对照 Vue/React 状态更新机制，理解跨线程同步开销。",
+      "questionNote": "setData 经原生序列化跨逻辑层与渲染层，体积与调用频率直接占用通信与渲染成本。",
       "answer": [
         [
           {

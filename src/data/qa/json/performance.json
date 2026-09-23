@@ -670,8 +670,8 @@
     {
       "id": "q-perf-overview",
       "navLabel": "优化从哪说",
-      "question": "面试被问「你做过哪些性能优化」时，一般从哪些维度展开？",
-      "questionNote": "加载、运行时、网络与缓存、监控验收；结合项目举 1～2 个落地点。",
+      "question": "前端性能优化一般从哪些维度展开？",
+      "questionNote": "加载、运行时、网络与缓存、监控验收四个维度。",
       "answer": [
         [
           {
@@ -741,7 +741,7 @@
       "id": "q-white-screen",
       "navLabel": "白屏与首屏",
       "question": "页面白屏时间长、首屏慢，通常如何排查与优化？",
-      "questionNote": "与场景题「首屏优化」互补：本处偏性能手段清单。",
+      "questionNote": "白屏偏首包与阻塞资源；首屏还叠加关键接口与渲染路径。",
       "answer": [
         [
           {

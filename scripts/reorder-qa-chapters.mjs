@@ -115,7 +115,7 @@ const CHAPTERS = {
       'q-sop',
       'q-web-worker',
       'q-intersection-resize',
-      'q-sw',
+
       'q-indexeddb',
     ],
     newItems: [
@@ -150,7 +150,7 @@ const CHAPTERS = {
       'q-preflight',
       'q-jwt-basics',
       'q-xss-csrf',
-      'q-csp',
+
       'q-fetch-abort',
       'q-websocket-basics',
       'q-biz-login-code',

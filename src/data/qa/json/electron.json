@@ -9,7 +9,7 @@
       "id": "q-electron-why",
       "navLabel": "为何用 Electron",
       "question": "哪些场景适合使用 Electron？与纯 Web、原生桌面相比如何选型？",
-      "questionNote": "触控自助机、企业内部客户端等「要 Web 技术栈 + 本机能力」时常被问到。",
+      "questionNote": "触控自助机、企业内部客户端等需要 Web 技术栈叠加本机能力（文件、外设、本地更新）时的选型。",
       "answer": [
         [
           {
