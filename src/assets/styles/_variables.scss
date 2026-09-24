@@ -65,6 +65,13 @@ $focus-ring-offset: 2px;
 $layout-max: 1280px;
 $layout-home-inner-max: 980px;
 $sidebar-col: 200px;
+/* 滚动条右移进与主栏间距，抵消系统叠加滚动条的内缩 */
+$sidebar-scrollbar-outset: 6px;
+$scrollbar-size: 4px;
+/* 旧名兼容：侧栏曾用 $sidebar-scrollbar-size */
+$sidebar-scrollbar-size: $scrollbar-size;
+$scrollbar-thumb: rgba($text, 0.28);
+$scrollbar-thumb-hover: rgba($text, 0.45);
 $spacing-sm: 0.75rem;
 $pad-header-y: 0.7rem;
 $pad-page: 1.1rem;

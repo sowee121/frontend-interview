@@ -193,9 +193,19 @@
   top: calc(
     var(--sticky-header-height, #{$sticky-sidebar-top}) + #{$sidebar-sticky-gap}
   );
+  /* 题变多时目录可滚，避免末尾新题被视口裁切 */
+  max-height: calc(
+    100vh - var(--sticky-header-height, #{$sticky-sidebar-top}) - #{$sidebar-sticky-gap} -
+      1.5rem
+  );
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   font-size: $font-size-sm;
   line-height: $line-height-tight;
-  padding-right: 0.25rem;
+  /* 滚动条贴齐侧栏可视右缘：取消右内边距，并把轨道伸进与主栏的 gutter */
+  width: calc(100% + #{$sidebar-scrollbar-outset});
+  margin-right: -#{$sidebar-scrollbar-outset};
+  padding-right: 0;
 
   &__title {
     font-weight: 600;

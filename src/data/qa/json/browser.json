@@ -24,7 +24,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "strong",
@@ -38,7 +38,7 @@
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2、"
           },
           {
             "type": "strong",
@@ -60,7 +60,7 @@
         [
           {
             "type": "text",
-            "value": "3）浏览器发 "
+            "value": "3、浏览器发 "
           },
           {
             "type": "code",
@@ -74,7 +74,7 @@
         [
           {
             "type": "text",
-            "value": "4）"
+            "value": "4、"
           },
           {
             "type": "strong",
@@ -104,7 +104,7 @@
         [
           {
             "type": "text",
-            "value": "5）DOM 与 CSSOM 合并为 "
+            "value": "5、DOM 与 CSSOM 合并为 "
           },
           {
             "type": "strong",
@@ -134,7 +134,7 @@
         [
           {
             "type": "text",
-            "value": "6）复杂动画宜采用 "
+            "value": "6、复杂动画宜采用 "
           },
           {
             "type": "strong",
@@ -178,7 +178,7 @@
         [
           {
             "type": "text",
-            "value": "7）阻塞关系：CSS 不阻塞 DOM 解析，但会阻塞首次渲染（没有 CSSOM 就无法构建渲染树）；无 "
+            "value": "7、阻塞关系：CSS 不阻塞 DOM 解析，但会阻塞首次渲染（没有 CSSOM 就无法构建渲染树）；无 "
           },
           {
             "type": "code",
@@ -200,7 +200,7 @@
         [
           {
             "type": "text",
-            "value": "8）两个常用时机："
+            "value": "8、两个常用时机："
           },
           {
             "type": "code",
@@ -622,6 +622,80 @@
       ]
     },
     {
+      "id": "q-indexeddb",
+      "navLabel": "IndexedDB",
+      "question": "IndexedDB 与 localStorage 应如何选择？",
+      "questionNote": "容量、异步 API、结构化数据；离线缓存与大量前端数据场景。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "localStorage 适合小体积同步读写；IndexedDB 适合较大容量、结构化数据与异步读写。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "localStorage："
+          },
+          {
+            "type": "text",
+            "value": "同步 API、键值字符串、容量约数 MB，适合主题、草稿、轻量配置；大数据会阻塞主线程。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "IndexedDB："
+          },
+          {
+            "type": "text",
+            "value": "异步、可存对象/二进制，支持索引与事务，容量通常更大，适合离线资源、列表缓存、本地草稿库。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "选型："
+          },
+          {
+            "type": "text",
+            "value": "「读一次配置」用 localStorage；「查表/分页/大量记录」用 IndexedDB（或封装库降低样板代码）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "边界："
+          },
+          {
+            "type": "text",
+            "value": "均受同源限制；勿存密钥与敏感明文；可与 Service Worker 配合做离线，但复杂度明显高于 localStorage。"
+          }
+        ]
+      ]
+    },
+    {
       "id": "q-cookie-samesite",
       "navLabel": "SameSite 详解",
       "question": "Cookie 的 SameSite=Lax 与 Strict 有何区别？",
@@ -705,6 +779,261 @@
           {
             "type": "text",
             "value": " 共享即可，不需要 None。开启后要评估 CSRF 与隐私合规风险。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-httponly",
+      "navLabel": "HttpOnly",
+      "question": "Cookie 的 HttpOnly、Secure 分别做什么？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "HttpOnly 禁止文档脚本读 Cookie；Secure 仅在 HTTPS 请求中携带。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、会话标识应设 HttpOnly，降低 XSS 偷 Cookie 的成功率（不能防 CSRF）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、Secure 与 SameSite 常一起配；本地 http 调试时 Secure Cookie 可能带不上。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、前端可读的偏好类数据可用 "
+          },
+          {
+            "type": "code",
+            "value": "localStorage"
+          },
+          {
+            "type": "text",
+            "value": " 等，勿把刷新令牌放非 HttpOnly Cookie 又给 JS 读。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-cookie-session",
+      "navLabel": "Cookie 与 Session",
+      "question": "Cookie 和 Session 有何区别？前端鉴权里怎么配合？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "Cookie 是浏览器存的一小段数据；Session 通常指服务端会话状态，常靠 Cookie 里的会话 id 关联。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、Cookie 随请求自动带（受域、路径、SameSite 约束）；容量与明文可见性有限。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、纯前端存 Token 时常见 "
+          },
+          {
+            "type": "code",
+            "value": "Authorization"
+          },
+          {
+            "type": "text",
+            "value": " 头；Cookie 方案则依赖 HttpOnly 会话。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、选型看 CSRF 面、多端与过期刷新；不要混用两套又互不同步。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-sop",
+      "navLabel": "同源策略",
+      "question": "同源策略限制哪些行为？与跨域有何关系？",
+      "questionNote": "「源」= 协议+主机+端口；限制的是 JS 读响应，不是发请求本身。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "同源策略限制脚本读取跨源 HTTP 响应；发请求与加载资源不受限，这正是跨域与 CSRF 成立的前提。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、「源」= 协议 + 主机 + 端口，任一不同即跨源；限制的是"
+          },
+          {
+            "type": "strong",
+            "value": "读取"
+          },
+          {
+            "type": "text",
+            "value": "（XHR/fetch 拿不到响应），不是发送。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、不阻止 "
+          },
+          {
+            "type": "code",
+            "value": "<img src=\"//other\">"
+          },
+          {
+            "type": "text",
+            "value": " 这类资源加载，所以跨站请求伪造（CSRF）才成立。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、跨源窗口通信也受限：嵌 iframe 时父读子 "
+          },
+          {
+            "type": "code",
+            "value": "contentDocument"
+          },
+          {
+            "type": "text",
+            "value": " 需同源，跨域只能 "
+          },
+          {
+            "type": "code",
+            "value": "postMessage"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "file://"
+          },
+          {
+            "type": "text",
+            "value": " 与 "
+          },
+          {
+            "type": "code",
+            "value": "http://localhost"
+          },
+          {
+            "type": "text",
+            "value": " 不同源，本地调试时易因此触发跨域限制。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-iframe-security",
+      "navLabel": "iframe 安全",
+      "question": "嵌入 iframe 时有哪些安全注意点？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "iframe 扩大攻击面：点击劫持、跨域脚本、权限逃逸；用沙箱与通信白名单收敛。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "sandbox"
+          },
+          {
+            "type": "text",
+            "value": " 限制脚本、表单、顶层导航等；按需加 "
+          },
+          {
+            "type": "code",
+            "value": "allow-scripts"
+          },
+          {
+            "type": "text",
+            "value": " 等令牌。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、跨域用 "
+          },
+          {
+            "type": "code",
+            "value": "postMessage"
+          },
+          {
+            "type": "text",
+            "value": " 时校验 "
+          },
+          {
+            "type": "code",
+            "value": "event.origin"
+          },
+          {
+            "type": "text",
+            "value": "，不信任意来源。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、自身页面用 "
+          },
+          {
+            "type": "code",
+            "value": "frame-ancestors"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "X-Frame-Options"
+          },
+          {
+            "type": "text",
+            "value": " 防被恶意嵌套。"
           }
         ]
       ]
@@ -828,10 +1157,10 @@
       ]
     },
     {
-      "id": "q-sop",
-      "navLabel": "同源策略",
-      "question": "同源策略限制哪些行为？与跨域有何关系？",
-      "questionNote": "「源」= 协议+主机+端口；限制的是 JS 读响应，不是发请求本身。",
+      "id": "q-intersection-resize",
+      "navLabel": "Intersection 与 Resize",
+      "question": "IntersectionObserver 与 ResizeObserver 一般用在哪些场景？",
+      "questionNote": "两者均为异步回调，较 scroll + getBoundingClientRect 更省主线程；须在触发后 unobserve。",
       "answer": [
         [
           {
@@ -840,75 +1169,71 @@
           },
           {
             "type": "text",
-            "value": "同源策略限制脚本读取跨源 HTTP 响应；发请求与加载资源不受限，这正是跨域与 CSRF 成立的前提。"
+            "value": "IntersectionObserver 监测元素与视口相交；ResizeObserver 监测元素尺寸变化；均比同步测量更省主线程。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "IntersectionObserver"
+          },
+          {
+            "type": "text",
+            "value": "：异步报告元素与视口（或 root）相交比例。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）「源」= 协议 + 主机 + 端口，任一不同即跨源；限制的是"
+            "value": "常用于"
           },
           {
             "type": "strong",
-            "value": "读取"
+            "value": "懒加载、无限滚动触底、曝光埋点"
           },
           {
             "type": "text",
-            "value": "（XHR/fetch 拿不到响应），不是发送。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）不阻止 "
+            "value": "；触发后 "
           },
           {
             "type": "code",
-            "value": "<img src=\"//other\">"
+            "value": "unobserve"
           },
           {
             "type": "text",
-            "value": " 这类资源加载，所以跨站请求伪造（CSRF）才成立。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）跨源窗口通信也受限：嵌 iframe 时父读子 "
+            "value": " 或 "
           },
           {
             "type": "code",
-            "value": "contentDocument"
+            "value": "disconnect"
           },
           {
             "type": "text",
-            "value": " 需同源，跨域只能 "
-          },
-          {
-            "type": "code",
-            "value": "postMessage"
-          },
-          {
-            "type": "text",
-            "value": "。"
+            "value": " 防泄漏。"
           }
         ],
         [
           {
             "type": "code",
-            "value": "file://"
+            "value": "ResizeObserver"
           },
           {
             "type": "text",
-            "value": " 与 "
+            "value": "：监听元素"
           },
           {
-            "type": "code",
-            "value": "http://localhost"
+            "type": "strong",
+            "value": "内容框尺寸变化"
           },
           {
             "type": "text",
-            "value": " 不同源，本地调试时易因此触发跨域限制。"
+            "value": "（含非 window resize 导致的变宽）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "图表自适应、容器高度测量、虚拟列表布局都常用；回调里避免同步改布局引发循环抖动。"
           }
         ]
       ]
@@ -1016,10 +1341,9 @@
       ]
     },
     {
-      "id": "q-intersection-resize",
-      "navLabel": "Intersection 与 Resize",
-      "question": "IntersectionObserver 与 ResizeObserver 一般用在哪些场景？",
-      "questionNote": "两者均为异步回调，较 scroll + getBoundingClientRect 更省主线程；须在触发后 unobserve。",
+      "id": "q-ric",
+      "navLabel": "requestIdleCallback",
+      "question": "requestIdleCallback 做什么？和 requestAnimationFrame 怎么选？",
       "answer": [
         [
           {
@@ -1028,80 +1352,57 @@
           },
           {
             "type": "text",
-            "value": "IntersectionObserver 监测元素与视口相交；ResizeObserver 监测元素尺寸变化；均比同步测量更省主线程。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "IntersectionObserver"
-          },
-          {
-            "type": "text",
-            "value": "：异步报告元素与视口（或 root）相交比例。"
+            "value": "requestIdleCallback 在浏览器空闲时跑低优先级任务；requestAnimationFrame 对齐下一帧绘制。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "常用于"
-          },
-          {
-            "type": "strong",
-            "value": "懒加载、无限滚动触底、曝光埋点"
-          },
-          {
-            "type": "text",
-            "value": "；触发后 "
+            "value": "1、适合上报、预取、非紧急计算；回调带 "
           },
           {
             "type": "code",
-            "value": "unobserve"
+            "value": "timeRemaining"
           },
           {
             "type": "text",
-            "value": " 或 "
+            "value": "，超时可用 "
           },
           {
             "type": "code",
-            "value": "disconnect"
+            "value": "timeout"
           },
           {
             "type": "text",
-            "value": " 防泄漏。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "ResizeObserver"
-          },
-          {
-            "type": "text",
-            "value": "：监听元素"
-          },
-          {
-            "type": "strong",
-            "value": "内容框尺寸变化"
-          },
-          {
-            "type": "text",
-            "value": "（含非 window resize 导致的变宽）。"
+            "value": " 兜底。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "图表自适应、容器高度测量、虚拟列表布局都常用；回调里避免同步改布局引发循环抖动。"
+            "value": "2、动画与视觉相关更新用 "
+          },
+          {
+            "type": "code",
+            "value": "requestAnimationFrame"
+          },
+          {
+            "type": "text",
+            "value": "，保证跟帧。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、Safari 等支持不完整时需降级；框架调度器往往自建优先级，不直接依赖它。"
           }
         ]
       ]
     },
     {
-      "id": "q-indexeddb",
-      "navLabel": "IndexedDB",
-      "question": "IndexedDB 与 localStorage 应如何选择？",
-      "questionNote": "容量、异步 API、结构化数据；离线缓存与大量前端数据场景。",
+      "id": "q-sw-pwa",
+      "navLabel": "Service Worker 与 PWA",
+      "question": "Service Worker 是什么？和 PWA 有何关系？",
       "answer": [
         [
           {
@@ -1110,63 +1411,25 @@
           },
           {
             "type": "text",
-            "value": "localStorage 适合小体积同步读写；IndexedDB 适合较大容量、结构化数据与异步读写。"
+            "value": "Service Worker 是独立线程的网络代理脚本，可拦截请求、缓存资源；渐进式 Web 应用（PWA）常靠它做离线与安装体验。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "localStorage："
-          },
-          {
-            "type": "text",
-            "value": "同步 API、键值字符串、容量约数 MB，适合主题、草稿、轻量配置；大数据会阻塞主线程。"
+            "value": "1、须 HTTPS（localhost 除外）；生命周期含安装、激活、fetch 事件。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "IndexedDB："
-          },
-          {
-            "type": "text",
-            "value": "异步、可存对象/二进制，支持索引与事务，容量通常更大，适合离线资源、列表缓存、本地草稿库。"
+            "value": "2、策略：缓存优先 / 网络优先 / stale-while-revalidate，按资源类型选。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "选型："
-          },
-          {
-            "type": "text",
-            "value": "「读一次配置」用 localStorage；「查表/分页/大量记录」用 IndexedDB（或封装库降低样板代码）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4）"
-          },
-          {
-            "type": "strong",
-            "value": "边界："
-          },
-          {
-            "type": "text",
-            "value": "均受同源限制；勿存密钥与敏感明文；可与 Service Worker 配合做离线，但复杂度明显高于 localStorage。"
+            "value": "3、PWA 还涉及 Web App Manifest、推送等；SW 是能力底座而非全部。"
           }
         ]
       ]

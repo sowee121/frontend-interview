@@ -6,6 +6,47 @@
   "lead": "场景题落在方案与边界：鉴权、文件上传、实时通道、渲染模式与埋点降本。",
   "items": [
     {
+      "id": "q-mvc-mvp-mvvm",
+      "navLabel": "MVC MVP MVVM",
+      "question": "MVC、MVP、MVVM 分别如何分工？前端为何常谈 MVVM？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "三者都拆视图与数据，差异在「谁更新视图、中间层职责多重」。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、MVC：Controller 接收输入，改 Model，View 观察 Model 或由 Controller 刷新。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、MVP：Presenter 更厚，View 尽量被动，测试时常替身 View。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、MVVM：ViewModel 暴露状态与命令，经绑定与 View 同步；Vue/React 数据驱动接近这一思路。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、单页里关键是单向数据流与可测的状态层，不必纠结标签名。"
+          }
+        ]
+      ]
+    },
+    {
       "id": "q-debounce-search",
       "navLabel": "搜索防抖",
       "question": "搜索框请求过于频繁时，应如何优化？",
@@ -24,7 +65,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "strong",
@@ -38,7 +79,7 @@
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2、"
           },
           {
             "type": "strong",
@@ -118,7 +159,7 @@
         [
           {
             "type": "text",
-            "value": "1）触发后页码 +1 或带 "
+            "value": "1、触发后页码 +1 或带 "
           },
           {
             "type": "code",
@@ -132,7 +173,7 @@
         [
           {
             "type": "text",
-            "value": "2）飞行中设 "
+            "value": "2、飞行中设 "
           },
           {
             "type": "code",
@@ -154,7 +195,7 @@
         [
           {
             "type": "text",
-            "value": "3）上千条仍卡就换虚拟列表；滚动计算用 "
+            "value": "3、上千条仍卡就换虚拟列表；滚动计算用 "
           },
           {
             "type": "code",
@@ -179,182 +220,6 @@
           {
             "type": "code",
             "value": "const io = new IntersectionObserver((entries) => {\n  if (entries[0].isIntersecting) loadMore()\n})\nio.observe(sentryEl)"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-error",
-      "navLabel": "错误上报",
-      "question": "线上错误应如何采集与上报？",
-      "questionNote": "全局 error/unhandledrejection + 框架钩子；上报体需带字段与安全的 source map。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "code",
-            "value": "window.addEventListener('error', ...)"
-          },
-          {
-            "type": "text",
-            "value": " 捕获同步错误；"
-          },
-          {
-            "type": "code",
-            "value": "unhandledrejection"
-          },
-          {
-            "type": "text",
-            "value": " 捕获未处理的 Promise 拒绝。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）Vue 3 设 "
-          },
-          {
-            "type": "code",
-            "value": "app.config.errorHandler"
-          },
-          {
-            "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "onErrorCaptured"
-          },
-          {
-            "type": "text",
-            "value": "；React 用 Error Boundary 包住路由子树。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）上报带 message、stack、路由、release/git SHA、脱敏用户 id、UA；source map 上传鉴权服务，避免将完整 "
-          },
-          {
-            "type": "code",
-            "value": ".map"
-          },
-          {
-            "type": "text",
-            "value": " 公开挂静态目录。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）资源失败用捕获阶段 "
-          },
-          {
-            "type": "code",
-            "value": "addEventListener('error', fn, true)"
-          },
-          {
-            "type": "text",
-            "value": "；上报采样、去重、限流，防错误风暴。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-fcp",
-      "navLabel": "首屏优化",
-      "question": "首屏加载偏慢时，应从哪些方面分析与优化？",
-      "questionNote": "资源、请求、体验三块；指标用 FCP/LCP + RUM 验证。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "从资源体积、接口并行与感知体验三方面优化，并以 FCP/LCP 与真实用户监控（RUM）数据验收。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "资源"
-          },
-          {
-            "type": "text",
-            "value": "：非首屏库 "
-          },
-          {
-            "type": "code",
-            "value": "import()"
-          },
-          {
-            "type": "text",
-            "value": " 懒加载；图片 WebP/AVIF 与合适尺寸；关键 CSS 内联。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "请求"
-          },
-          {
-            "type": "text",
-            "value": "："
-          },
-          {
-            "type": "code",
-            "value": "Promise.all"
-          },
-          {
-            "type": "text",
-            "value": " 并行首屏接口；能缓存的用 HTTP 缓存或 stale-while-revalidate（SWR，先回缓存再后台更新）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）首字节时间（TTFB）偏高时再评估服务端渲染（SSR）/静态站点生成（SSG），避免将过重逻辑全部堆至服务端。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4）"
-          },
-          {
-            "type": "strong",
-            "value": "体验"
-          },
-          {
-            "type": "text",
-            "value": "：骨架屏减累积布局偏移（CLS）；字体 "
-          },
-          {
-            "type": "code",
-            "value": "font-display: swap"
-          },
-          {
-            "type": "text",
-            "value": " 或子集化。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "5）验证：本地观测 FCP、LCP 与长任务；线上用 RUM 按版本、地区对比。"
           }
         ]
       ]
@@ -386,7 +251,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "strong",
@@ -400,7 +265,7 @@
         [
           {
             "type": "text",
-            "value": "2）若必须 "
+            "value": "2、若必须 "
           },
           {
             "type": "code",
@@ -414,7 +279,7 @@
         [
           {
             "type": "text",
-            "value": "3）封装层统一处理 "
+            "value": "3、封装层统一处理 "
           },
           {
             "type": "code",
@@ -454,7 +319,7 @@
         [
           {
             "type": "text",
-            "value": "1）路由 meta "
+            "value": "1、路由 meta "
           },
           {
             "type": "code",
@@ -504,7 +369,7 @@
         [
           {
             "type": "text",
-            "value": "1）点击后立刻 "
+            "value": "1、点击后立刻 "
           },
           {
             "type": "code",
@@ -518,7 +383,7 @@
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2、"
           },
           {
             "type": "strong",
@@ -564,7 +429,7 @@
         [
           {
             "type": "text",
-            "value": "1）分片："
+            "value": "1、分片："
           },
           {
             "type": "code",
@@ -602,19 +467,435 @@
         [
           {
             "type": "text",
-            "value": "2）断点续传：上传前先调接口查「已收到哪些分片」，只补缺失的那几片。这是断点续传的核心，不查进度就只能整个文件重传。"
+            "value": "2、断点续传：上传前先调接口查「已收到哪些分片」，只补缺失的那几片。这是断点续传的核心，不查进度就只能整个文件重传。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）合并与秒传：服务端合并分片或走对象存储的分片 API；秒传先算文件 hash 查是否已存在，命中则直接完成。"
+            "value": "3、合并与秒传：服务端合并分片或走对象存储的分片 API；秒传先算文件 hash 查是否已存在，命中则直接完成。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4）重试与进度：单片失败要幂等重试；进度条用服务端已确认字节 / 总大小，避免重复计数。"
+            "value": "4、重试与进度：单片失败要幂等重试；进度条用服务端已确认字节 / 总大小，避免重复计数。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-fcp",
+      "navLabel": "首屏优化",
+      "question": "首屏加载偏慢时，应从哪些方面分析与优化？",
+      "questionNote": "资源、请求、体验三块；指标用 FCP/LCP + RUM 验证。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "从资源体积、接口并行与感知体验三方面优化，并以 FCP/LCP 与真实用户监控（RUM）数据验收。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "资源"
+          },
+          {
+            "type": "text",
+            "value": "：非首屏库 "
+          },
+          {
+            "type": "code",
+            "value": "import()"
+          },
+          {
+            "type": "text",
+            "value": " 懒加载；图片 WebP/AVIF 与合适尺寸；关键 CSS 内联。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "请求"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "code",
+            "value": "Promise.all"
+          },
+          {
+            "type": "text",
+            "value": " 并行首屏接口；能缓存的用 HTTP 缓存或 stale-while-revalidate（SWR，先回缓存再后台更新）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、首字节时间（TTFB）偏高时再评估服务端渲染（SSR）/静态站点生成（SSG），避免将过重逻辑全部堆至服务端。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "体验"
+          },
+          {
+            "type": "text",
+            "value": "：骨架屏减累积布局偏移（CLS）；字体 "
+          },
+          {
+            "type": "code",
+            "value": "font-display: swap"
+          },
+          {
+            "type": "text",
+            "value": " 或子集化。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5、验证：本地观测 FCP、LCP 与长任务；线上用 RUM 按版本、地区对比。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-ssr-ssg",
+      "navLabel": "SSR / SSG / CSR",
+      "question": "SSR、SSG 与纯 CSR 分别适用于哪些场景？",
+      "questionNote": "客户端渲染（CSR）/静态站点生成（SSG）/服务端渲染（SSR）各一句场景 + 混合方案。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "按首屏需求、搜索引擎优化（SEO）与交互复杂度在 CSR、SSG、SSR 间选型，亦可采用混合方案。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "客户端渲染（CSR）："
+          },
+          {
+            "type": "text",
+            "value": "单页应用（SPA），后台交互强；首屏与 SEO 弱。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "静态站点生成（SSG）："
+          },
+          {
+            "type": "text",
+            "value": "构建时出 HTML，文档站、营销页、博客最快。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "服务端渲染（SSR）："
+          },
+          {
+            "type": "text",
+            "value": "每请求拼 HTML，个性化首屏、强 SEO；要考虑服务器成本与缓存。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "混合：增量静态再生成（ISR）、流式 SSR 先吐壳再填内容，改善首字节时间（TTFB）感知。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-error",
+      "navLabel": "错误上报",
+      "question": "线上错误应如何采集与上报？",
+      "questionNote": "全局 error/unhandledrejection + 框架钩子；上报体需带字段与安全的 source map。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "code",
+            "value": "window.addEventListener('error', ...)"
+          },
+          {
+            "type": "text",
+            "value": " 捕获同步错误；"
+          },
+          {
+            "type": "code",
+            "value": "unhandledrejection"
+          },
+          {
+            "type": "text",
+            "value": " 捕获未处理的 Promise 拒绝。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、Vue 3 设 "
+          },
+          {
+            "type": "code",
+            "value": "app.config.errorHandler"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "onErrorCaptured"
+          },
+          {
+            "type": "text",
+            "value": "；React 用 Error Boundary 包住路由子树。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、上报带 message、stack、路由、release/git SHA、脱敏用户 id、UA；source map 上传鉴权服务，避免将完整 "
+          },
+          {
+            "type": "code",
+            "value": ".map"
+          },
+          {
+            "type": "text",
+            "value": " 公开挂静态目录。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、资源失败用捕获阶段 "
+          },
+          {
+            "type": "code",
+            "value": "addEventListener('error', fn, true)"
+          },
+          {
+            "type": "text",
+            "value": "；上报采样、去重、限流，防错误风暴。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-telemetry",
+      "navLabel": "埋点与采样",
+      "question": "前端埋点数据量过大时，应如何降本？",
+      "questionNote": "采样 + 合并上报；关键漏斗全量、噪声事件采样。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "如只上报 5% 会话，或 "
+          },
+          {
+            "type": "code",
+            "value": "hash(userId) % 100 < 5"
+          },
+          {
+            "type": "text",
+            "value": "；关键转化全量、噪声事件采样。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "sendBeacon"
+          },
+          {
+            "type": "text",
+            "value": " 合并批量，关页 flush。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、客户端先打桶聚合，少发高频心跳；与数据团队对齐指标定义。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、曝光埋点："
+          },
+          {
+            "type": "code",
+            "value": "IntersectionObserver"
+          },
+          {
+            "type": "text",
+            "value": " 可见比例 + 停留时长再上报，与真实用户监控（RUM）字段分开。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-rich-text-xss",
+      "navLabel": "富文本 XSS",
+      "question": "富文本编辑器内容展示应如何防范 XSS？",
+      "questionNote": "白名单清洗 + 少 v-html；CSP 作纵深防御。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "入库或渲染前做白名单清洗，减少直接渲染原始 HTML。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、采用 HTML 白名单清洗库去除 "
+          },
+          {
+            "type": "code",
+            "value": "script/onerror"
+          },
+          {
+            "type": "text",
+            "value": "；优先 Markdown 渲染，慎用 "
+          },
+          {
+            "type": "code",
+            "value": "v-html"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "dangerouslySetInnerHTML"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、内容安全策略（CSP）限制内联脚本；多端展示走同一套 sanitizer。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-multi-tab-sync",
+      "navLabel": "多标签页同步",
+      "question": "同一用户打开多个标签页时，登录态或购物车应如何同步？",
+      "questionNote": "storage 事件或 BroadcastChannel；鉴权仍以服务端为准。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "code",
+            "value": "localStorage"
+          },
+          {
+            "type": "text",
+            "value": " 配合 "
+          },
+          {
+            "type": "code",
+            "value": "storage"
+          },
+          {
+            "type": "text",
+            "value": " 事件，或 "
+          },
+          {
+            "type": "code",
+            "value": "BroadcastChannel"
+          },
+          {
+            "type": "text",
+            "value": " 广播跨标签状态变更。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "storage"
+          },
+          {
+            "type": "text",
+            "value": " 事件仅监听 localStorage 写入（sessionStorage 不跨标签）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "code",
+            "value": "BroadcastChannel"
+          },
+          {
+            "type": "text",
+            "value": " 适合登出、主题、购物车等双向同步，语义更清晰。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、收到 401 或 WebSocket 踢人时各标签统一清 token；前端广播仅为体验层，鉴权仍以服务端为准。"
           }
         ]
       ]
@@ -638,25 +919,25 @@
         [
           {
             "type": "text",
-            "value": "1）退避间隔 1s、2s、4s… 封顶 30s，避免网络抖动时压垮服务端；连上后要把重试计数复位，否则下次断线会直接等最长间隔。"
+            "value": "1、退避间隔 1s、2s、4s… 封顶 30s，避免网络抖动时压垮服务端；连上后要把重试计数复位，否则下次断线会直接等最长间隔。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）定时心跳，超时未 pong 则主动 close 再重连；服务端要处理重复会话 id。"
+            "value": "2、定时心跳，超时未 pong 则主动 close 再重连；服务端要处理重复会话 id。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）重连成功后要补数据：按会话 id 或消息游标（lastMsgId）拉取断线期间的增量，只重连不补拉会丢消息。"
+            "value": "3、重连成功后要补数据：按会话 id 或消息游标（lastMsgId）拉取断线期间的增量，只重连不补拉会丢消息。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4）visibilitychange 回前台可主动 ping 一次，尽快发现假死连接。"
+            "value": "4、visibilitychange 回前台可主动 ping 一次，尽快发现假死连接。"
           }
         ],
         [
@@ -752,246 +1033,6 @@
       ]
     },
     {
-      "id": "q-multi-tab-sync",
-      "navLabel": "多标签页同步",
-      "question": "同一用户打开多个标签页时，登录态或购物车应如何同步？",
-      "questionNote": "storage 事件或 BroadcastChannel；鉴权仍以服务端为准。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "code",
-            "value": "localStorage"
-          },
-          {
-            "type": "text",
-            "value": " 配合 "
-          },
-          {
-            "type": "code",
-            "value": "storage"
-          },
-          {
-            "type": "text",
-            "value": " 事件，或 "
-          },
-          {
-            "type": "code",
-            "value": "BroadcastChannel"
-          },
-          {
-            "type": "text",
-            "value": " 广播跨标签状态变更。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "code",
-            "value": "storage"
-          },
-          {
-            "type": "text",
-            "value": " 事件仅监听 localStorage 写入（sessionStorage 不跨标签）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "code",
-            "value": "BroadcastChannel"
-          },
-          {
-            "type": "text",
-            "value": " 适合登出、主题、购物车等双向同步，语义更清晰。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）收到 401 或 WebSocket 踢人时各标签统一清 token；前端广播仅为体验层，鉴权仍以服务端为准。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-rich-text-xss",
-      "navLabel": "富文本 XSS",
-      "question": "富文本编辑器内容展示应如何防范 XSS？",
-      "questionNote": "白名单清洗 + 少 v-html；CSP 作纵深防御。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "入库或渲染前做白名单清洗，减少直接渲染原始 HTML。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）采用 HTML 白名单清洗库去除 "
-          },
-          {
-            "type": "code",
-            "value": "script/onerror"
-          },
-          {
-            "type": "text",
-            "value": "；优先 Markdown 渲染，慎用 "
-          },
-          {
-            "type": "code",
-            "value": "v-html"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "dangerouslySetInnerHTML"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）内容安全策略（CSP）限制内联脚本；多端展示走同一套 sanitizer。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-telemetry",
-      "navLabel": "埋点与采样",
-      "question": "前端埋点数据量过大时，应如何降本？",
-      "questionNote": "采样 + 合并上报；关键漏斗全量、噪声事件采样。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "如只上报 5% 会话，或 "
-          },
-          {
-            "type": "code",
-            "value": "hash(userId) % 100 < 5"
-          },
-          {
-            "type": "text",
-            "value": "；关键转化全量、噪声事件采样。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "code",
-            "value": "sendBeacon"
-          },
-          {
-            "type": "text",
-            "value": " 合并批量，关页 flush。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）客户端先打桶聚合，少发高频心跳；与数据团队对齐指标定义。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）曝光埋点："
-          },
-          {
-            "type": "code",
-            "value": "IntersectionObserver"
-          },
-          {
-            "type": "text",
-            "value": " 可见比例 + 停留时长再上报，与真实用户监控（RUM）字段分开。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-ssr-ssg",
-      "navLabel": "SSR / SSG / CSR",
-      "question": "SSR、SSG 与纯 CSR 分别适用于哪些场景？",
-      "questionNote": "客户端渲染（CSR）/静态站点生成（SSG）/服务端渲染（SSR）各一句场景 + 混合方案。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "按首屏需求、搜索引擎优化（SEO）与交互复杂度在 CSR、SSG、SSR 间选型，亦可采用混合方案。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "客户端渲染（CSR）："
-          },
-          {
-            "type": "text",
-            "value": "单页应用（SPA），后台交互强；首屏与 SEO 弱。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "静态站点生成（SSG）："
-          },
-          {
-            "type": "text",
-            "value": "构建时出 HTML，文档站、营销页、博客最快。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "服务端渲染（SSR）："
-          },
-          {
-            "type": "text",
-            "value": "每请求拼 HTML，个性化首屏、强 SEO；要考虑服务器成本与缓存。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "混合：增量静态再生成（ISR）、流式 SSR 先吐壳再填内容，改善首字节时间（TTFB）感知。"
-          }
-        ]
-      ]
-    },
-    {
       "id": "q-saas-zero-to-one",
       "navLabel": "SaaS 从 0 到 1",
       "question": "从 0 到 1 搭一个中后台 SaaS，前端前期要定哪些事？",
@@ -1009,7 +1050,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "strong",
@@ -1023,7 +1064,7 @@
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2、"
           },
           {
             "type": "strong",
@@ -1037,7 +1078,7 @@
         [
           {
             "type": "text",
-            "value": "3）"
+            "value": "3、"
           },
           {
             "type": "strong",
@@ -1051,7 +1092,7 @@
         [
           {
             "type": "text",
-            "value": "4）"
+            "value": "4、"
           },
           {
             "type": "strong",

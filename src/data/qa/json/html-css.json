@@ -232,6 +232,65 @@
       ]
     },
     {
+      "id": "q-vertical-center",
+      "navLabel": "垂直居中",
+      "question": "CSS 垂直居中有哪些常用写法？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "按是否已知宽高、是否单行，选 Flex/Grid/定位/行高。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、Flex：容器 "
+          },
+          {
+            "type": "code",
+            "value": "align-items:center"
+          },
+          {
+            "type": "text",
+            "value": "（主轴横向时）或双轴都 center。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、Grid："
+          },
+          {
+            "type": "code",
+            "value": "place-items:center"
+          },
+          {
+            "type": "text",
+            "value": " 一行居中。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、绝对定位 + "
+          },
+          {
+            "type": "code",
+            "value": "translate(-50%,-50%)"
+          },
+          {
+            "type": "text",
+            "value": "；单行文本也可用相等上下 padding 或 line-height。"
+          }
+        ]
+      ]
+    },
+    {
       "id": "q-grid",
       "navLabel": "Grid 入门",
       "question": "CSS Grid 与 Flex 如何分工？各自适用哪些场景？",
@@ -291,6 +350,73 @@
           {
             "type": "text",
             "value": "与 Flex 不同，Grid 子项可同时参与行、列两个方向的对齐。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-two-three-column",
+      "navLabel": "两栏三栏布局",
+      "question": "如何实现右侧自适应的两栏、中间自适应的三栏布局？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "固定侧用定宽，自适应侧吃剩余空间；Flex 或 Grid 最直。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、两栏：容器 "
+          },
+          {
+            "type": "code",
+            "value": "display:flex"
+          },
+          {
+            "type": "text",
+            "value": "，侧栏定宽，主区 "
+          },
+          {
+            "type": "code",
+            "value": "flex:1"
+          },
+          {
+            "type": "text",
+            "value": "；或 Grid "
+          },
+          {
+            "type": "code",
+            "value": "200px 1fr"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、三栏：左右定宽、中间 "
+          },
+          {
+            "type": "code",
+            "value": "1fr"
+          },
+          {
+            "type": "text",
+            "value": "；注意中间内容 min-width 防撑破。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、旧式 float + BFC 也可，维护成本更高，新项目优先 Flex/Grid。"
           }
         ]
       ]
@@ -470,7 +596,7 @@
         [
           {
             "type": "text",
-            "value": "1）父级 BFC "
+            "value": "1、父级 BFC "
           },
           {
             "type": "strong",
@@ -484,7 +610,7 @@
         [
           {
             "type": "text",
-            "value": "2）同一 BFC 内相邻块 "
+            "value": "2、同一 BFC 内相邻块 "
           },
           {
             "type": "strong",
@@ -498,7 +624,7 @@
         [
           {
             "type": "text",
-            "value": "3）"
+            "value": "3、"
           },
           {
             "type": "strong",
@@ -664,6 +790,215 @@
       ]
     },
     {
+      "id": "q-hide-element",
+      "navLabel": "隐藏元素",
+      "question": "CSS 隐藏元素有哪些方式？有何差异？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "差异在是否占位、是否可点、是否被读屏/爬虫关注。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "display:none"
+          },
+          {
+            "type": "text",
+            "value": "：不占位、不渲染；"
+          },
+          {
+            "type": "code",
+            "value": "visibility:hidden"
+          },
+          {
+            "type": "text",
+            "value": "：占位不可见。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "code",
+            "value": "opacity:0"
+          },
+          {
+            "type": "text",
+            "value": "：仍可命中事件（除非再 "
+          },
+          {
+            "type": "code",
+            "value": "pointer-events:none"
+          },
+          {
+            "type": "text",
+            "value": "）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、移出视口 / "
+          },
+          {
+            "type": "code",
+            "value": "clip"
+          },
+          {
+            "type": "text",
+            "value": " / 高 z-index 遮罩用于无障碍「可见隐藏」时要谨慎选型。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-text-ellipsis",
+      "navLabel": "文本溢出省略",
+      "question": "单行和多行文本溢出省略怎么写？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "单行靠 nowrap + ellipsis；多行靠线盒裁剪（-webkit-line-clamp）或定高溢出。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、单行："
+          },
+          {
+            "type": "code",
+            "value": "overflow:hidden; white-space:nowrap; text-overflow:ellipsis"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、多行："
+          },
+          {
+            "type": "code",
+            "value": "display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:N"
+          },
+          {
+            "type": "text",
+            "value": "，并 "
+          },
+          {
+            "type": "code",
+            "value": "overflow:hidden"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、注意容器要有限宽；与 flex 子项时可能要 "
+          },
+          {
+            "type": "code",
+            "value": "min-width:0"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-anim-transition",
+      "navLabel": "animation 与 transition",
+      "question": "animation、transition、transform 分别做什么？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "transform 描述形态变化；transition 在属性变化时过渡；animation 用关键帧做多段动画。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "transform"
+          },
+          {
+            "type": "text",
+            "value": "：位移/缩放/旋转，常走合成层，利于性能。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "code",
+            "value": "transition"
+          },
+          {
+            "type": "text",
+            "value": "：适合 hover、状态切换的起终点过渡。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "code",
+            "value": "animation"
+          },
+          {
+            "type": "text",
+            "value": " + "
+          },
+          {
+            "type": "code",
+            "value": "@keyframes"
+          },
+          {
+            "type": "text",
+            "value": "：循环、多关键帧、进场动效；可叠加二者。"
+          }
+        ]
+      ]
+    },
+    {
       "id": "q-dark-mode",
       "navLabel": "深色模式",
       "question": "如何通过 CSS 实现跟随系统的深色模式？",
@@ -672,7 +1007,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "code",
@@ -686,7 +1021,7 @@
         [
           {
             "type": "text",
-            "value": "2）根上用 "
+            "value": "2、根上用 "
           },
           {
             "type": "code",
@@ -708,7 +1043,7 @@
         [
           {
             "type": "text",
-            "value": "3）"
+            "value": "3、"
           },
           {
             "type": "code",
@@ -738,130 +1073,6 @@
       ]
     },
     {
-      "id": "q-mobile-1px",
-      "navLabel": "移动端 1px",
-      "question": "高清屏上 1px 边框显得偏粗，有哪些常见处理方式？",
-      "questionNote": "设备像素比（DPR）大于 1 时 CSS 1px 会占多个物理像素；伪元素配合 transform 缩放是经典方案。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "设备像素比（DPR）为 2/3 时，CSS 1px 对应多个物理像素，细线呈现为偏粗边框。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "伪元素 + transform 缩放"
-          },
-          {
-            "type": "text",
-            "value": "："
-          },
-          {
-            "type": "code",
-            "value": "::after"
-          },
-          {
-            "type": "text",
-            "value": " 画 1px 高，"
-          },
-          {
-            "type": "code",
-            "value": "scaleY(0.5)"
-          },
-          {
-            "type": "text",
-            "value": " 按 DPR 调整。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）设计允许时直接用 "
-          },
-          {
-            "type": "code",
-            "value": "border: 0.5px solid"
-          },
-          {
-            "type": "text",
-            "value": "（老设备不支持），或 hairline 类名配合 PostCSS 插件。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）统一用分隔线组件封装，避免每个业务手写一套。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "高清屏 1px 细线（示意）。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": ".hairline::after {\n  content: '';\n  position: absolute;\n  left: 0; right: 0; bottom: 0;\n  border-bottom: 1px solid #ccc;\n  transform: scaleY(0.5);\n  transform-origin: 0 100%;\n}"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-safe-area",
-      "navLabel": "安全区",
-      "question": "刘海屏与底部主屏幕指示器应如何适配？",
-      "questionNote": "配合 env(safe-area-inset-*) 与 viewport-fit=cover 使用。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "用 CSS 环境变量把内容顶进系统标定的安全区内。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "code",
-            "value": "viewport-fit=cover"
-          },
-          {
-            "type": "text",
-            "value": " + "
-          },
-          {
-            "type": "code",
-            "value": "padding-bottom: env(safe-area-inset-bottom)"
-          },
-          {
-            "type": "text",
-            "value": " 给固定底栏留白。"
-          }
-        ]
-      ]
-    },
-    {
       "id": "q-mobile-viewport",
       "navLabel": "移动端 viewport",
       "question": "移动端 H5 的 viewport 与布局应注意哪些方面？",
@@ -880,7 +1091,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "code",
@@ -894,7 +1105,7 @@
         [
           {
             "type": "text",
-            "value": "2）布局采用 flex/grid，配合 "
+            "value": "2、布局采用 flex/grid，配合 "
           },
           {
             "type": "code",
@@ -908,7 +1119,7 @@
         [
           {
             "type": "text",
-            "value": "3）触摸目标宜 ≥ 44px。"
+            "value": "3、触摸目标宜 ≥ 44px。"
           }
         ]
       ]
@@ -1000,6 +1211,130 @@
       ]
     },
     {
+      "id": "q-mobile-1px",
+      "navLabel": "移动端 1px",
+      "question": "高清屏上 1px 边框显得偏粗，有哪些常见处理方式？",
+      "questionNote": "设备像素比（DPR）大于 1 时 CSS 1px 会占多个物理像素；伪元素配合 transform 缩放是经典方案。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "设备像素比（DPR）为 2/3 时，CSS 1px 对应多个物理像素，细线呈现为偏粗边框。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "伪元素 + transform 缩放"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "code",
+            "value": "::after"
+          },
+          {
+            "type": "text",
+            "value": " 画 1px 高，"
+          },
+          {
+            "type": "code",
+            "value": "scaleY(0.5)"
+          },
+          {
+            "type": "text",
+            "value": " 按 DPR 调整。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、设计允许时直接用 "
+          },
+          {
+            "type": "code",
+            "value": "border: 0.5px solid"
+          },
+          {
+            "type": "text",
+            "value": "（老设备不支持），或 hairline 类名配合 PostCSS 插件。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、统一用分隔线组件封装，避免每个业务手写一套。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "高清屏 1px 细线（示意）。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": ".hairline::after {\n  content: '';\n  position: absolute;\n  left: 0; right: 0; bottom: 0;\n  border-bottom: 1px solid #ccc;\n  transform: scaleY(0.5);\n  transform-origin: 0 100%;\n}"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-safe-area",
+      "navLabel": "安全区",
+      "question": "刘海屏与底部主屏幕指示器应如何适配？",
+      "questionNote": "配合 env(safe-area-inset-*) 与 viewport-fit=cover 使用。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "用 CSS 环境变量把内容顶进系统标定的安全区内。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "viewport-fit=cover"
+          },
+          {
+            "type": "text",
+            "value": " + "
+          },
+          {
+            "type": "code",
+            "value": "padding-bottom: env(safe-area-inset-bottom)"
+          },
+          {
+            "type": "text",
+            "value": " 给固定底栏留白。"
+          }
+        ]
+      ]
+    },
+    {
       "id": "q-css-preprocessor",
       "navLabel": "Sass / Less",
       "question": "Sass、Less 这类预处理器解决了什么问题？与 CSS 变量如何分工？",
@@ -1018,31 +1353,31 @@
         [
           {
             "type": "text",
-            "value": "1）复用：颜色、间距、断点收进变量文件，mixin 封装清除浮动、文本截断、媒体查询等重复写法，改一处全站生效。"
+            "value": "1、复用：颜色、间距、断点收进变量文件，mixin 封装清除浮动、文本截断、媒体查询等重复写法，改一处全站生效。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）组织：按模块拆文件并用 @use 引入，命名空间避免冲突；@import 会重复产出且已不推荐。"
+            "value": "2、组织：按模块拆文件并用 @use 引入，命名空间避免冲突；@import 会重复产出且已不推荐。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）分工：预处理变量编译后就不存在，无法运行时切换；换主题、换品牌色要在根节点用 CSS 自定义属性覆盖。"
+            "value": "3、分工：预处理变量编译后就不存在，无法运行时切换；换主题、换品牌色要在根节点用 CSS 自定义属性覆盖。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4）取舍：原生嵌套、自定义属性与 :is 等能力已较完善，简单项目可以少引一层编译；复杂主题体系仍靠预处理器组织。"
+            "value": "4、取舍：原生嵌套、自定义属性与 :is 等能力已较完善，简单项目可以少引一层编译；复杂主题体系仍靠预处理器组织。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5）调试：开启 source map 映射回源文件；产物侧注意别把整份变量与未用 mixin 打进样式。"
+            "value": "5、调试：开启 source map 映射回源文件；产物侧注意别把整份变量与未用 mixin 打进样式。"
           }
         ]
       ]
@@ -1066,31 +1401,31 @@
         [
           {
             "type": "text",
-            "value": "1）一致性：间距、色板、字号、断点定义在配置里，团队只能从既有刻度取值，视觉差异自然收敛。"
+            "value": "1、一致性：间距、色板、字号、断点定义在配置里，团队只能从既有刻度取值，视觉差异自然收敛。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）产物：按需扫描模板生成用到的类，未用样式不进产物；比全量引入组件库样式更小，但要保证模板在扫描范围内。"
+            "value": "2、产物：按需扫描模板生成用到的类，未用样式不进产物；比全量引入组件库样式更小，但要保证模板在扫描范围内。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）共存：组件库负责复杂交互与无障碍，原子类负责布局、间距与细节覆盖；两者都会改样式时先约定优先级，避免互相打补丁。"
+            "value": "3、共存：组件库负责复杂交互与无障碍，原子类负责布局、间距与细节覆盖；两者都会改样式时先约定优先级，避免互相打补丁。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4）陷阱：按变量动态拼接类名扫描不到，需改成固定映射表，或把这类类名显式列入白名单。"
+            "value": "4、陷阱：按变量动态拼接类名扫描不到，需改成固定映射表，或把这类类名显式列入白名单。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5）取舍：条件复杂的样式回退到组件类或少量复用类，模板里保留可读结构；团队需要约定书写顺序与命名边界。"
+            "value": "5、取舍：条件复杂的样式回退到组件类或少量复用类，模板里保留可读结构；团队需要约定书写顺序与命名边界。"
           }
         ]
       ]

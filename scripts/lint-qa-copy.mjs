@@ -165,12 +165,12 @@ function lintFile(filePath) {
           snippet: paraText.slice(0, 80) + '…',
         })
       }
-      if (/；[2-9]\d*）/.test(paraText)) {
+      if (/；[2-9]\d*、/.test(paraText)) {
         issues.push({
           file: base,
           id: item.id,
           kind: 'inline-numbered-steps',
-          snippet: '段内仍含 ；2） 类连接符，应拆 answer[]',
+          snippet: '段内仍含 ；2、 类连接符，应拆 answer[]',
         })
       }
     }

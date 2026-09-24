@@ -6,6 +6,188 @@
   "lead": "覆盖异步与函数工具（Promise、防抖节流、call/bind/new），以及结构转换、深拷贝与 EventEmitter。",
   "items": [
     {
+      "id": "q-impl-get-type",
+      "navLabel": "类型判断 getType",
+      "question": "实现 getType(x)",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "// Object.prototype.toString：靠内部类型标签判断，必须用 call 把 this 绑到待测值上\nconst getType = (x) => Object.prototype.toString.call(x);\n\n// 若题面要 'array' 这种短标签：getType(x).slice(8, -1).toLowerCase()"
+          }
+        ]
+      ],
+      "questionNote": "用 Object.prototype.toString.call(x) 得到 \"[object Array]\" 这类字符串，比 typeof 更能区分 null、数组、日期等；若业务要短标签，再做一层映射。"
+    },
+    {
+      "id": "q-impl-instanceof",
+      "navLabel": "手写 instanceof",
+      "question": "手写 myInstanceof(left, right)",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "// instanceof：沿 __proto__ 链查找是否等于 R.prototype\nconst myInstanceof = (L, R) => {\n  const proto = R.prototype; // 右侧构造函数的 prototype\n  for (let o = Object.getPrototypeOf(L); o; o = Object.getPrototypeOf(o)) {\n    if (o === proto) return true; // 链上某环和目标 prototype 相同\n  }\n  return false; // 查到 null 还没命中\n};"
+          }
+        ]
+      ],
+      "questionNote": "沿 left 的原型链查找是否出现过 right.prototype；right 须为带 prototype 的函数。表达原型链关系，与 typeof 的类型判断语义不同。"
+    },
+    {
+      "id": "q-impl-call-apply",
+      "navLabel": "手写 call / apply",
+      "question": "手写 Function.prototype.call / apply",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "// myCall：将待调用函数临时挂载至 ctx，使 this 指向 ctx\nFunction.prototype.myCall = function (ctx, ...args) {\n  const o = ctx == null ? globalThis : Object(ctx); // 非严格模式：null/undefined 绑定全局对象、原始值装箱；严格模式原样保留 thisArg\n  const k = Symbol('__fn__'); // 唯一键，降低与对象自有属性冲突概率\n  o[k] = this; // 当前函数变为 o 的方法\n  try {\n    return o[k](...args); // 以方法形式调用，this === o\n  } finally {\n    delete o[k]; // 无论成败均清理临时属性\n  }\n};\n\n// myApply：第二参为数组或类数组，展开后复用 myCall\nFunction.prototype.myApply = function (ctx, arr) {\n  return this.myCall(ctx, ...Array.from(arr ?? []));\n};"
+          }
+        ]
+      ],
+      "questionNote": "在指定 this 上调用原函数并传入参数；this 为 null/undefined 时，非严格模式绑定全局对象、严格模式保留原值；通过临时属性修改 this，调用后须删除以免污染；apply 将类数组第二参展开后复用 call。"
+    },
+    {
+      "id": "q-impl-bind",
+      "navLabel": "手写 bind",
+      "question": "手写 Function.prototype.bind",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "// myBind：闭包保存原函数 fn 与预设参数 a1\nFunction.prototype.myBind = function (ctx, ...a1) {\n  const fn = this;\n  const bound = function (...a2) {\n    // new bound() 时 this 为实例，走构造路径；普通调用使用绑定的 ctx\n    return fn.apply(this instanceof bound ? this : ctx, [...a1, ...a2]);\n  };\n  // 使 bound 实例能 instanceof 原构造函数：共享原型链（fn 无 prototype 时跳过）\n  if (fn.prototype) bound.prototype = Object.create(fn.prototype);\n  return bound;\n};"
+          }
+        ]
+      ],
+      "questionNote": "返回新函数以固定 this 与部分参数；若以 new 调用返回函数，应忽略绑定的 this，且实例须能继承原函数原型链。边界：箭头函数无 prototype，建原型链前须判空；原生 bound 函数自身也没有 prototype 属性。"
+    },
+    {
+      "id": "q-impl-new",
+      "navLabel": "手写 new / create",
+      "question": "手写 new 运算符；顺带说明 Object.create(proto)",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "// myNew：Ctor 是构造函数，args 是构造参数\nconst myNew = (Ctor, ...args) => {\n  const o = Object.create(Ctor.prototype); // 实例的原型链指向 Ctor.prototype\n  const r = Ctor.apply(o, args); // 执行构造函数，可能往 o 上挂属性\n  // 规范：只有返回值是对象或函数时才用返回值，否则用 o\n  return r != null && (typeof r === 'object' || typeof r === 'function') ? r : o;\n};\n\n// Object.create：空对象原型指向 proto（new 第一步同类）\nconst create = (proto) => {\n  const F = function () {};\n  F.prototype = proto;\n  return new F();\n};"
+          }
+        ]
+      ],
+      "questionNote": "以构造函数 prototype 为原型创建对象并绑定 this 执行；若构造显式返回对象或函数则采用返回值。Object.create 仅建立原型链，不执行构造函数。"
+    },
+    {
+      "id": "q-impl-flatten",
+      "navLabel": "数组扁平化",
+      "question": "实现 flatten(arr, depth)",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "// flatten：仍是数组且剩余深度 > 0 就继续递归，否则当作叶子元素\nconst flatten = (arr, d = Infinity) =>\n  arr.flatMap((v) =>\n    Array.isArray(v) && d > 0 ? flatten(v, d - 1) : [v],\n  );"
+          }
+        ]
+      ],
+      "questionNote": "按 depth 层数展开嵌套数组，depth 为 Infinity 时展开至叶子元素；递归配合 flatMap 写法简洁，大数组可改用迭代或栈以避免递归过深。"
+    },
+    {
+      "id": "q-impl-deep-clone",
+      "navLabel": "手写深拷贝",
+      "question": "手写深拷贝 clone(x)",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "// JSON.parse(JSON.stringify)：写法简单，但丢类型、不能处理循环引用\n// 递归 + WeakMap：在对象图上深拷贝，避免环导致栈溢出\nconst clone = (x, seen = new WeakMap()) => {\n  if (x == null || typeof x !== 'object') return x; // 原始值或 null\n  if (seen.has(x)) return seen.get(x); // 遇到环：返回已经建好的副本\n  if (Array.isArray(x)) {\n    const a = [];\n    seen.set(x, a); // 先登记，再递归填槽，处理自引用数组\n    x.forEach((v, i) => (a[i] = clone(v, seen)));\n    return a;\n  }\n  const o = {};\n  seen.set(x, o);\n  for (const k of Object.keys(x)) o[k] = clone(x[k], seen); // 只拷贝自有可枚举字符串键\n  return o;\n};"
+          }
+        ]
+      ],
+      "questionNote": "递归复制数组与普通对象，循环引用用 WeakMap 记录「原对象→副本」映射；须能说明 JSON 方案的局限：丢失函数、undefined、Symbol，且无法处理环与 Date/RegExp 等类型。"
+    },
+    {
+      "id": "q-impl-is-equal",
+      "navLabel": "深比较 isEqual",
+      "question": "实现深比较 isEqual(a, b)",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "// 深比较：先 ===（同一引用或严格相等；NaN 需题面单独约定）\nconst isEqual = (a, b) => {\n  if (a === b) return true; // 同一引用或严格相等（NaN 仍不相等）\n  if (a == null || b == null || typeof a !== 'object' || typeof b !== 'object') return false;\n  const ak = Object.keys(a),\n    bk = Object.keys(b);\n  if (ak.length !== bk.length) return false; // 可枚举键数量要一致\n  return ak.every((k) => Object.hasOwn(b, k) && isEqual(a[k], b[k])); // 键名与子值都递归比较；用 hasOwn 只看自有属性\n};"
+          }
+        ]
+      ],
+      "questionNote": "判断两个值结构是否相同；原始类型用严格相等，对象比键集合并递归子值；数组可当下标为键的对象处理；NaN、Map/Set 等是否等价看题面约定。"
+    },
+    {
+      "id": "q-impl-list-tree",
+      "navLabel": "数组与树互转",
+      "question": "手写 listToTree / treeToList（id、parentId）",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "const listToTree = (list, rootPid = null) => {\n  const map = new Map(list.map((x) => [x.id, { ...x, children: [] }]));\n  const roots = [];\n  for (const node of map.values()) {\n    if (node.parentId == rootPid || !map.has(node.parentId)) roots.push(node);\n    else map.get(node.parentId).children.push(node);\n  }\n  return roots;\n};\nconst treeToList = (roots) => {\n  const out = [];\n  const walk = (nodes, parentId = null) => {\n    for (const n of nodes || []) {\n      const { children, ...rest } = n;\n      out.push({ ...rest, parentId });\n      walk(children, n.id);\n    }\n  };\n  walk(roots, null);\n  return out;\n};"
+          }
+        ]
+      ],
+      "questionNote": "listToTree 先建 id→节点映射再挂 children；treeToList 深度优先展开。根判定按业务约定 parentId（null/0），注意环与孤儿节点。"
+    },
+    {
+      "id": "q-impl-curry",
+      "navLabel": "柯里化 / 偏函数",
+      "question": "手写柯里化与链式累加",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "// 柯里化：fn.length 是形参个数；用 function 才能保留调用时的 this\nconst curry = (fn) =>\n  function curried(...a) {\n    if (a.length >= fn.length) return fn.apply(this, a); // 参数凑够了，执行原函数\n    return (...b) => curried.apply(this, [...a, ...b]); // 还没够，继续收参\n  };\n\n// 链式累加：空调用 () 返回累计和；继续传参则返回同一个累加函数\nfunction createAdder(sum = 0) {\n  const add = (n) => {\n    if (n === undefined) return sum; // add() 表示结束链，给出结果\n    sum += n;\n    return add; // add(1)(2) 还能继续调用\n  };\n  return add;\n}\n// 示例：const add = createAdder(); add(1)(2)(3)() === 6"
+          }
+        ]
+      ],
+      "questionNote": "柯里化把多参函数拆成多次调用，收齐 fn.length 个参数再执行；链式 add(1)(2)(3)() 是变体，空括号表示结束并返回累计和。"
+    },
+    {
+      "id": "q-impl-debounce",
+      "navLabel": "手写防抖",
+      "question": "手写防抖 debounce(fn, wait)",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "// debounce：每次触发均重置定时器，仅在停顿满 wait 毫秒后执行\nconst debounce = (fn, wait) => {\n  let t; // 保存定时器 id\n  return function (...args) {\n    clearTimeout(t); // 新一轮输入，取消上一次待执行回调\n    t = setTimeout(() => fn.apply(this, args), wait); // 保留调用方 this 与参数\n  };\n};"
+          }
+        ]
+      ],
+      "questionNote": "连续触发时仅在停止触发满 wait 毫秒后执行一次，适用于搜索联想、窗口 resize 等场景；须保留末次调用的参数与 this，内部宜用普通 function。"
+    },
+    {
+      "id": "q-impl-throttle",
+      "navLabel": "手写节流",
+      "question": "手写节流 throttle(fn, wait)",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "// 写法一：时间戳版——距上次执行满 wait 才放行，首次调用立即执行\nconst throttle = (fn, wait) => {\n  let prev = 0;\n  return function (...args) {\n    const now = Date.now();\n    if (now - prev >= wait) {\n      prev = now; // 记录本次执行时刻\n      fn.apply(this, args);\n    }\n  };\n};\n\n// 写法二：定时器版——执行后 wait 内忽略后续触发，适用于「执行完再冷却」\nconst throttleTimer = (fn, wait) => {\n  let t;\n  return function (...args) {\n    if (t) return; // 冷却期内\n    fn.apply(this, args); // 立即执行一次\n    t = setTimeout(() => {\n      t = null; // 冷却结束，允许下次触发\n    }, wait);\n  };\n};"
+          }
+        ]
+      ],
+      "questionNote": "wait 时间窗口内最多执行一次；时间戳版首击立即执行，定时器版执行后进入冷却期。按产品需求选择「首击必响」或「冷却后再响」。"
+    },
+    {
+      "id": "q-impl-my-promise-lite",
+      "navLabel": "极简 MyPromise",
+      "question": "手写极简 MyPromise（class）",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "// 教学示意：演示 pending → fulfilled / rejected 两条路径与微任务调度\nclass MyPromise {\n  constructor(executor) {\n    this._state = 'pending' // 等待中\n    this._value = undefined\n    this._cb = []\n    const settle = (state, v) => {\n      if (this._state !== 'pending') return\n      this._state = state\n      this._value = v\n      queueMicrotask(() => this._cb.splice(0).forEach((fn) => fn()))\n    }\n    const resolve = (v) => settle('fulfilled', v)\n    const reject = (e) => settle('rejected', e)\n    try {\n      executor(resolve, reject)\n    } catch (e) {\n      reject(e) // executor 同步 throw → rejected\n    }\n  }\n  then(onFulfilled, onRejected) {\n    return new MyPromise((resolve, reject) => {\n      const run = () => {\n        const fn = this._state === 'fulfilled' ? onFulfilled : onRejected\n        // 回调缺失则把状态与值透传给下一环\n        if (fn == null) {\n          ;(this._state === 'fulfilled' ? resolve : reject)(this._value)\n          return\n        }\n        try {\n          // 简化：未做 thenable 展开，完整实现见 Promise/A+\n          resolve(fn(this._value))\n        } catch (e) {\n          reject(e)\n        }\n      }\n      this._state === 'pending' ? this._cb.push(run) : queueMicrotask(run)\n    })\n  }\n  catch(onRejected) {\n    return this.then(null, onRejected)\n  }\n}"
+          }
+        ]
+      ],
+      "questionNote": "constructor 接收 executor(resolve, reject)，then 须返回新 Promise。本版演示 fulfilled 与 rejected 两条路径、then 返回新 Promise 与 catch 兜底；仍未实现 thenable 展开，完整版须符合 Promise/A+。"
+    },
+    {
       "id": "q-impl-promise-race",
       "navLabel": "手写 Promise.race",
       "question": "实现 Promise.race(iterable)",
@@ -62,6 +244,20 @@
       "questionNote": "任务数组里每项是返回 Promise 的函数，按顺序一个个执行，不能用 Promise.all 并行；结果数组顺序和 tasks 一致。典型场景：控制接口并发、保证副作用顺序。"
     },
     {
+      "id": "q-impl-concurrency",
+      "navLabel": "并发限制",
+      "question": "手写带并发上限的任务调度 pool(limit, tasks)",
+      "answer": [
+        [
+          {
+            "type": "code",
+            "value": "const pool = async (limit, tasks) => {\n  const ret = new Array(tasks.length);\n  let i = 0;\n  const workers = Array.from({ length: Math.min(limit, tasks.length) }, async () => {\n    while (i < tasks.length) {\n      const cur = i++;\n      ret[cur] = await tasks[cur]();\n    }\n  });\n  await Promise.all(workers);\n  return ret;\n};"
+          }
+        ]
+      ],
+      "questionNote": "多个 worker 抢下一个下标执行任务，同时运行数不超过 limit；结果按下标写回以保持顺序。注意 tasks 为返回 Promise 的函数数组，而不是已发起的 Promise。"
+    },
+    {
       "id": "q-impl-retry",
       "navLabel": "请求重试",
       "question": "实现 retry(fn, attempts, delayMs?)",
@@ -74,174 +270,6 @@
         ]
       ],
       "questionNote": "fn 为无参异步函数，attempts 为总尝试次数（含首次），失败时最多再重试 attempts-1 次；可选 delayMs 设置重试间隔；末次仍失败则原样抛出。适用于网络抖动场景下的幂等请求重试。"
-    },
-    {
-      "id": "q-impl-my-promise-lite",
-      "navLabel": "极简 MyPromise",
-      "question": "手写极简 MyPromise（class）",
-      "answer": [
-        [
-          {
-            "type": "code",
-            "value": "// 教学示意：演示 pending → fulfilled / rejected 两条路径与微任务调度\nclass MyPromise {\n  constructor(executor) {\n    this._state = 'pending' // 等待中\n    this._value = undefined\n    this._cb = []\n    const settle = (state, v) => {\n      if (this._state !== 'pending') return\n      this._state = state\n      this._value = v\n      queueMicrotask(() => this._cb.splice(0).forEach((fn) => fn()))\n    }\n    const resolve = (v) => settle('fulfilled', v)\n    const reject = (e) => settle('rejected', e)\n    try {\n      executor(resolve, reject)\n    } catch (e) {\n      reject(e) // executor 同步 throw → rejected\n    }\n  }\n  then(onFulfilled, onRejected) {\n    return new MyPromise((resolve, reject) => {\n      const run = () => {\n        const fn = this._state === 'fulfilled' ? onFulfilled : onRejected\n        // 回调缺失则把状态与值透传给下一环\n        if (fn == null) {\n          ;(this._state === 'fulfilled' ? resolve : reject)(this._value)\n          return\n        }\n        try {\n          // 简化：未做 thenable 展开，完整实现见 Promise/A+\n          resolve(fn(this._value))\n        } catch (e) {\n          reject(e)\n        }\n      }\n      this._state === 'pending' ? this._cb.push(run) : queueMicrotask(run)\n    })\n  }\n  catch(onRejected) {\n    return this.then(null, onRejected)\n  }\n}"
-          }
-        ]
-      ],
-      "questionNote": "constructor 接收 executor(resolve, reject)，then 须返回新 Promise。本版演示 fulfilled 与 rejected 两条路径、then 返回新 Promise 与 catch 兜底；仍未实现 thenable 展开，完整版须符合 Promise/A+。"
-    },
-    {
-      "id": "q-impl-get-type",
-      "navLabel": "类型判断 getType",
-      "question": "实现 getType(x)",
-      "answer": [
-        [
-          {
-            "type": "code",
-            "value": "// Object.prototype.toString：靠内部类型标签判断，必须用 call 把 this 绑到待测值上\nconst getType = (x) => Object.prototype.toString.call(x);\n\n// 若题面要 'array' 这种短标签：getType(x).slice(8, -1).toLowerCase()"
-          }
-        ]
-      ],
-      "questionNote": "用 Object.prototype.toString.call(x) 得到 \"[object Array]\" 这类字符串，比 typeof 更能区分 null、数组、日期等；若业务要短标签，再做一层映射。"
-    },
-    {
-      "id": "q-impl-call-apply",
-      "navLabel": "手写 call / apply",
-      "question": "手写 Function.prototype.call / apply",
-      "answer": [
-        [
-          {
-            "type": "code",
-            "value": "// myCall：将待调用函数临时挂载至 ctx，使 this 指向 ctx\nFunction.prototype.myCall = function (ctx, ...args) {\n  const o = ctx == null ? globalThis : Object(ctx); // 非严格模式：null/undefined 绑定全局对象、原始值装箱；严格模式原样保留 thisArg\n  const k = Symbol('__fn__'); // 唯一键，降低与对象自有属性冲突概率\n  o[k] = this; // 当前函数变为 o 的方法\n  try {\n    return o[k](...args); // 以方法形式调用，this === o\n  } finally {\n    delete o[k]; // 无论成败均清理临时属性\n  }\n};\n\n// myApply：第二参为数组或类数组，展开后复用 myCall\nFunction.prototype.myApply = function (ctx, arr) {\n  return this.myCall(ctx, ...Array.from(arr ?? []));\n};"
-          }
-        ]
-      ],
-      "questionNote": "在指定 this 上调用原函数并传入参数；this 为 null/undefined 时，非严格模式绑定全局对象、严格模式保留原值；通过临时属性修改 this，调用后须删除以免污染；apply 将类数组第二参展开后复用 call。"
-    },
-    {
-      "id": "q-impl-bind",
-      "navLabel": "手写 bind",
-      "question": "手写 Function.prototype.bind",
-      "answer": [
-        [
-          {
-            "type": "code",
-            "value": "// myBind：闭包保存原函数 fn 与预设参数 a1\nFunction.prototype.myBind = function (ctx, ...a1) {\n  const fn = this;\n  const bound = function (...a2) {\n    // new bound() 时 this 为实例，走构造路径；普通调用使用绑定的 ctx\n    return fn.apply(this instanceof bound ? this : ctx, [...a1, ...a2]);\n  };\n  // 使 bound 实例能 instanceof 原构造函数：共享原型链（fn 无 prototype 时跳过）\n  if (fn.prototype) bound.prototype = Object.create(fn.prototype);\n  return bound;\n};"
-          }
-        ]
-      ],
-      "questionNote": "返回新函数以固定 this 与部分参数；若以 new 调用返回函数，应忽略绑定的 this，且实例须能继承原函数原型链。边界：箭头函数无 prototype，建原型链前须判空；原生 bound 函数自身也没有 prototype 属性。"
-    },
-    {
-      "id": "q-impl-new",
-      "navLabel": "手写 new / create",
-      "question": "手写 new 运算符；顺带说明 Object.create(proto)",
-      "answer": [
-        [
-          {
-            "type": "code",
-            "value": "// myNew：Ctor 是构造函数，args 是构造参数\nconst myNew = (Ctor, ...args) => {\n  const o = Object.create(Ctor.prototype); // 实例的原型链指向 Ctor.prototype\n  const r = Ctor.apply(o, args); // 执行构造函数，可能往 o 上挂属性\n  // 规范：只有返回值是对象或函数时才用返回值，否则用 o\n  return r != null && (typeof r === 'object' || typeof r === 'function') ? r : o;\n};\n\n// Object.create：空对象原型指向 proto（new 第一步同类）\nconst create = (proto) => {\n  const F = function () {};\n  F.prototype = proto;\n  return new F();\n};"
-          }
-        ]
-      ],
-      "questionNote": "以构造函数 prototype 为原型创建对象并绑定 this 执行；若构造显式返回对象或函数则采用返回值。Object.create 仅建立原型链，不执行构造函数。"
-    },
-    {
-      "id": "q-impl-instanceof",
-      "navLabel": "手写 instanceof",
-      "question": "手写 myInstanceof(left, right)",
-      "answer": [
-        [
-          {
-            "type": "code",
-            "value": "// instanceof：沿 __proto__ 链查找是否等于 R.prototype\nconst myInstanceof = (L, R) => {\n  const proto = R.prototype; // 右侧构造函数的 prototype\n  for (let o = Object.getPrototypeOf(L); o; o = Object.getPrototypeOf(o)) {\n    if (o === proto) return true; // 链上某环和目标 prototype 相同\n  }\n  return false; // 查到 null 还没命中\n};"
-          }
-        ]
-      ],
-      "questionNote": "沿 left 的原型链查找是否出现过 right.prototype；right 须为带 prototype 的函数。表达原型链关系，与 typeof 的类型判断语义不同。"
-    },
-    {
-      "id": "q-impl-is-equal",
-      "navLabel": "深比较 isEqual",
-      "question": "实现深比较 isEqual(a, b)",
-      "answer": [
-        [
-          {
-            "type": "code",
-            "value": "// 深比较：先 ===（同一引用或严格相等；NaN 需题面单独约定）\nconst isEqual = (a, b) => {\n  if (a === b) return true; // 同一引用或严格相等（NaN 仍不相等）\n  if (a == null || b == null || typeof a !== 'object' || typeof b !== 'object') return false;\n  const ak = Object.keys(a),\n    bk = Object.keys(b);\n  if (ak.length !== bk.length) return false; // 可枚举键数量要一致\n  return ak.every((k) => Object.hasOwn(b, k) && isEqual(a[k], b[k])); // 键名与子值都递归比较；用 hasOwn 只看自有属性\n};"
-          }
-        ]
-      ],
-      "questionNote": "判断两个值结构是否相同；原始类型用严格相等，对象比键集合并递归子值；数组可当下标为键的对象处理；NaN、Map/Set 等是否等价看题面约定。"
-    },
-    {
-      "id": "q-impl-curry",
-      "navLabel": "柯里化 / 偏函数",
-      "question": "手写柯里化与链式累加",
-      "answer": [
-        [
-          {
-            "type": "code",
-            "value": "// 柯里化：fn.length 是形参个数；用 function 才能保留调用时的 this\nconst curry = (fn) =>\n  function curried(...a) {\n    if (a.length >= fn.length) return fn.apply(this, a); // 参数凑够了，执行原函数\n    return (...b) => curried.apply(this, [...a, ...b]); // 还没够，继续收参\n  };\n\n// 链式累加：空调用 () 返回累计和；继续传参则返回同一个累加函数\nfunction createAdder(sum = 0) {\n  const add = (n) => {\n    if (n === undefined) return sum; // add() 表示结束链，给出结果\n    sum += n;\n    return add; // add(1)(2) 还能继续调用\n  };\n  return add;\n}\n// 示例：const add = createAdder(); add(1)(2)(3)() === 6"
-          }
-        ]
-      ],
-      "questionNote": "柯里化把多参函数拆成多次调用，收齐 fn.length 个参数再执行；链式 add(1)(2)(3)() 是变体，空括号表示结束并返回累计和。"
-    },
-    {
-      "id": "q-impl-debounce",
-      "navLabel": "手写防抖",
-      "question": "手写防抖 debounce(fn, wait)",
-      "answer": [
-        [
-          {
-            "type": "code",
-            "value": "// debounce：每次触发均重置定时器，仅在停顿满 wait 毫秒后执行\nconst debounce = (fn, wait) => {\n  let t; // 保存定时器 id\n  return function (...args) {\n    clearTimeout(t); // 新一轮输入，取消上一次待执行回调\n    t = setTimeout(() => fn.apply(this, args), wait); // 保留调用方 this 与参数\n  };\n};"
-          }
-        ]
-      ],
-      "questionNote": "连续触发时仅在停止触发满 wait 毫秒后执行一次，适用于搜索联想、窗口 resize 等场景；须保留末次调用的参数与 this，内部宜用普通 function。"
-    },
-    {
-      "id": "q-impl-throttle",
-      "navLabel": "手写节流",
-      "question": "手写节流 throttle(fn, wait)",
-      "answer": [
-        [
-          {
-            "type": "code",
-            "value": "// 写法一：时间戳版——距上次执行满 wait 才放行，首次调用立即执行\nconst throttle = (fn, wait) => {\n  let prev = 0;\n  return function (...args) {\n    const now = Date.now();\n    if (now - prev >= wait) {\n      prev = now; // 记录本次执行时刻\n      fn.apply(this, args);\n    }\n  };\n};\n\n// 写法二：定时器版——执行后 wait 内忽略后续触发，适用于「执行完再冷却」\nconst throttleTimer = (fn, wait) => {\n  let t;\n  return function (...args) {\n    if (t) return; // 冷却期内\n    fn.apply(this, args); // 立即执行一次\n    t = setTimeout(() => {\n      t = null; // 冷却结束，允许下次触发\n    }, wait);\n  };\n};"
-          }
-        ]
-      ],
-      "questionNote": "wait 时间窗口内最多执行一次；时间戳版首击立即执行，定时器版执行后进入冷却期。按产品需求选择「首击必响」或「冷却后再响」。"
-    },
-    {
-      "id": "q-impl-flatten",
-      "navLabel": "数组扁平化",
-      "question": "实现 flatten(arr, depth)",
-      "answer": [
-        [
-          {
-            "type": "code",
-            "value": "// flatten：仍是数组且剩余深度 > 0 就继续递归，否则当作叶子元素\nconst flatten = (arr, d = Infinity) =>\n  arr.flatMap((v) =>\n    Array.isArray(v) && d > 0 ? flatten(v, d - 1) : [v],\n  );"
-          }
-        ]
-      ],
-      "questionNote": "按 depth 层数展开嵌套数组，depth 为 Infinity 时展开至叶子元素；递归配合 flatMap 写法简洁，大数组可改用迭代或栈以避免递归过深。"
-    },
-    {
-      "id": "q-impl-deep-clone",
-      "navLabel": "手写深拷贝",
-      "question": "手写深拷贝 clone(x)",
-      "answer": [
-        [
-          {
-            "type": "code",
-            "value": "// JSON.parse(JSON.stringify)：写法简单，但丢类型、不能处理循环引用\n// 递归 + WeakMap：在对象图上深拷贝，避免环导致栈溢出\nconst clone = (x, seen = new WeakMap()) => {\n  if (x == null || typeof x !== 'object') return x; // 原始值或 null\n  if (seen.has(x)) return seen.get(x); // 遇到环：返回已经建好的副本\n  if (Array.isArray(x)) {\n    const a = [];\n    seen.set(x, a); // 先登记，再递归填槽，处理自引用数组\n    x.forEach((v, i) => (a[i] = clone(v, seen)));\n    return a;\n  }\n  const o = {};\n  seen.set(x, o);\n  for (const k of Object.keys(x)) o[k] = clone(x[k], seen); // 只拷贝自有可枚举字符串键\n  return o;\n};"
-          }
-        ]
-      ],
-      "questionNote": "递归复制数组与普通对象，循环引用用 WeakMap 记录「原对象→副本」映射；须能说明 JSON 方案的局限：丢失函数、undefined、Symbol，且无法处理环与 Date/RegExp 等类型。"
     },
     {
       "id": "q-impl-event-emitter",

@@ -1,7 +1,7 @@
 import type { RichSegment } from '@/types/qa-content'
 
-/** 段内序号连接符：；2）…；9） 等（全角右括号） */
-const STEP_SPLIT_IN_TEXT = /；(?=\d+）)/
+/** 段内序号连接符：；2、…；9、 等（顿号） */
+const STEP_SPLIT_IN_TEXT = /；(?=\d+、)/
 
 function splitTextSegment(seg: Extract<RichSegment, { type: 'text' }>): RichSegment[] {
   const parts = seg.value.split(STEP_SPLIT_IN_TEXT)
@@ -31,15 +31,15 @@ function splitOneParagraph(segments: RichSegment[]): RichSegment[][] {
   return paragraphs.filter((p) => p.length > 0)
 }
 
-/** 将段内含 ；N） 的序号列表拆成多个段落；已按 JSON 拆好的段落幂等不变 */
+/** 将段内含 ；N、 的序号列表拆成多个段落；已按 JSON 拆好的段落幂等不变 */
 export function splitNumberedParagraphs(paragraphs: RichSegment[][]): RichSegment[][] {
   return paragraphs.flatMap((segments) => splitOneParagraph(segments))
 }
 
-/** 段落是否以「N）」序号开头（用于步骤样式） */
+/** 段落是否以「N、」序号开头（用于步骤样式） */
 export function isNumberedStepParagraph(segments: RichSegment[]): boolean {
   const first = segments.find((s) => s.type === 'text' || s.type === 'strong')
   if (!first) return false
-  if (first.type === 'text') return /^\d+）/.test(first.value.trimStart())
+  if (first.type === 'text') return /^\d+、/.test(first.value.trimStart())
   return false
 }

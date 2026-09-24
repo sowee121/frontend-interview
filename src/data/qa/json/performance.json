@@ -6,6 +6,136 @@
   "lead": "以白屏/首屏/卡顿为入口：拆包与懒加载解决加载，主线程与长列表解决运行，验收看 LCP、INP、CLS。",
   "items": [
     {
+      "id": "q-perf-overview",
+      "navLabel": "优化从哪说",
+      "question": "前端性能优化一般从哪些维度展开？",
+      "questionNote": "加载、运行时、网络与缓存、监控验收四个维度。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "常从加载、运行时、网络与验收四个维度展开。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "加载："
+          },
+          {
+            "type": "text",
+            "value": "路由/组件拆包、压缩与 Tree-shaking、图片体积与格式、关键请求并行与缓存。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "运行时："
+          },
+          {
+            "type": "text",
+            "value": "减少无效渲染、长列表虚拟化、主线程耗时任务拆分、合理防抖节流。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "网络："
+          },
+          {
+            "type": "text",
+            "value": "CDN、缓存策略、合并或减少请求、避免阻塞渲染的脚本。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "验收：看 LCP、INP、CLS 三项与白屏/首屏时间、接口耗时；有监控或前后对比数据更可靠。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-white-screen",
+      "navLabel": "白屏与首屏",
+      "question": "页面白屏时间长、首屏慢，通常如何排查与优化？",
+      "questionNote": "白屏偏首包与阻塞资源；首屏还叠加关键接口与渲染路径。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "先分清慢在资源下载、JS 执行，还是接口；再对症减体积、并行与骨架屏。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "排查："
+          },
+          {
+            "type": "text",
+            "value": "看首包体积、阻塞脚本、关键接口耗时；本地 Performance / Network 对照环境差异。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "手段："
+          },
+          {
+            "type": "text",
+            "value": "代码分割、压缩、图片优化、服务端或边缘缓存、SSR/骨架屏减少白屏感。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "渲染："
+          },
+          {
+            "type": "text",
+            "value": "避免首屏同步超大 JSON 解析与长任务；非关键模块延后执行。"
+          }
+        ]
+      ]
+    },
+    {
       "id": "q-longtask",
       "navLabel": "主线程卡顿",
       "question": "页面操作卡顿、滚动掉帧时，如何定位主线程耗时并优化？",
@@ -40,7 +170,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "strong",
@@ -70,7 +200,7 @@
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2、"
           },
           {
             "type": "strong",
@@ -92,7 +222,7 @@
         [
           {
             "type": "text",
-            "value": "3）"
+            "value": "3、"
           },
           {
             "type": "strong",
@@ -109,6 +239,73 @@
           {
             "type": "text",
             "value": " 超大 localStorage。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-gpu-composite",
+      "navLabel": "合成与硬件加速",
+      "question": "什么是合成层与硬件加速？位移为何常用 transform？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "部分样式变更可只做合成（composite），少触发布局与绘制；GPU 参与合成常被称作硬件加速。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、改 "
+          },
+          {
+            "type": "code",
+            "value": "left/top"
+          },
+          {
+            "type": "text",
+            "value": " 易引发重排；"
+          },
+          {
+            "type": "code",
+            "value": "transform"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "opacity"
+          },
+          {
+            "type": "text",
+            "value": " 更易走合成。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、过度 "
+          },
+          {
+            "type": "code",
+            "value": "will-change"
+          },
+          {
+            "type": "text",
+            "value": " 或盲目提层会占内存，应针对热路径。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、用 Performance 面板看 layers / paint，验证是否真减负。"
           }
         ]
       ]
@@ -132,7 +329,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "strong",
@@ -162,7 +359,7 @@
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2、"
           },
           {
             "type": "strong",
@@ -184,7 +381,7 @@
         [
           {
             "type": "text",
-            "value": "3）"
+            "value": "3、"
           },
           {
             "type": "strong",
@@ -206,7 +403,7 @@
         [
           {
             "type": "text",
-            "value": "4）"
+            "value": "4、"
           },
           {
             "type": "strong",
@@ -223,6 +420,66 @@
           {
             "type": "text",
             "value": " 提高优先级。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-lazyload",
+      "navLabel": "懒加载",
+      "question": "图片懒加载与路由懒加载分别解决什么问题？如何实现？",
+      "questionNote": "进入视口再请求、路由级拆包。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "图片懒加载推迟非首屏资源；路由懒加载按页拆包，降低首包体积。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "图片：进入视口再赋 src，可用 IntersectionObserver 或 loading=\"lazy\"；注意占位高度，防止布局抖动。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "路由："
+          },
+          {
+            "type": "code",
+            "value": "() => import(\"./Page\")"
+          },
+          {
+            "type": "text",
+            "value": " 一类动态导入，配合构建拆 chunk；首屏路由仍应优先加载。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "边界："
+          },
+          {
+            "type": "text",
+            "value": "首屏关键图不宜懒加载；拆包过细会增加请求次数，需结合首屏路径权衡。"
           }
         ]
       ]
@@ -246,7 +503,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "strong",
@@ -276,7 +533,7 @@
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2、"
           },
           {
             "type": "strong",
@@ -290,7 +547,7 @@
         [
           {
             "type": "text",
-            "value": "3）"
+            "value": "3、"
           },
           {
             "type": "strong",
@@ -354,7 +611,7 @@
         [
           {
             "type": "text",
-            "value": "1）按 "
+            "value": "1、按 "
           },
           {
             "type": "code",
@@ -392,7 +649,7 @@
         [
           {
             "type": "text",
-            "value": "2）交互简单可用分页或无限滚动 + 节流，本质是"
+            "value": "2、交互简单可用分页或无限滚动 + 节流，本质是"
           },
           {
             "type": "strong",
@@ -401,196 +658,6 @@
           {
             "type": "text",
             "value": "。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-third-party",
-      "navLabel": "第三方脚本",
-      "question": "统计/广告脚本拖慢页面怎么办？",
-      "questionNote": "延后加载、异步属性、审计体积；Partytown 等受兼容性限制。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "能不上就不上；必须上的尽量别抢首屏主线程。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）延后到 "
-          },
-          {
-            "type": "code",
-            "value": "load"
-          },
-          {
-            "type": "text",
-            "value": " 或 "
-          },
-          {
-            "type": "code",
-            "value": "requestIdleCallback"
-          },
-          {
-            "type": "text",
-            "value": " 再注入；用 "
-          },
-          {
-            "type": "code",
-            "value": "async/defer"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）能 "
-          },
-          {
-            "type": "code",
-            "value": "import()"
-          },
-          {
-            "type": "text",
-            "value": " 的走动态加载；可用 Partytown 等把脚本迁到 Worker（视兼容性）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）定期用打包分析看 bundle 里谁最大，和业务方对齐是否可删。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-monitor",
-      "navLabel": "性能监控",
-      "question": "线上性能监控通常关注哪些方面？",
-      "questionNote": "真实用户监控（RUM）与实验室 Lighthouse 互补；强调分位与维度切片。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "在真实用户环境打点，按版本、地区、机型切片，发现长尾问题。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）指标：先看核心网页指标（Core Web Vitals）——最大内容绘制（LCP）、交互到下次绘制（INP，2024 年起取代首次输入延迟 FID）、累积布局偏移（CLS）；再补首字节时间（TTFB）、首次内容绘制（FCP）、长任务、接口 P95 与白屏率。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）实现：用 PerformanceObserver 监听 largest-contentful-paint、longtask，用 web-vitals 库采集 INP / CLS 更省事。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）关页用 "
-          },
-          {
-            "type": "code",
-            "value": "navigator.sendBeacon"
-          },
-          {
-            "type": "text",
-            "value": " 尽量把队列发出去；与单次 Lighthouse 跑分互补，不宜仅依赖实验室数据。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-observability",
-      "navLabel": "埋点与可观测",
-      "question": "埋点、性能监控和错误上报怎么分工？",
-      "questionNote": "三者都上报，但目的不同：指标类型与消费方各异。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "埋点看「用户做了什么」，性能监控看「快不快、卡不卡」，错误上报看「哪里挂了」。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "行为埋点"
-          },
-          {
-            "type": "text",
-            "value": "：点击、曝光、漏斗转化，给产品/运营；注意采样与隐私合规。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "性能监控（RUM）：Core Web Vitals（LCP、INP、CLS）、接口耗时、白屏率；用 "
-          },
-          {
-            "type": "code",
-            "value": "PerformanceObserver"
-          },
-          {
-            "type": "text",
-            "value": " 采集，与 Lighthouse 互补。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "错误上报"
-          },
-          {
-            "type": "text",
-            "value": "：JS 异常、资源 404、接口 5xx；接 Sentry 等，带 release、路由、breadcrumb。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4）可共用 "
-          },
-          {
-            "type": "code",
-            "value": "sendBeacon"
-          },
-          {
-            "type": "text",
-            "value": " 通道，但指标定义与告警要分开，避免一个大盘塞所有字段。"
           }
         ]
       ]
@@ -668,10 +735,10 @@
       ]
     },
     {
-      "id": "q-perf-overview",
-      "navLabel": "优化从哪说",
-      "question": "前端性能优化一般从哪些维度展开？",
-      "questionNote": "加载、运行时、网络与缓存、监控验收四个维度。",
+      "id": "q-third-party",
+      "navLabel": "第三方脚本",
+      "question": "统计/广告脚本拖慢页面怎么办？",
+      "questionNote": "延后加载、异步属性、审计体积；Partytown 等受兼容性限制。",
       "answer": [
         [
           {
@@ -680,179 +747,179 @@
           },
           {
             "type": "text",
-            "value": "常从加载、运行时、网络与验收四个维度展开。"
+            "value": "能不上就不上；必须上的尽量别抢首屏主线程。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "加载："
-          },
-          {
-            "type": "text",
-            "value": "路由/组件拆包、压缩与 Tree-shaking、图片体积与格式、关键请求并行与缓存。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "运行时："
-          },
-          {
-            "type": "text",
-            "value": "减少无效渲染、长列表虚拟化、主线程耗时任务拆分、合理防抖节流。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "网络："
-          },
-          {
-            "type": "text",
-            "value": "CDN、缓存策略、合并或减少请求、避免阻塞渲染的脚本。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4）"
-          },
-          {
-            "type": "strong",
-            "value": "验收：看 LCP、INP、CLS 三项与白屏/首屏时间、接口耗时；有监控或前后对比数据更可靠。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-white-screen",
-      "navLabel": "白屏与首屏",
-      "question": "页面白屏时间长、首屏慢，通常如何排查与优化？",
-      "questionNote": "白屏偏首包与阻塞资源；首屏还叠加关键接口与渲染路径。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "先分清慢在资源下载、JS 执行，还是接口；再对症减体积、并行与骨架屏。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "排查："
-          },
-          {
-            "type": "text",
-            "value": "看首包体积、阻塞脚本、关键接口耗时；本地 Performance / Network 对照环境差异。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "手段："
-          },
-          {
-            "type": "text",
-            "value": "代码分割、压缩、图片优化、服务端或边缘缓存、SSR/骨架屏减少白屏感。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）"
-          },
-          {
-            "type": "strong",
-            "value": "渲染："
-          },
-          {
-            "type": "text",
-            "value": "避免首屏同步超大 JSON 解析与长任务；非关键模块延后执行。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-lazyload",
-      "navLabel": "懒加载",
-      "question": "图片懒加载与路由懒加载分别解决什么问题？如何实现？",
-      "questionNote": "进入视口再请求、路由级拆包。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "图片懒加载推迟非首屏资源；路由懒加载按页拆包，降低首包体积。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "strong",
-            "value": "图片：进入视口再赋 src，可用 IntersectionObserver 或 loading=\"lazy\"；注意占位高度，防止布局抖动。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "strong",
-            "value": "路由："
+            "value": "1、延后到 "
           },
           {
             "type": "code",
-            "value": "() => import(\"./Page\")"
+            "value": "load"
           },
           {
             "type": "text",
-            "value": " 一类动态导入，配合构建拆 chunk；首屏路由仍应优先加载。"
+            "value": " 或 "
+          },
+          {
+            "type": "code",
+            "value": "requestIdleCallback"
+          },
+          {
+            "type": "text",
+            "value": " 再注入；用 "
+          },
+          {
+            "type": "code",
+            "value": "async/defer"
+          },
+          {
+            "type": "text",
+            "value": "。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）"
+            "value": "2、能 "
           },
           {
-            "type": "strong",
-            "value": "边界："
+            "type": "code",
+            "value": "import()"
           },
           {
             "type": "text",
-            "value": "首屏关键图不宜懒加载；拆包过细会增加请求次数，需结合首屏路径权衡。"
+            "value": " 的走动态加载；可用 Partytown 等把脚本迁到 Worker（视兼容性）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、定期用打包分析看 bundle 里谁最大，和业务方对齐是否可删。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-monitor",
+      "navLabel": "性能监控",
+      "question": "线上性能监控通常关注哪些方面？",
+      "questionNote": "真实用户监控（RUM）与实验室 Lighthouse 互补；强调分位与维度切片。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "在真实用户环境打点，按版本、地区、机型切片，发现长尾问题。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、指标：先看核心网页指标（Core Web Vitals）——最大内容绘制（LCP）、交互到下次绘制（INP，2024 年起取代首次输入延迟 FID）、累积布局偏移（CLS）；再补首字节时间（TTFB）、首次内容绘制（FCP）、长任务、接口 P95 与白屏率。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、实现：用 PerformanceObserver 监听 largest-contentful-paint、longtask，用 web-vitals 库采集 INP / CLS 更省事。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、关页用 "
+          },
+          {
+            "type": "code",
+            "value": "navigator.sendBeacon"
+          },
+          {
+            "type": "text",
+            "value": " 尽量把队列发出去；与单次 Lighthouse 跑分互补，不宜仅依赖实验室数据。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-observability",
+      "navLabel": "埋点与可观测",
+      "question": "埋点、性能监控和错误上报怎么分工？",
+      "questionNote": "三者都上报，但目的不同：指标类型与消费方各异。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "埋点看「用户做了什么」，性能监控看「快不快、卡不卡」，错误上报看「哪里挂了」。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "行为埋点"
+          },
+          {
+            "type": "text",
+            "value": "：点击、曝光、漏斗转化，给产品/运营；注意采样与隐私合规。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "性能监控（RUM）：Core Web Vitals（LCP、INP、CLS）、接口耗时、白屏率；用 "
+          },
+          {
+            "type": "code",
+            "value": "PerformanceObserver"
+          },
+          {
+            "type": "text",
+            "value": " 采集，与 Lighthouse 互补。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "错误上报"
+          },
+          {
+            "type": "text",
+            "value": "：JS 异常、资源 404、接口 5xx；接 Sentry 等，带 release、路由、breadcrumb。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、可共用 "
+          },
+          {
+            "type": "code",
+            "value": "sendBeacon"
+          },
+          {
+            "type": "text",
+            "value": " 通道，但指标定义与告警要分开，避免一个大盘塞所有字段。"
           }
         ]
       ]

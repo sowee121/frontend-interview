@@ -24,7 +24,7 @@
         [
           {
             "type": "text",
-            "value": "1）仅在组件或自定义 hook 的顶层调用 hook，不要放进 "
+            "value": "1、仅在组件或自定义 hook 的顶层调用 hook，不要放进 "
           },
           {
             "type": "code",
@@ -46,7 +46,7 @@
         [
           {
             "type": "text",
-            "value": "2）条件逻辑应放进 "
+            "value": "2、条件逻辑应放进 "
           },
           {
             "type": "code",
@@ -310,6 +310,322 @@
       ]
     },
     {
+      "id": "q-synthetic-event",
+      "navLabel": "合成事件",
+      "question": "React 合成事件与原生事件有何不同？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "React 在根上委托监听，回调收到的是合成事件包装，行为跨浏览器更一致。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、多数事件冒泡到根再分发；"
+          },
+          {
+            "type": "code",
+            "value": "e.stopPropagation()"
+          },
+          {
+            "type": "text",
+            "value": " 停的是 React 树，未必停原生。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、与原生监听混用时注意顺序与是否 "
+          },
+          {
+            "type": "code",
+            "value": "nativeEvent"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、现代版本减少池化复用；异步里直接用事件字段一般更安全，仍建议先取所需值。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-effect",
+      "navLabel": "useEffect 依赖",
+      "question": "useEffect 的依赖数组应如何填写？",
+      "questionNote": "[] 挂载跑一次；[dep] 依赖变才跑；不传第二参数基本已淘汰（易死循环）。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "依赖数组决定 effect 重跑时机；[] 仅挂载执行，漏依赖会导致闭包陈旧值。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "useEffect(() => { ... }, [])"
+          },
+          {
+            "type": "text",
+            "value": "：依赖为空，"
+          },
+          {
+            "type": "strong",
+            "value": "挂载后执行一次"
+          },
+          {
+            "type": "text",
+            "value": "。适合拉配置、建订阅；返回清理函数在卸载时跑。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "[dep1, dep2]"
+          },
+          {
+            "type": "text",
+            "value": "：任一依赖变了再执行 effect + 清理。eslint-plugin-react-hooks 会提示漏依赖。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "不传第二参数"
+          },
+          {
+            "type": "text",
+            "value": "：每次渲染后都执行，容易 "
+          },
+          {
+            "type": "strong",
+            "value": "setState 死循环"
+          },
+          {
+            "type": "text",
+            "value": " 或多余请求，现在基本避免。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "闭包拿到旧 state 时：补依赖，或用函数式 "
+          },
+          {
+            "type": "code",
+            "value": "setState"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "useRef"
+          },
+          {
+            "type": "text",
+            "value": " 存最新值。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "清理时机：依赖变化时，React 会先执行上一次的清理函数，再运行新的 effect；组件卸载时执行最后一次清理。所以清理函数必须可重复执行，不要假设它只跑一次。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "依赖数组三种填法。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "useEffect(() => { /* 每次 commit 后 */ })\nuseEffect(() => { /* 仅挂载 */ }, [])\nuseEffect(() => {\n  fetchUser(id)\n}, [id]) // id 变才重跑"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-hooks-stale-closure",
+      "navLabel": "Hooks 闭包陷阱",
+      "question": "什么是 Hooks 闭包陷阱？如何避免？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "effect/回调捕获了过期的 props/state，读到陈旧值或漏掉更新。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、依赖数组列全会触发的值；用 eslint 规则辅助。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、定时器/订阅里需要最新值时用 ref 存当前值，或函数式 "
+          },
+          {
+            "type": "code",
+            "value": "setState"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、不必把所有函数塞进依赖；稳定回调用 "
+          },
+          {
+            "type": "code",
+            "value": "useCallback"
+          },
+          {
+            "type": "text",
+            "value": " 时同样要列对其闭包值。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-use-layout-effect",
+      "navLabel": "useLayoutEffect",
+      "question": "useLayoutEffect 与 useEffect 的执行时机有何差异？",
+      "questionNote": "useLayoutEffect 在绘制前同步执行，适合量 DOM 防闪烁；SSR 环境会告警。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "useEffect 在绘制后异步执行；useLayoutEffect 在绘制前同步执行，适合量 DOM 防闪烁。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "useEffect"
+          },
+          {
+            "type": "text",
+            "value": "：浏览器"
+          },
+          {
+            "type": "strong",
+            "value": "绘制之后"
+          },
+          {
+            "type": "text",
+            "value": "异步执行，不阻塞首帧。适合请求、订阅、非 DOM 敏感逻辑。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "useLayoutEffect"
+          },
+          {
+            "type": "text",
+            "value": "：DOM 更新后、"
+          },
+          {
+            "type": "strong",
+            "value": "绘制前"
+          },
+          {
+            "type": "text",
+            "value": "同步执行。可量 DOM 再改 state，避免 tooltip 位置闪烁。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "会阻塞浏览器绘制，不宜写入重逻辑；多数副作用使用 "
+          },
+          {
+            "type": "code",
+            "value": "useEffect"
+          },
+          {
+            "type": "text",
+            "value": " 即可。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "服务端渲染（SSR）时 "
+          },
+          {
+            "type": "code",
+            "value": "useLayoutEffect"
+          },
+          {
+            "type": "text",
+            "value": " 会告警，客户端专用逻辑改用 "
+          },
+          {
+            "type": "code",
+            "value": "useEffect"
+          },
+          {
+            "type": "text",
+            "value": " 或动态 import。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "读布局放 layout，避免闪烁。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "useLayoutEffect(() => {\n  const h = boxRef.current.getBoundingClientRect().height\n  setHeight(h) // 浏览器绘制前同步改\n}, [])"
+          }
+        ]
+      ]
+    },
+    {
       "id": "q-memo",
       "navLabel": "memo / useMemo / useCallback",
       "question": "React.memo、useMemo、useCallback 区别？",
@@ -450,220 +766,6 @@
       ]
     },
     {
-      "id": "q-effect",
-      "navLabel": "useEffect 依赖",
-      "question": "useEffect 的依赖数组应如何填写？",
-      "questionNote": "[] 挂载跑一次；[dep] 依赖变才跑；不传第二参数基本已淘汰（易死循环）。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "依赖数组决定 effect 重跑时机；[] 仅挂载执行，漏依赖会导致闭包陈旧值。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "useEffect(() => { ... }, [])"
-          },
-          {
-            "type": "text",
-            "value": "：依赖为空，"
-          },
-          {
-            "type": "strong",
-            "value": "挂载后执行一次"
-          },
-          {
-            "type": "text",
-            "value": "。适合拉配置、建订阅；返回清理函数在卸载时跑。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "[dep1, dep2]"
-          },
-          {
-            "type": "text",
-            "value": "：任一依赖变了再执行 effect + 清理。eslint-plugin-react-hooks 会提示漏依赖。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "不传第二参数"
-          },
-          {
-            "type": "text",
-            "value": "：每次渲染后都执行，容易 "
-          },
-          {
-            "type": "strong",
-            "value": "setState 死循环"
-          },
-          {
-            "type": "text",
-            "value": " 或多余请求，现在基本避免。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "闭包拿到旧 state 时：补依赖，或用函数式 "
-          },
-          {
-            "type": "code",
-            "value": "setState"
-          },
-          {
-            "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "useRef"
-          },
-          {
-            "type": "text",
-            "value": " 存最新值。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "清理时机：依赖变化时，React 会先执行上一次的清理函数，再运行新的 effect；组件卸载时执行最后一次清理。所以清理函数必须可重复执行，不要假设它只跑一次。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "依赖数组三种填法。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "useEffect(() => { /* 每次 commit 后 */ })\nuseEffect(() => { /* 仅挂载 */ }, [])\nuseEffect(() => {\n  fetchUser(id)\n}, [id]) // id 变才重跑"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-use-layout-effect",
-      "navLabel": "useLayoutEffect",
-      "question": "useLayoutEffect 与 useEffect 的执行时机有何差异？",
-      "questionNote": "useLayoutEffect 在绘制前同步执行，适合量 DOM 防闪烁；SSR 环境会告警。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "useEffect 在绘制后异步执行；useLayoutEffect 在绘制前同步执行，适合量 DOM 防闪烁。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "useEffect"
-          },
-          {
-            "type": "text",
-            "value": "：浏览器"
-          },
-          {
-            "type": "strong",
-            "value": "绘制之后"
-          },
-          {
-            "type": "text",
-            "value": "异步执行，不阻塞首帧。适合请求、订阅、非 DOM 敏感逻辑。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "useLayoutEffect"
-          },
-          {
-            "type": "text",
-            "value": "：DOM 更新后、"
-          },
-          {
-            "type": "strong",
-            "value": "绘制前"
-          },
-          {
-            "type": "text",
-            "value": "同步执行。可量 DOM 再改 state，避免 tooltip 位置闪烁。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "会阻塞浏览器绘制，不宜写入重逻辑；多数副作用使用 "
-          },
-          {
-            "type": "code",
-            "value": "useEffect"
-          },
-          {
-            "type": "text",
-            "value": " 即可。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "服务端渲染（SSR）时 "
-          },
-          {
-            "type": "code",
-            "value": "useLayoutEffect"
-          },
-          {
-            "type": "text",
-            "value": " 会告警，客户端专用逻辑改用 "
-          },
-          {
-            "type": "code",
-            "value": "useEffect"
-          },
-          {
-            "type": "text",
-            "value": " 或动态 import。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "读布局放 layout，避免闪烁。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "useLayoutEffect(() => {\n  const h = boxRef.current.getBoundingClientRect().height\n  setHeight(h) // 浏览器绘制前同步改\n}, [])"
-          }
-        ]
-      ]
-    },
-    {
       "id": "q-context",
       "navLabel": "Context",
       "question": "Context 适用于哪些场景？如何避免不必要的 re-render？",
@@ -704,13 +806,13 @@
         [
           {
             "type": "text",
-            "value": "1）将 value 拆成多个 Context，读写分离。"
+            "value": "1、将 value 拆成多个 Context，读写分离。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2、"
           },
           {
             "type": "code",
@@ -772,7 +874,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "code",
@@ -794,7 +896,7 @@
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2、"
           },
           {
             "type": "code",
@@ -816,7 +918,7 @@
         [
           {
             "type": "text",
-            "value": "3）复杂表单、多步向导、状态机式 UI 用它可减少 effect 里的大量 "
+            "value": "3、复杂表单、多步向导、状态机式 UI 用它可减少 effect 里的大量 "
           },
           {
             "type": "code",
@@ -830,7 +932,7 @@
         [
           {
             "type": "text",
-            "value": "4）规模更大时选 Zustand / Redux；不宜为用而用 reducer。"
+            "value": "4、规模更大时选 Zustand / Redux；不宜为用而用 reducer。"
           }
         ]
       ]
@@ -916,19 +1018,19 @@
         [
           {
             "type": "text",
-            "value": "1）中小项目、需快速接入全局状态：Zustand 接入成本低。"
+            "value": "1、中小项目、需快速接入全局状态：Zustand 接入成本低。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）大型团队、强规范、中间件生态、时间旅行调试：Redux + RTK 仍常见。"
+            "value": "2、大型团队、强规范、中间件生态、时间旅行调试：Redux + RTK 仍常见。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）低频配置用 Context；组件内简单状态用 useState/useReducer。"
+            "value": "3、低频配置用 Context；组件内简单状态用 useState/useReducer。"
           }
         ]
       ]
@@ -1047,6 +1149,57 @@
           {
             "type": "text",
             "value": "服务端渲染（SSR）时目标容器需在服务端存在，或在客户端 mount 后再 createPortal。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-error-boundary",
+      "navLabel": "错误边界",
+      "question": "React 错误边界能捕获什么？怎么用？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "错误边界是类组件，捕获子树渲染/生命周期/构造中的错误，展示降级 UI。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、实现 "
+          },
+          {
+            "type": "code",
+            "value": "getDerivedStateFromError"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "componentDidCatch"
+          },
+          {
+            "type": "text",
+            "value": "；函数组件本身不能做边界。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、捕不到：事件处理、异步回调、服务端、边界自身错误——那些要自行 try/catch 或上报。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、按路由或模块包裹，避免整树白屏；日志送监控。"
           }
         ]
       ]

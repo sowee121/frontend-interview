@@ -6,436 +6,6 @@
   "lead": "先 Vue 2 的生命周期与响应式边界，再对比总览，最后是 Vue 3 组合式 API 与 Pinia 生态。",
   "items": [
     {
-      "id": "q-ref-reactive",
-      "navLabel": "ref 和 reactive",
-      "question": "Vue 3 中 ref 与 reactive 应如何选择？",
-      "questionNote": "「基本类型 vs 对象」与「解构丢失响应式」两个要点。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "基本类型优先 "
-          },
-          {
-            "type": "code",
-            "value": "ref"
-          },
-          {
-            "type": "text",
-            "value": "；整包对象用 "
-          },
-          {
-            "type": "code",
-            "value": "reactive"
-          },
-          {
-            "type": "text",
-            "value": "，但解构需配合 "
-          },
-          {
-            "type": "code",
-            "value": "toRefs"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "ref(0)"
-          },
-          {
-            "type": "text",
-            "value": " 也可包装对象；脚本中读写需 "
-          },
-          {
-            "type": "code",
-            "value": ".value"
-          },
-          {
-            "type": "text",
-            "value": "，模板中自动解包，适合单个值或需要整体替换引用的场景。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "reactive({ count: 0 })"
-          },
-          {
-            "type": "text",
-            "value": " 返回 Proxy 代理对象，修改属性直接触发更新；解构会丢失响应式，需 "
-          },
-          {
-            "type": "code",
-            "value": "toRefs"
-          },
-          {
-            "type": "text",
-            "value": " 或 "
-          },
-          {
-            "type": "code",
-            "value": "storeToRefs"
-          },
-          {
-            "type": "text",
-            "value": "（Pinia）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "工程实践：表单字段、开关等多用 ref；复杂对象状态可用 reactive，传给子组件时尽量传递对象引用而非解构后的裸值。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "ref 需 .value；解构 reactive 用 toRefs。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "const count = ref(0)\ncount.value++\n\nconst state = reactive({ n: 1 })\n// 错：解构丢代理\n// let { n } = state\nconst { n } = toRefs(state)\nn.value++"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-composition",
-      "navLabel": "组合式 API",
-      "question": "组合式 API（Composition API）解决了什么问题？为什么更适合复杂业务？",
-      "questionNote": "对比选项式「逻辑按选项类型分散」，强调按功能聚合与跨组件复用。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "组合式 API 按功能聚合逻辑，便于跨组件复用 composable，类型推断优于选项式。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）逻辑聚合：同一功能的 state、computed、watch 收敛到一个 "
-          },
-          {
-            "type": "code",
-            "value": "useXxx()"
-          },
-          {
-            "type": "text",
-            "value": "，而不是按 data / methods / mounted 等选项类型分散在各处。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）类型：返回值即类型，和 TypeScript 推断更贴合，避免选项式里 "
-          },
-          {
-            "type": "code",
-            "value": "this"
-          },
-          {
-            "type": "text",
-            "value": " 的类型体操。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）取舍：复杂页面（权限、表格、弹窗交织）用组合式可读性更好；简单展示组件继续选项式亦可。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-teleport",
-      "navLabel": "Teleport",
-      "question": "Teleport 用来解决啥问题？",
-      "answer": [
-        [
-          {
-            "type": "text",
-            "value": "模态框、抽屉、Toast 往往要挂到 "
-          },
-          {
-            "type": "code",
-            "value": "body"
-          },
-          {
-            "type": "text",
-            "value": " 下，避免父级 "
-          },
-          {
-            "type": "code",
-            "value": "overflow: hidden"
-          },
-          {
-            "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "z-index"
-          },
-          {
-            "type": "text",
-            "value": " 或 transform 新建层叠上下文导致盖不住全页。"
-          },
-          {
-            "type": "code",
-            "value": "<Teleport to=\"body\">"
-          },
-          {
-            "type": "text",
-            "value": " 把子树渲染到目标容器，逻辑仍在原组件，事件冒泡仍可按 Vue 规则理解（具体边界可查文档）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "SSR 时注意目标节点在服务端是否存在；可配合 "
-          },
-          {
-            "type": "code",
-            "value": "disabled"
-          },
-          {
-            "type": "text",
-            "value": " 属性在测试或降级时留在原地渲染。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-style-deep",
-      "navLabel": "样式穿透",
-      "question": "Vue 单文件 scoped CSS 怎么改子组件内部样式？",
-      "answer": [
-        [
-          {
-            "type": "text",
-            "value": "Vue 3 推荐 "
-          },
-          {
-            "type": "code",
-            "value": ":deep(.child .inner)"
-          },
-          {
-            "type": "text",
-            "value": "（仅无参的 "
-          },
-          {
-            "type": "code",
-            "value": "::v-deep"
-          },
-          {
-            "type": "text",
-            "value": " 组合器写法已废弃，带参数的 "
-          },
-          {
-            "type": "code",
-            "value": "::v-deep(.x)"
-          },
-          {
-            "type": "text",
-            "value": " 仍等价）。原理是编译为 "
-          },
-          {
-            "type": "code",
-            "value": "[data-v-hash] .child .inner"
-          },
-          {
-            "type": "text",
-            "value": "——scoped 属性只加在外层选择器上，被选中的后代不再加，从而穿透样式隔离。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "正因为穿透会直接作用到子组件内部，很容易在子组件改版后误伤；能改子组件 API（"
-          },
-          {
-            "type": "code",
-            "value": "props"
-          },
-          {
-            "type": "text",
-            "value": " 换主题变量）就优先别穿透，改第三方库时穿透是最后手段，升级库易碎。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-reactivity-track",
-      "navLabel": "依赖收集",
-      "question": "请说明 Vue 3 响应式中「依赖收集 / 触发更新」的机制。",
-      "questionNote": "三条主线：get 收集、set 触发、调度队列批量刷新。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "Vue 3 用 Proxy 拦截读写。组件渲染或 computed 执行时，读到的属性进入 "
-          },
-          {
-            "type": "strong",
-            "value": "依赖收集（track）"
-          },
-          {
-            "type": "text",
-            "value": "，记录到当前活跃的副作用函数（effect）上。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "属性变更时执行 "
-          },
-          {
-            "type": "strong",
-            "value": "触发更新（trigger）"
-          },
-          {
-            "type": "text",
-            "value": "，使相关 effect 重新执行；调度器将多个 effect 放入队列，同一事件循环内批量刷新 DOM。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "执行顺序：读 → 收集依赖 → 写 → 触发更新 → 异步批量刷新。对比 Vue 2 的 Dep/Watcher 模型，概念相通，实现换为 Proxy。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-vue2-lifecycle",
-      "navLabel": "生命周期",
-      "question": "Vue 2 生命周期有哪些？各阶段适合执行哪些操作？",
-      "questionNote": "主线是「何时有 DOM、何时适合请求/绑事件/清理」，而非钩子名单顺次。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "create（无 DOM）→ mount（有 DOM）→ update（数据驱动重渲染）→ destroy（清理）。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "beforeCreate/created"
-          },
-          {
-            "type": "text",
-            "value": "：实例初始化，"
-          },
-          {
-            "type": "strong",
-            "value": "尚无法访问真实 DOM"
-          },
-          {
-            "type": "text",
-            "value": "。可做数据初始化、发起不依赖 DOM 的请求。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "beforeMount/mounted"
-          },
-          {
-            "type": "text",
-            "value": "：挂载前后。"
-          },
-          {
-            "type": "code",
-            "value": "mounted"
-          },
-          {
-            "type": "text",
-            "value": " 后可安全读写 DOM、接入第三方库、测量尺寸、绑定事件。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "beforeUpdate/updated"
-          },
-          {
-            "type": "text",
-            "value": "：更新前后。不宜在 "
-          },
-          {
-            "type": "code",
-            "value": "updated"
-          },
-          {
-            "type": "text",
-            "value": " 中无条件修改数据，易引发循环；针对具体字段优先使用 "
-          },
-          {
-            "type": "code",
-            "value": "watch"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "beforeDestroy/destroyed"
-          },
-          {
-            "type": "text",
-            "value": "：销毁前后，清理定时器、解绑事件、取消订阅/请求，避免内存泄漏。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "常用钩子的典型用途。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "created() { /* 读路由、拉数，DOM 还没有 */ }\nmounted() { /* 绑第三方、量 DOM */ }\nbeforeDestroy() { /* 清定时器、解绑 */ }"
-          }
-        ]
-      ]
-    },
-    {
       "id": "q-vue2-reactivity-core",
       "navLabel": "响应式原理",
       "question": "请说明 Vue 2 响应式原理，以及 Dep/Watcher 各自承担什么职责。",
@@ -536,7 +106,7 @@
         [
           {
             "type": "text",
-            "value": "1）新增：使用 "
+            "value": "1、新增：使用 "
           },
           {
             "type": "code",
@@ -558,7 +128,7 @@
         [
           {
             "type": "text",
-            "value": "2）删除：使用 "
+            "value": "2、删除：使用 "
           },
           {
             "type": "code",
@@ -716,10 +286,10 @@
       ]
     },
     {
-      "id": "q-vue2-communication",
-      "navLabel": "组件通信",
-      "question": "Vue 2 常见组件通信方式有哪些？各自适用场景？",
-      "questionNote": "按层级选方案：父子 props/emit 最主流，跨层 provide/inject 或状态提升。",
+      "id": "q-reactivity-track",
+      "navLabel": "依赖收集",
+      "question": "请说明 Vue 3 响应式中「依赖收集 / 触发更新」的机制。",
+      "questionNote": "三条主线：get 收集、set 触发、调度队列批量刷新。",
       "answer": [
         [
           {
@@ -728,84 +298,44 @@
           },
           {
             "type": "text",
-            "value": "父子用 props/$emit；跨层 provide/inject；复杂共享状态用 Vuex 或状态提升。"
-          }
-        ],
-        [
+            "value": "Vue 3 用 Proxy 拦截读写。组件渲染或 computed 执行时，读到的属性进入 "
+          },
           {
             "type": "strong",
-            "value": "父子："
+            "value": "依赖收集（track）"
           },
           {
             "type": "text",
-            "value": "props 向下、"
-          },
-          {
-            "type": "code",
-            "value": "$emit"
-          },
-          {
-            "type": "text",
-            "value": " 向上，单向数据流，最常用。"
+            "value": "，记录到当前活跃的副作用函数（effect）上。"
           }
         ],
         [
+          {
+            "type": "text",
+            "value": "属性变更时执行 "
+          },
           {
             "type": "strong",
-            "value": "多层级："
+            "value": "触发更新（trigger）"
           },
           {
             "type": "text",
-            "value": "provide/inject 做依赖注入，适合主题、表单上下文、插件式场景。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "兄弟/跨层："
-          },
-          {
-            "type": "text",
-            "value": "事件总线（"
-          },
-          {
-            "type": "code",
-            "value": "new Vue()"
-          },
-          {
-            "type": "text",
-            "value": " 当 bus）可用但难维护；复杂应用用 Vuex 或把状态提升到共同祖先。"
+            "value": "，使相关 effect 重新执行；调度器将多个 effect 放入队列，同一事件循环内批量刷新 DOM。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "补充："
-          },
-          {
-            "type": "code",
-            "value": "$attrs/$listeners"
-          },
-          {
-            "type": "text",
-            "value": " 用于二次封装透传；"
-          },
-          {
-            "type": "code",
-            "value": "$parent/$refs"
-          },
-          {
-            "type": "text",
-            "value": " 强耦合，老项目常见，新代码不推荐。"
+            "value": "执行顺序：读 → 收集依赖 → 写 → 触发更新 → 异步批量刷新。对比 Vue 2 的 Dep/Watcher 模型，概念相通，实现换为 Proxy。"
           }
         ]
       ]
     },
     {
-      "id": "q-vue2-vuex",
-      "navLabel": "Vuex",
-      "question": "Vuex 核心概念有哪些？与组件内 data 如何分工？",
-      "questionNote": "Vuex 仅用于维护存量 Vue 2 项目；新项目优先 Pinia。",
+      "id": "q-vue2-lifecycle",
+      "navLabel": "生命周期",
+      "question": "Vue 2 生命周期有哪些？各阶段适合执行哪些操作？",
+      "questionNote": "主线是「何时有 DOM、何时适合请求/绑事件/清理」，而非钩子名单顺次。",
       "answer": [
         [
           {
@@ -814,60 +344,104 @@
           },
           {
             "type": "text",
-            "value": "Vuex 是 Vue 2 时代的官方方案，以单一 state 为中心，mutation 同步改 state，action 处理异步再 commit。"
+            "value": "create（无 DOM）→ mount（有 DOM）→ update（数据驱动重渲染）→ destroy（清理）。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "beforeCreate/created"
+          },
+          {
+            "type": "text",
+            "value": "：实例初始化，"
+          },
+          {
+            "type": "strong",
+            "value": "尚无法访问真实 DOM"
+          },
+          {
+            "type": "text",
+            "value": "。可做数据初始化、发起不依赖 DOM 的请求。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "beforeMount/mounted"
+          },
+          {
+            "type": "text",
+            "value": "：挂载前后。"
+          },
+          {
+            "type": "code",
+            "value": "mounted"
+          },
+          {
+            "type": "text",
+            "value": " 后可安全读写 DOM、接入第三方库、测量尺寸、绑定事件。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "beforeUpdate/updated"
+          },
+          {
+            "type": "text",
+            "value": "：更新前后。不宜在 "
+          },
+          {
+            "type": "code",
+            "value": "updated"
+          },
+          {
+            "type": "text",
+            "value": " 中无条件修改数据，易引发循环；针对具体字段优先使用 "
+          },
+          {
+            "type": "code",
+            "value": "watch"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "beforeDestroy/destroyed"
+          },
+          {
+            "type": "text",
+            "value": "：销毁前后，清理定时器、解绑事件、取消订阅/请求，避免内存泄漏。"
           }
         ],
         [
           {
             "type": "strong",
-            "value": "核心："
+            "value": "示例："
           },
           {
             "type": "text",
-            "value": "state（单一数据源）、getters（派生状态）、mutations（同步改 state）、actions（异步，再 commit mutation）、modules（分模块）。"
+            "value": "常用钩子的典型用途。"
           }
         ],
         [
-          {
-            "type": "text",
-            "value": "1）组件用 "
-          },
           {
             "type": "code",
-            "value": "mapState"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "mapActions"
-          },
-          {
-            "type": "text",
-            "value": " 等辅助函数接入；流程：view dispatch action → commit mutation → state 变 → 视图更新。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）放 Vuex：多页面共享的用户/权限/购物车等；放组件：仅本组件 UI 状态。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）mutation 必须同步，异步逻辑写在 action；严格模式开发可检测非法直接改 state。"
+            "value": "created() { /* 读路由、拉数，DOM 还没有 */ }\nmounted() { /* 绑第三方、量 DOM */ }\nbeforeDestroy() { /* 清定时器、解绑 */ }"
           }
         ]
       ]
     },
     {
-      "id": "q-vue2-vmodel",
-      "navLabel": "v-model（Vue2）",
-      "question": "Vue 2 自定义组件上的 v-model 如何工作？如何自定义？",
-      "questionNote": "Vue 2 默认 prop 是 value、事件是 input；Vue 3 改为 modelValue。",
+      "id": "q-vue2-nexttick",
+      "navLabel": "nextTick（Vue2）",
+      "question": "Vue 2 的 nextTick 是做什么的？常见使用场景？",
+      "questionNote": "数据变了 DOM 还没刷完时用；同一事件循环内多次改数据会合并更新。",
       "answer": [
         [
           {
@@ -876,59 +450,31 @@
           },
           {
             "type": "text",
-            "value": "父组件 "
+            "value": "Vue 2 更新 DOM 是"
           },
           {
-            "type": "code",
-            "value": "v-model"
-          },
-          {
-            "type": "text",
-            "value": " 等价于传 "
-          },
-          {
-            "type": "code",
-            "value": "value"
+            "type": "strong",
+            "value": "异步批量"
           },
           {
             "type": "text",
-            "value": "、监听 "
-          },
+            "value": "的。同一事件循环内多次改数据会合并刷新，改完立刻读 DOM 可能还是旧的。"
+          }
+        ],
+        [
           {
             "type": "code",
-            "value": "input"
+            "value": "this.$nextTick(() => { /* 读写更新后的 DOM */ })"
           },
           {
             "type": "text",
-            "value": " 事件。"
+            "value": " 把回调排到本轮 DOM 更新完成之后执行。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "子组件通过 "
-          },
-          {
-            "type": "code",
-            "value": "this.$emit('input', newValue)"
-          },
-          {
-            "type": "text",
-            "value": " 回传更新，父级 state 随之变化，形成双向绑定语法糖。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "自定义 prop/event：组件选项里写 "
-          },
-          {
-            "type": "code",
-            "value": "model: { prop: 'checked', event: 'change' }"
-          },
-          {
-            "type": "text",
-            "value": "，常见于 checkbox、select 等非 value 控件。"
+            "value": "常见场景：滚到某元素、聚焦 input、获取元素尺寸、初始化依赖 DOM 的三方库（图表、编辑器等）。"
           }
         ]
       ]
@@ -1014,10 +560,10 @@
       ]
     },
     {
-      "id": "q-vue2-nexttick",
-      "navLabel": "nextTick（Vue2）",
-      "question": "Vue 2 的 nextTick 是做什么的？常见使用场景？",
-      "questionNote": "数据变了 DOM 还没刷完时用；同一事件循环内多次改数据会合并更新。",
+      "id": "q-vue2-vmodel",
+      "navLabel": "v-model（Vue2）",
+      "question": "Vue 2 自定义组件上的 v-model 如何工作？如何自定义？",
+      "questionNote": "Vue 2 默认 prop 是 value、事件是 input；Vue 3 改为 modelValue。",
       "answer": [
         [
           {
@@ -1026,31 +572,287 @@
           },
           {
             "type": "text",
-            "value": "Vue 2 更新 DOM 是"
+            "value": "父组件 "
           },
-          {
-            "type": "strong",
-            "value": "异步批量"
-          },
-          {
-            "type": "text",
-            "value": "的。同一事件循环内多次改数据会合并刷新，改完立刻读 DOM 可能还是旧的。"
-          }
-        ],
-        [
           {
             "type": "code",
-            "value": "this.$nextTick(() => { /* 读写更新后的 DOM */ })"
+            "value": "v-model"
           },
           {
             "type": "text",
-            "value": " 把回调排到本轮 DOM 更新完成之后执行。"
+            "value": " 等价于传 "
+          },
+          {
+            "type": "code",
+            "value": "value"
+          },
+          {
+            "type": "text",
+            "value": "、监听 "
+          },
+          {
+            "type": "code",
+            "value": "input"
+          },
+          {
+            "type": "text",
+            "value": " 事件。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "常见场景：滚到某元素、聚焦 input、获取元素尺寸、初始化依赖 DOM 的三方库（图表、编辑器等）。"
+            "value": "子组件通过 "
+          },
+          {
+            "type": "code",
+            "value": "this.$emit('input', newValue)"
+          },
+          {
+            "type": "text",
+            "value": " 回传更新，父级 state 随之变化，形成双向绑定语法糖。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "自定义 prop/event：组件选项里写 "
+          },
+          {
+            "type": "code",
+            "value": "model: { prop: 'checked', event: 'change' }"
+          },
+          {
+            "type": "text",
+            "value": "，常见于 checkbox、select 等非 value 控件。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-vif-vfor",
+      "navLabel": "v-if 与 v-for",
+      "question": "为什么不建议在同一元素上同时用 v-if 和 v-for？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "同节点时优先级与预期易混，造成多余遍历或难读的渲染逻辑。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、Vue 3："
+          },
+          {
+            "type": "code",
+            "value": "v-if"
+          },
+          {
+            "type": "text",
+            "value": " 优先于 "
+          },
+          {
+            "type": "code",
+            "value": "v-for"
+          },
+          {
+            "type": "text",
+            "value": "，可能根本拿不到循环变量。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、做法：外层 "
+          },
+          {
+            "type": "code",
+            "value": "template"
+          },
+          {
+            "type": "text",
+            "value": " 上 "
+          },
+          {
+            "type": "code",
+            "value": "v-for"
+          },
+          {
+            "type": "text",
+            "value": "，内层元素 "
+          },
+          {
+            "type": "code",
+            "value": "v-if"
+          },
+          {
+            "type": "text",
+            "value": "；或先 "
+          },
+          {
+            "type": "code",
+            "value": "computed"
+          },
+          {
+            "type": "text",
+            "value": " 过滤再遍历。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、列表很大时先过滤能少造虚拟节点。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-slot",
+      "navLabel": "插槽 slot",
+      "question": "Vue 插槽是什么？默认插槽与具名、作用域插槽怎么用？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "插槽让父组件向子组件预定位置填内容，实现布局型复用。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、默认插槽填无名内容；具名插槽对应 "
+          },
+          {
+            "type": "code",
+            "value": "name"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、作用域插槽：子向父暴露数据，父用插槽 props 自定义行渲染（表格列）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "code",
+            "value": "v-slot"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "#"
+          },
+          {
+            "type": "text",
+            "value": " 简写；和 props 分工：数据向下用 props，结构坑位用插槽。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-vue2-communication",
+      "navLabel": "组件通信",
+      "question": "Vue 2 常见组件通信方式有哪些？各自适用场景？",
+      "questionNote": "按层级选方案：父子 props/emit 最主流，跨层 provide/inject 或状态提升。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "父子用 props/$emit；跨层 provide/inject；复杂共享状态用 Vuex 或状态提升。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "父子："
+          },
+          {
+            "type": "text",
+            "value": "props 向下、"
+          },
+          {
+            "type": "code",
+            "value": "$emit"
+          },
+          {
+            "type": "text",
+            "value": " 向上，单向数据流，最常用。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "多层级："
+          },
+          {
+            "type": "text",
+            "value": "provide/inject 做依赖注入，适合主题、表单上下文、插件式场景。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "兄弟/跨层："
+          },
+          {
+            "type": "text",
+            "value": "事件总线（"
+          },
+          {
+            "type": "code",
+            "value": "new Vue()"
+          },
+          {
+            "type": "text",
+            "value": " 当 bus）可用但难维护；复杂应用用 Vuex 或把状态提升到共同祖先。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "补充："
+          },
+          {
+            "type": "code",
+            "value": "$attrs/$listeners"
+          },
+          {
+            "type": "text",
+            "value": " 用于二次封装透传；"
+          },
+          {
+            "type": "code",
+            "value": "$parent/$refs"
+          },
+          {
+            "type": "text",
+            "value": " 强耦合，老项目常见，新代码不推荐。"
           }
         ]
       ]
@@ -1166,7 +968,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "strong",
@@ -1180,7 +982,7 @@
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2、"
           },
           {
             "type": "strong",
@@ -1194,7 +996,7 @@
         [
           {
             "type": "text",
-            "value": "3）"
+            "value": "3、"
           },
           {
             "type": "strong",
@@ -1208,7 +1010,7 @@
         [
           {
             "type": "text",
-            "value": "4）"
+            "value": "4、"
           },
           {
             "type": "strong",
@@ -1222,6 +1024,127 @@
       ]
     },
     {
+      "id": "q-style-deep",
+      "navLabel": "样式穿透",
+      "question": "Vue 单文件 scoped CSS 怎么改子组件内部样式？",
+      "answer": [
+        [
+          {
+            "type": "text",
+            "value": "Vue 3 推荐 "
+          },
+          {
+            "type": "code",
+            "value": ":deep(.child .inner)"
+          },
+          {
+            "type": "text",
+            "value": "（仅无参的 "
+          },
+          {
+            "type": "code",
+            "value": "::v-deep"
+          },
+          {
+            "type": "text",
+            "value": " 组合器写法已废弃，带参数的 "
+          },
+          {
+            "type": "code",
+            "value": "::v-deep(.x)"
+          },
+          {
+            "type": "text",
+            "value": " 仍等价）。原理是编译为 "
+          },
+          {
+            "type": "code",
+            "value": "[data-v-hash] .child .inner"
+          },
+          {
+            "type": "text",
+            "value": "——scoped 属性只加在外层选择器上，被选中的后代不再加，从而穿透样式隔离。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "正因为穿透会直接作用到子组件内部，很容易在子组件改版后误伤；能改子组件 API（"
+          },
+          {
+            "type": "code",
+            "value": "props"
+          },
+          {
+            "type": "text",
+            "value": " 换主题变量）就优先别穿透，改第三方库时穿透是最后手段，升级库易碎。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-vue2-vuex",
+      "navLabel": "Vuex",
+      "question": "Vuex 核心概念有哪些？与组件内 data 如何分工？",
+      "questionNote": "Vuex 仅用于维护存量 Vue 2 项目；新项目优先 Pinia。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "Vuex 是 Vue 2 时代的官方方案，以单一 state 为中心，mutation 同步改 state，action 处理异步再 commit。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "核心："
+          },
+          {
+            "type": "text",
+            "value": "state（单一数据源）、getters（派生状态）、mutations（同步改 state）、actions（异步，再 commit mutation）、modules（分模块）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、组件用 "
+          },
+          {
+            "type": "code",
+            "value": "mapState"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "mapActions"
+          },
+          {
+            "type": "text",
+            "value": " 等辅助函数接入；流程：view dispatch action → commit mutation → state 变 → 视图更新。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、放 Vuex：多页面共享的用户/权限/购物车等；放组件：仅本组件 UI 状态。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、mutation 必须同步，异步逻辑写在 action；严格模式开发可检测非法直接改 state。"
+          }
+        ]
+      ]
+    },
+    {
       "id": "q-vue3-vs-vue2-overview",
       "navLabel": "相对 Vue2 变化",
       "question": "Vue 3 相对 Vue 2 的关键变化有哪些？（只做总览，不展开重复题）",
@@ -1230,7 +1153,7 @@
         [
           {
             "type": "strong",
-            "value": "1）响应式："
+            "value": "1、响应式："
           },
           {
             "type": "code",
@@ -1260,7 +1183,7 @@
         [
           {
             "type": "strong",
-            "value": "2）渲染："
+            "value": "2、渲染："
           },
           {
             "type": "text",
@@ -1270,7 +1193,7 @@
         [
           {
             "type": "strong",
-            "value": "3）能力："
+            "value": "3、能力："
           },
           {
             "type": "text",
@@ -1323,6 +1246,166 @@
           {
             "type": "text",
             "value": " 易造成命名冲突与来源不清，复杂复用优先组合式函数。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-ref-reactive",
+      "navLabel": "ref 和 reactive",
+      "question": "Vue 3 中 ref 与 reactive 应如何选择？",
+      "questionNote": "「基本类型 vs 对象」与「解构丢失响应式」两个要点。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "基本类型优先 "
+          },
+          {
+            "type": "code",
+            "value": "ref"
+          },
+          {
+            "type": "text",
+            "value": "；整包对象用 "
+          },
+          {
+            "type": "code",
+            "value": "reactive"
+          },
+          {
+            "type": "text",
+            "value": "，但解构需配合 "
+          },
+          {
+            "type": "code",
+            "value": "toRefs"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "ref(0)"
+          },
+          {
+            "type": "text",
+            "value": " 也可包装对象；脚本中读写需 "
+          },
+          {
+            "type": "code",
+            "value": ".value"
+          },
+          {
+            "type": "text",
+            "value": "，模板中自动解包，适合单个值或需要整体替换引用的场景。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "reactive({ count: 0 })"
+          },
+          {
+            "type": "text",
+            "value": " 返回 Proxy 代理对象，修改属性直接触发更新；解构会丢失响应式，需 "
+          },
+          {
+            "type": "code",
+            "value": "toRefs"
+          },
+          {
+            "type": "text",
+            "value": " 或 "
+          },
+          {
+            "type": "code",
+            "value": "storeToRefs"
+          },
+          {
+            "type": "text",
+            "value": "（Pinia）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "工程实践：表单字段、开关等多用 ref；复杂对象状态可用 reactive，传给子组件时尽量传递对象引用而非解构后的裸值。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "ref 需 .value；解构 reactive 用 toRefs。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "const count = ref(0)\ncount.value++\n\nconst state = reactive({ n: 1 })\n// 错：解构丢代理\n// let { n } = state\nconst { n } = toRefs(state)\nn.value++"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-composition",
+      "navLabel": "组合式 API",
+      "question": "组合式 API（Composition API）解决了什么问题？为什么更适合复杂业务？",
+      "questionNote": "对比选项式「逻辑按选项类型分散」，强调按功能聚合与跨组件复用。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "组合式 API 按功能聚合逻辑，便于跨组件复用 composable，类型推断优于选项式。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、逻辑聚合：同一功能的 state、computed、watch 收敛到一个 "
+          },
+          {
+            "type": "code",
+            "value": "useXxx()"
+          },
+          {
+            "type": "text",
+            "value": "，而不是按 data / methods / mounted 等选项类型分散在各处。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、类型：返回值即类型，和 TypeScript 推断更贴合，避免选项式里 "
+          },
+          {
+            "type": "code",
+            "value": "this"
+          },
+          {
+            "type": "text",
+            "value": " 的类型体操。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、取舍：复杂页面（权限、表格、弹窗交织）用组合式可读性更好；简单展示组件继续选项式亦可。"
           }
         ]
       ]
@@ -1496,6 +1579,65 @@
       ]
     },
     {
+      "id": "q-teleport",
+      "navLabel": "Teleport",
+      "question": "Teleport 用来解决啥问题？",
+      "answer": [
+        [
+          {
+            "type": "text",
+            "value": "模态框、抽屉、Toast 往往要挂到 "
+          },
+          {
+            "type": "code",
+            "value": "body"
+          },
+          {
+            "type": "text",
+            "value": " 下，避免父级 "
+          },
+          {
+            "type": "code",
+            "value": "overflow: hidden"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "z-index"
+          },
+          {
+            "type": "text",
+            "value": " 或 transform 新建层叠上下文导致盖不住全页。"
+          },
+          {
+            "type": "code",
+            "value": "<Teleport to=\"body\">"
+          },
+          {
+            "type": "text",
+            "value": " 把子树渲染到目标容器，逻辑仍在原组件，事件冒泡仍可按 Vue 规则理解（具体边界可查文档）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "SSR 时注意目标节点在服务端是否存在；可配合 "
+          },
+          {
+            "type": "code",
+            "value": "disabled"
+          },
+          {
+            "type": "text",
+            "value": " 属性在测试或降级时留在原地渲染。"
+          }
+        ]
+      ]
+    },
+    {
       "id": "q-pinia",
       "navLabel": "Pinia",
       "question": "Pinia 相对 Vuex 有哪些优势？如何使用？",
@@ -1522,7 +1664,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "code",
@@ -1544,7 +1686,7 @@
         [
           {
             "type": "text",
-            "value": "2）组件里 "
+            "value": "2、组件里 "
           },
           {
             "type": "code",
@@ -1566,7 +1708,7 @@
         [
           {
             "type": "text",
-            "value": "3）何时用：跨路由/多组件共享的业务状态；局部 UI 仍用 ref/reactive。"
+            "value": "3、何时用：跨路由/多组件共享的业务状态；局部 UI 仍用 ref/reactive。"
           }
         ]
       ]

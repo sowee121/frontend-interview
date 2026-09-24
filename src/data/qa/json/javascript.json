@@ -325,6 +325,76 @@
       ]
     },
     {
+      "id": "q-float-precision",
+      "navLabel": "浮点数精度",
+      "question": "为何 0.1 + 0.2 !== 0.3？应如何规避浮点误差？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "JavaScript 数字是 IEEE 754 双精度浮点，许多十进制小数无法精确表示，直接比较会出现误差。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、金额等场景：用整数分存储，或借助 "
+          },
+          {
+            "type": "code",
+            "value": "decimal.js"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "big.js"
+          },
+          {
+            "type": "text",
+            "value": " 这类库。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、比较时不要用 "
+          },
+          {
+            "type": "code",
+            "value": "==="
+          },
+          {
+            "type": "text",
+            "value": "，改用误差范围："
+          },
+          {
+            "type": "code",
+            "value": "Math.abs(a - b) < Number.EPSILON"
+          },
+          {
+            "type": "text",
+            "value": "。注意 "
+          },
+          {
+            "type": "code",
+            "value": "toFixed"
+          },
+          {
+            "type": "text",
+            "value": " 自身也会四舍五入，不能当作可靠的比较手段。"
+          }
+        ]
+      ],
+      "questionNote": "IEEE 754 双精度；金额用整数分或 decimal 库；比较用 Number.EPSILON 误差范围。"
+    },
+    {
       "id": "q-hoisting",
       "navLabel": "变量与函数提升",
       "question": "var 与 function 声明的提升规则是怎样的？",
@@ -552,7 +622,7 @@
         [
           {
             "type": "text",
-            "value": "1）创建空对象，其 "
+            "value": "1、创建空对象，其 "
           },
           {
             "type": "code",
@@ -574,7 +644,7 @@
         [
           {
             "type": "text",
-            "value": "2）以该对象为 "
+            "value": "2、以该对象为 "
           },
           {
             "type": "code",
@@ -588,7 +658,7 @@
         [
           {
             "type": "text",
-            "value": "3）若构造函数返回对象类型，则用它作为结果；否则返回步骤 1 的实例。"
+            "value": "3、若构造函数返回对象类型，则用它作为结果；否则返回步骤 1 的实例。"
           }
         ],
         [
@@ -1124,6 +1194,81 @@
       ]
     },
     {
+      "id": "q-async-try-catch",
+      "navLabel": "异步错误捕获",
+      "question": "try/catch 能否捕获异步错误？正确做法是什么？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "同步 try/catch 抓不到已离开当前调用栈的异步错误；要在 Promise 链或 async 函数内捕获。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "setTimeout"
+          },
+          {
+            "type": "text",
+            "value": " / 未 await 的 Promise 抛错不会进入外层 try。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "code",
+            "value": "async"
+          },
+          {
+            "type": "text",
+            "value": " 函数内对 "
+          },
+          {
+            "type": "code",
+            "value": "await"
+          },
+          {
+            "type": "text",
+            "value": " 用 try/catch，或 "
+          },
+          {
+            "type": "code",
+            "value": ".catch()"
+          },
+          {
+            "type": "text",
+            "value": "；未处理拒绝可听 "
+          },
+          {
+            "type": "code",
+            "value": "unhandledrejection"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、事件回调里的抛错需在回调内处理，或统一包一层错误边界/上报。"
+          }
+        ]
+      ]
+    },
+    {
       "id": "q-debounce",
       "navLabel": "防抖与节流",
       "question": "防抖与节流有何区别？分别适用于哪些场景？",
@@ -1213,76 +1358,6 @@
       ]
     },
     {
-      "id": "q-float-precision",
-      "navLabel": "浮点数精度",
-      "question": "为何 0.1 + 0.2 !== 0.3？应如何规避浮点误差？",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "JavaScript 数字是 IEEE 754 双精度浮点，许多十进制小数无法精确表示，直接比较会出现误差。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）金额等场景：用整数分存储，或借助 "
-          },
-          {
-            "type": "code",
-            "value": "decimal.js"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "big.js"
-          },
-          {
-            "type": "text",
-            "value": " 这类库。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）比较时不要用 "
-          },
-          {
-            "type": "code",
-            "value": "==="
-          },
-          {
-            "type": "text",
-            "value": "，改用误差范围："
-          },
-          {
-            "type": "code",
-            "value": "Math.abs(a - b) < Number.EPSILON"
-          },
-          {
-            "type": "text",
-            "value": "。注意 "
-          },
-          {
-            "type": "code",
-            "value": "toFixed"
-          },
-          {
-            "type": "text",
-            "value": " 自身也会四舍五入，不能当作可靠的比较手段。"
-          }
-        ]
-      ],
-      "questionNote": "IEEE 754 双精度；金额用整数分或 decimal 库；比较用 Number.EPSILON 误差范围。"
-    },
-    {
       "id": "q-event-delegation",
       "navLabel": "事件委托",
       "question": "什么是事件委托？适用于哪些场景？",
@@ -1325,6 +1400,51 @@
           {
             "type": "code",
             "value": "list.addEventListener('click', (e) => {\n  const item = e.target.closest('[data-id]')\n  if (!item || !list.contains(item)) return\n  console.log(item.dataset.id)\n})"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-target-current",
+      "navLabel": "target 与 currentTarget",
+      "question": "事件对象里 target 和 currentTarget 有何区别？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "target 是触发事件的源头节点；currentTarget 是当前正在处理监听的节点（绑定处）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、委托场景：监听挂在父节点，"
+          },
+          {
+            "type": "code",
+            "value": "e.target"
+          },
+          {
+            "type": "text",
+            "value": " 可能是子节点，"
+          },
+          {
+            "type": "code",
+            "value": "e.currentTarget"
+          },
+          {
+            "type": "text",
+            "value": " 始终是父节点。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、回调里若异步再读事件对象，部分浏览器会清空字段，需先取出需要的引用。"
           }
         ]
       ]
@@ -1384,6 +1504,131 @@
           {
             "type": "text",
             "value": " 请求；跟对象绑定的缓存用 WeakMap/WeakSet，键无其它引用时可被回收。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-observer-pubsub",
+      "navLabel": "观察者与发布订阅",
+      "question": "观察者模式和发布订阅模式有何区别？前端常见落点是什么？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "观察者是主题直接通知观察者；发布订阅多一层调度中心，发布者与订阅者互不持有对方引用。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、观察者：被观察对象维护观察者列表，状态变化时同步调用；耦合在「认识彼此」这一层。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、发布订阅：双方只跟事件总线打交道，按事件名注册与派发，更易跨模块解耦。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、前端："
+          },
+          {
+            "type": "code",
+            "value": "EventTarget"
+          },
+          {
+            "type": "text",
+            "value": " / 自定义事件偏观察者；全局 event bus、消息中间件偏发布订阅。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-singleton",
+      "navLabel": "单例模式",
+      "question": "什么是单例模式？前端哪些场景会用到？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "保证某类全局只有一个实例，并提供统一访问入口。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、常见写法：模块顶级导出一份实例；或惰性创建（首次调用再 new）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、场景：全局弹层/Toast 管理、请求层 axios 实例、少量真正的全局配置。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、边界：状态会随用户变化的对象慎用单例，易造成串数据；测试时注意重置。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-solid",
+      "navLabel": "SOLID 原则",
+      "question": "SOLID 五原则分别指什么？前端落地时怎么理解？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "五条面向对象设计原则，前端多落在模块边界、组件职责与依赖方向，而不是机械套类图。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、单一职责：一个模块只改一类原因，页面容器与纯展示拆开。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、开闭：优先扩展（策略、插件）而非改已有分支堆 if。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、里氏替换：子类型可替换父类型而不破坏约定，Hooks/组合优于脆弱继承树。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、接口隔离：组件 props / 服务 API 按场景拆细，避免上帝接口。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5、依赖倒置：业务依赖抽象（接口、注入），细节（请求实现、存储）可替换。"
           }
         ]
       ]

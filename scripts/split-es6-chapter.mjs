@@ -44,19 +44,19 @@ const ES6_NEW_ITEMS = [
         },
       ],
       [
-        { type: 'text', value: '1）数组：' },
+        { type: 'text', value: '1、数组：' },
         { type: 'code', value: 'const [a, , b] = arr' },
         { type: 'text', value: '；可设默认值、' },
         { type: 'code', value: '...rest' },
         { type: 'text', value: ' 收剩余元素。' },
       ],
       [
-        { type: 'text', value: '2）对象：' },
+        { type: 'text', value: '2、对象：' },
         { type: 'code', value: 'const { x, y: renamed } = obj' },
         { type: 'text', value: '；可嵌套、可默认值。' },
       ],
       [
-        { type: 'text', value: '3）函数参数解构 + 默认值常一起用，便于配置对象。' },
+        { type: 'text', value: '3、函数参数解构 + 默认值常一起用，便于配置对象。' },
       ],
       [
         { type: 'strong', value: '剩余 vs 展开：' },
@@ -142,7 +142,7 @@ const ES6_NEW_ITEMS = [
         { type: 'text', value: '）。' },
       ],
       [
-        { type: 'text', value: '1）' },
+        { type: 'text', value: '1、' },
         { type: 'code', value: 'Symbol.for(key)' },
         { type: 'text', value: ' 全局登记；' },
         { type: 'code', value: 'Symbol.keyFor' },
@@ -151,13 +151,13 @@ const ES6_NEW_ITEMS = [
       [
         {
           type: 'text',
-          value: '2）`for...in` / `Object.keys` 枚举不到 Symbol 键；需要 `Object.getOwnPropertySymbols`。',
+          value: '2、`for...in` / `Object.keys` 枚举不到 Symbol 键；需要 `Object.getOwnPropertySymbols`。',
         },
       ],
       [
         {
           type: 'text',
-          value: '3）Well-known Symbol 定制语言行为（迭代、toStringTag 等），与 Iterator 接口强相关。',
+          value: '3、Well-known Symbol 定制语言行为（迭代、toStringTag 等），与 Iterator 接口强相关。',
         },
       ],
     ],
@@ -230,15 +230,15 @@ const ES6_NEW_ITEMS = [
         },
       ],
       [
-        { type: 'text', value: '1）`constructor` 初始化实例；类字段、静态方法 `static` 支持声明式写法。' },
+        { type: 'text', value: '1、`constructor` 初始化实例；类字段、静态方法 `static` 支持声明式写法。' },
       ],
       [
-        { type: 'text', value: '2）`extends` + `super()` 调用父构造；`super.method()` 调父类原型方法。' },
+        { type: 'text', value: '2、`extends` + `super()` 调用父构造；`super.method()` 调父类原型方法。' },
       ],
       [
         {
           type: 'text',
-          value: '3）不存在变量提升；本质仍是 `typeof Class === "function"`。手写继承实现见 JavaScript 章「继承」题。',
+          value: '3、不存在变量提升；本质仍是 `typeof Class === "function"`。手写继承实现见 JavaScript 章「继承」题。',
         },
       ],
     ],
@@ -391,16 +391,16 @@ const JS_NEW_ITEMS = [
     question: '除了 class，ES5 里怎么实现继承？',
     answer: [
       [
-        { type: 'text', value: '1）原型链：子类 `prototype` 指向父类实例，问题：父构造执行两次、引用类型共享。' },
+        { type: 'text', value: '1、原型链：子类 `prototype` 指向父类实例，问题：父构造执行两次、引用类型共享。' },
       ],
       [
-        { type: 'text', value: '2）盗用构造函数：`Parent.call(this)` 拷属性，拿不到父类原型方法。' },
+        { type: 'text', value: '2、盗用构造函数：`Parent.call(this)` 拷属性，拿不到父类原型方法。' },
       ],
       [
-        { type: 'text', value: '3）组合：上面两种结合。' },
+        { type: 'text', value: '3、组合：上面两种结合。' },
       ],
       [
-        { type: 'text', value: '4）寄生组合：`Object.create(Parent.prototype)` + `call`，常用教科书写法。' },
+        { type: 'text', value: '4、寄生组合：`Object.create(Parent.prototype)` + `call`，常用教科书写法。' },
       ],
       [
         { type: 'text', value: '日常用 ES6 `class extends` 即可，见 ES6 章。' },

@@ -30,17 +30,17 @@ const chapter = {
           },
         ],
         [
-          { type: 'text', value: '1）' },
+          { type: 'text', value: '1、' },
           { type: 'strong', value: 'Cursor' },
           { type: 'text', value: '：IDE 内 Tab + Agent，@ 文件、.cursorrules、MCP，前端主战场。' },
         ],
         [
-          { type: 'text', value: '2）' },
+          { type: 'text', value: '2、' },
           { type: 'strong', value: 'Codex app' },
           { type: 'text', value: '：桌面 Agent 指挥中心；多线程、worktree；读 AGENTS.md，适合旁路派活。' },
         ],
         [
-          { type: 'text', value: '3）' },
+          { type: 'text', value: '3、' },
           { type: 'strong', value: 'Claude Code' },
           { type: 'text', value: '：终端 Agent，读 CLAUDE.md；大范围重构、脚本化常用。' },
         ],
@@ -57,13 +57,13 @@ const chapter = {
           { type: 'text', value: 'Tab 像猜下一句代码，Agent 像按目标连续改多个文件。' },
         ],
         [
-          { type: 'text', value: '1）Tab：光标处 inline 建议，快，适合样板、补类型、小函数。' },
+          { type: 'text', value: '1、Tab：光标处 inline 建议，快，适合样板、补类型、小函数。' },
         ],
         [
-          { type: 'text', value: '2）Agent：可读多文件、跑命令、出 diff；适合加功能、重构。' },
+          { type: 'text', value: '2、Agent：可读多文件、跑命令、出 diff；适合加功能、重构。' },
         ],
         [
-          { type: 'text', value: '3）Agent 改动面大，要小步 + 人审；长并行任务可交给 Codex app worktree。' },
+          { type: 'text', value: '3、Agent 改动面大，要小步 + 人审；长并行任务可交给 Codex app worktree。' },
         ],
       ],
     },
@@ -78,13 +78,13 @@ const chapter = {
           { type: 'text', value: '目标、约束、上下文（@文件/路径）、验收标准。' },
         ],
         [
-          { type: 'text', value: '1）给示例输入输出、报错栈，比「帮我优化」有效。' },
+          { type: 'text', value: '1、给示例输入输出、报错栈，比「帮我优化」有效。' },
         ],
         [
-          { type: 'text', value: '2）一次一事；大需求先 Plan 再执行。' },
+          { type: 'text', value: '2、一次一事；大需求先 Plan 再执行。' },
         ],
         [
-          { type: 'text', value: '3）让 AI 先复述理解并列将改动的文件。' },
+          { type: 'text', value: '3、让 AI 先复述理解并列将改动的文件。' },
         ],
       ],
     },
@@ -99,13 +99,13 @@ const chapter = {
           { type: 'text', value: '上下文窗口有上限，历史+文件占满后旧内容会被截断。' },
         ],
         [
-          { type: 'text', value: '1）子任务新开线程/会话；结论用短摘要带到下一轮。' },
+          { type: 'text', value: '1、子任务新开线程/会话；结论用短摘要带到下一轮。' },
         ],
         [
-          { type: 'text', value: '2）只 @ 相关文件，大文件指明函数或行号。' },
+          { type: 'text', value: '2、只 @ 相关文件，大文件指明函数或行号。' },
         ],
         [
-          { type: 'text', value: '3）.cursorrules / CLAUDE.md / AGENTS.md 自动注入，三份宜对齐。' },
+          { type: 'text', value: '3、.cursorrules / CLAUDE.md / AGENTS.md 自动注入，三份宜对齐。' },
         ],
       ],
     },
@@ -120,16 +120,16 @@ const chapter = {
           { type: 'text', value: '进仓库就被 Agent 读到的持久说明，减少每轮重复交代。' },
         ],
         [
-          { type: 'text', value: '1）Cursor：' },
+          { type: 'text', value: '1、Cursor：' },
           { type: 'code', value: '.cursorrules' },
           { type: 'text', value: '（或 .cursor/rules）' },
         ],
         [
-          { type: 'text', value: '2）Claude Code：' },
+          { type: 'text', value: '2、Claude Code：' },
           { type: 'code', value: 'CLAUDE.md' },
         ],
         [
-          { type: 'text', value: '3）Codex：' },
+          { type: 'text', value: '3、Codex：' },
           { type: 'code', value: 'AGENTS.md' },
           { type: 'text', value: '；三份核心约定建议同步维护。' },
         ],
@@ -146,13 +146,13 @@ const chapter = {
           { type: 'text', value: '每步可 review、可过 CI；Codex worktree 与主分支并行时也要说清楚合并点。' },
         ],
         [
-          { type: 'text', value: '1）先只读列影响文件与风险。' },
+          { type: 'text', value: '1、先只读列影响文件与风险。' },
         ],
         [
-          { type: 'text', value: '2）按层或垂直切片拆；并行线程各干一件事。' },
+          { type: 'text', value: '2、按层或垂直切片拆；并行线程各干一件事。' },
         ],
         [
-          { type: 'text', value: '3）每步验收：type-check、主路径可点。' },
+          { type: 'text', value: '3、每步验收：type-check、主路径可点。' },
         ],
       ],
     },
@@ -167,13 +167,13 @@ const chapter = {
           { type: 'text', value: '是否真解决问题、scope 是否偷偷变大、错误与空状态。' },
         ],
         [
-          { type: 'text', value: '1）正确性：类型、异步、竞态；跑测试。' },
+          { type: 'text', value: '1、正确性：类型、异步、竞态；跑测试。' },
         ],
         [
-          { type: 'text', value: '2）安全：XSS、密钥、权限只藏 UI。' },
+          { type: 'text', value: '2、安全：XSS、密钥、权限只藏 UI。' },
         ],
         [
-          { type: 'text', value: '3）可维护：是否多余抽象、是否符合项目模式。' },
+          { type: 'text', value: '3、可维护：是否多余抽象、是否符合项目模式。' },
         ],
       ],
     },
@@ -188,17 +188,17 @@ const chapter = {
           { type: 'text', value: '幻觉=说得像真的但仓库里没有；要验证。' },
         ],
         [
-          { type: 'text', value: '1）查官方文档与 ' },
+          { type: 'text', value: '1、查官方文档与 ' },
           { type: 'code', value: 'node_modules' },
           { type: 'text', value: ' 类型声明。' },
         ],
         [
-          { type: 'text', value: '2）' },
+          { type: 'text', value: '2、' },
           { type: 'code', value: 'pnpm run build' },
           { type: 'text', value: ' / 测试跑一遍。' },
         ],
         [
-          { type: 'text', value: '3）固定依赖版本，复杂逻辑补单测。' },
+          { type: 'text', value: '3、固定依赖版本，复杂逻辑补单测。' },
         ],
       ],
     },
@@ -213,13 +213,13 @@ const chapter = {
           { type: 'text', value: '期望 vs 实际、复现步骤、完整报错、@相关代码、环境。' },
         ],
         [
-          { type: 'text', value: '1）最小复现；说明已试过什么。' },
+          { type: 'text', value: '1、最小复现；说明已试过什么。' },
         ],
         [
-          { type: 'text', value: '2）让 AI 列假设再逐个验证。' },
+          { type: 'text', value: '2、让 AI 列假设再逐个验证。' },
         ],
         [
-          { type: 'text', value: '3）时序类附日志时间点、框架版本。' },
+          { type: 'text', value: '3、时序类附日志时间点、框架版本。' },
         ],
       ],
     },
@@ -234,17 +234,17 @@ const chapter = {
           { type: 'text', value: '生产密钥、用户隐私、未公开源码按公司规定是否可上云。' },
         ],
         [
-          { type: 'text', value: '1）' },
+          { type: 'text', value: '1、' },
           { type: 'code', value: '.env.local' },
           { type: 'text', value: ' 且进 ' },
           { type: 'code', value: '.gitignore' },
           { type: 'text', value: '；聊天不贴 token。' },
         ],
         [
-          { type: 'text', value: '2）日志截图脱敏。' },
+          { type: 'text', value: '2、日志截图脱敏。' },
         ],
         [
-          { type: 'text', value: '3）了解订阅版数据与训练政策，以法务/安全口径为准。' },
+          { type: 'text', value: '3、了解订阅版数据与训练政策，以法务/安全口径为准。' },
         ],
       ],
     },
@@ -259,13 +259,13 @@ const chapter = {
           { type: 'text', value: '模型上下文协议（MCP）让 AI 通过标准接口调外部工具，不只靠训练记忆。' },
         ],
         [
-          { type: 'text', value: '1）例如读文档、开浏览器、拉 GitHub Issue；Codex app 也支持插件与 MCP。' },
+          { type: 'text', value: '1、例如读文档、开浏览器、拉 GitHub Issue；Codex app 也支持插件与 MCP。' },
         ],
         [
-          { type: 'text', value: '2）前端：对照设计稿、看控制台/网络、跑 eslint，少手动复制。' },
+          { type: 'text', value: '2、前端：对照设计稿、看控制台/网络、跑 eslint，少手动复制。' },
         ],
         [
-          { type: 'text', value: '3）和 RAG 互补：MCP 偏执行动作，RAG 偏检索知识。' },
+          { type: 'text', value: '3、和 RAG 互补：MCP 偏执行动作，RAG 偏检索知识。' },
         ],
       ],
     },
@@ -280,13 +280,13 @@ const chapter = {
           { type: 'text', value: '先搜文档/代码片段再拼进 prompt，适合私有仓与最新文档。' },
         ],
         [
-          { type: 'text', value: '1）@codebase 本质是项目内检索+上下文，要问得具体。' },
+          { type: 'text', value: '1、@codebase 本质是项目内检索+上下文，要问得具体。' },
         ],
         [
-          { type: 'text', value: '2）局限：索引不全就答错；大文件仍占窗口。' },
+          { type: 'text', value: '2、局限：索引不全就答错；大文件仍占窗口。' },
         ],
         [
-          { type: 'text', value: '3）和整文件 @ 比更省 token，检索质量是关键。' },
+          { type: 'text', value: '3、和整文件 @ 比更省 token，检索质量是关键。' },
         ],
       ],
     },
@@ -301,13 +301,13 @@ const chapter = {
           { type: 'text', value: '每轮列改动文件与原因；按文件过 diff。' },
         ],
         [
-          { type: 'text', value: '1）不顺手重构无关模块。' },
+          { type: 'text', value: '1、不顺手重构无关模块。' },
         ],
         [
-          { type: 'text', value: '2）提交前跑 lint/test；CI 红就打回。' },
+          { type: 'text', value: '2、提交前跑 lint/test；CI 红就打回。' },
         ],
         [
-          { type: 'text', value: '3）鉴权、支付等敏感目录必须人工重点看。' },
+          { type: 'text', value: '3、鉴权、支付等敏感目录必须人工重点看。' },
         ],
       ],
     },

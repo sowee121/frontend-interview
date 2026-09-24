@@ -40,7 +40,7 @@
         [
           {
             "type": "text",
-            "value": "1）导出语义："
+            "value": "1、导出语义："
           },
           {
             "type": "code",
@@ -62,7 +62,7 @@
         [
           {
             "type": "text",
-            "value": "2）ESM：编译阶段确定依赖图，支持顶层 "
+            "value": "2、ESM：编译阶段确定依赖图，支持顶层 "
           },
           {
             "type": "code",
@@ -84,7 +84,7 @@
         [
           {
             "type": "text",
-            "value": "3）Node 边界："
+            "value": "3、Node 边界："
           },
           {
             "type": "code",
@@ -138,7 +138,7 @@
         [
           {
             "type": "text",
-            "value": "4）互操作：打包器会把 CJS 预构建成 ESM；在 ESM 中引用 CJS 可用 "
+            "value": "4、互操作：打包器会把 CJS 预构建成 ESM；在 ESM 中引用 CJS 可用 "
           },
           {
             "type": "code",
@@ -178,19 +178,113 @@
         [
           {
             "type": "text",
-            "value": "1）依赖预构建会把用到的 node_modules 依赖（不只是 CJS 包）用 esbuild 打成 ESM 并缓存，目的是转格式、合并请求数。"
+            "value": "1、依赖预构建会把用到的 node_modules 依赖（不只是 CJS 包）用 esbuild 打成 ESM 并缓存，目的是转格式、合并请求数。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）Webpack 入口增多时开发构建更慢；但复杂 loader、微前端与遗留（Legacy）生态更成熟。"
+            "value": "2、Webpack 入口增多时开发构建更慢；但复杂 loader、微前端与遗留（Legacy）生态更成熟。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）生产环境 Vite 用 Rollup 产出摇树后的 bundle，速度取决于项目体积与配置，不宜一概而论（Vite 正在迁移到 Rust 版 Rolldown，默认构建引擎以当前版本为准）。"
+            "value": "3、生产环境 Vite 用 Rollup 产出摇树后的 bundle，速度取决于项目体积与配置，不宜一概而论（Vite 正在迁移到 Rust 版 Rolldown，默认构建引擎以当前版本为准）。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-loader-plugin",
+      "navLabel": "Loader 与 Plugin",
+      "question": "Webpack 里 Loader 和 Plugin 有何区别？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "Loader 转换单个文件内容；Plugin 挂在编译生命周期上做更广的事。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、Loader：链路右到左，如把 TS/SCSS 变成 JS/CSS；职责偏「文件进、文件出」。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、Plugin：听 "
+          },
+          {
+            "type": "code",
+            "value": "compiler"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "compilation"
+          },
+          {
+            "type": "text",
+            "value": " 钩子，做拆包、注入 HTML、压缩等。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、Vite 生产链多用 Rollup 插件模型；概念类似「转换」与「构建钩子」。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-hmr",
+      "navLabel": "HMR",
+      "question": "热模块替换（HMR）大致如何工作？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "热模块替换（HMR）在开发时用 WebSocket 推送变更模块，运行时替换而不整页刷新，尽量保留状态。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、构建工具计算受影响模块图，浏览器端执行 "
+          },
+          {
+            "type": "code",
+            "value": "accept"
+          },
+          {
+            "type": "text",
+            "value": " 回调更新导出。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、Vite 基于原生 ESM 按需编译，改动面通常更小；Webpack 依赖生成的 HMR runtime。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、不是所有模块都能热替（入口、部分副作用）；失败则回退全量刷新。"
           }
         ]
       ]
@@ -222,7 +316,7 @@
         [
           {
             "type": "text",
-            "value": "1）前提：ESM 且副作用可分析；"
+            "value": "1、前提：ESM 且副作用可分析；"
           },
           {
             "type": "code",
@@ -244,7 +338,7 @@
         [
           {
             "type": "text",
-            "value": "2）反例："
+            "value": "2、反例："
           },
           {
             "type": "code",
@@ -267,6 +361,136 @@
           {
             "type": "code",
             "value": "// 更好摇树\nimport { debounce } from 'lodash-es'\n// 整包引入难摇干净\nimport _ from 'lodash'"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-babel-swc",
+      "navLabel": "Babel 与 SWC",
+      "question": "Babel 与 SWC/esbuild 在工程中各自承担什么职责？",
+      "questionNote": "语法降级与转换；类型检查仍靠 tsc；摇树在 bundler 阶段。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "把 JSX、TypeScript、新语法转成目标环境能跑的 JavaScript。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "Babel"
+          },
+          {
+            "type": "text",
+            "value": " 插件生态最全，定制抽象语法树（AST）方便。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "code",
+            "value": "SWC"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "esbuild"
+          },
+          {
+            "type": "text",
+            "value": " 用 Rust/Go 实现，编译快，Vite 开发态常用 esbuild 转 TS。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、类型检查仍靠 "
+          },
+          {
+            "type": "code",
+            "value": "tsc"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "vue-tsc"
+          },
+          {
+            "type": "text",
+            "value": "；生产摇树在 bundler，不是 Babel 单独完成。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-sourcemap",
+      "navLabel": "Source Map",
+      "question": "生产环境应如何安全地配置 source map？",
+      "questionNote": "map 给排错用，避免公开完整源码；hidden-source-map + 鉴权上传常见。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "线上栈能映射回源码，但应避免将完整 .map 公开挂载于静态目录。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、构建生成 "
+          },
+          {
+            "type": "code",
+            "value": ".map"
+          },
+          {
+            "type": "text",
+            "value": "，用 "
+          },
+          {
+            "type": "code",
+            "value": "hidden-source-map"
+          },
+          {
+            "type": "text",
+            "value": " 只上传到 Sentry 等带鉴权的服务，或 CI 产物内网留存。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、浏览器侧应避免暴露生产 map URL；Nginx 对 "
+          },
+          {
+            "type": "code",
+            "value": "*.map"
+          },
+          {
+            "type": "text",
+            "value": " 返回 404 或 IP 白名单。"
           }
         ]
       ]
@@ -298,7 +522,7 @@
         [
           {
             "type": "text",
-            "value": "1）按模式加载 "
+            "value": "1、按模式加载 "
           },
           {
             "type": "code",
@@ -320,7 +544,7 @@
         [
           {
             "type": "text",
-            "value": "2）运行时不能写死 bundle 时，用 "
+            "value": "2、运行时不能写死 bundle 时，用 "
           },
           {
             "type": "code",
@@ -358,60 +582,6 @@
       ]
     },
     {
-      "id": "q-sourcemap",
-      "navLabel": "Source Map",
-      "question": "生产环境应如何安全地配置 source map？",
-      "questionNote": "map 给排错用，避免公开完整源码；hidden-source-map + 鉴权上传常见。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "线上栈能映射回源码，但应避免将完整 .map 公开挂载于静态目录。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）构建生成 "
-          },
-          {
-            "type": "code",
-            "value": ".map"
-          },
-          {
-            "type": "text",
-            "value": "，用 "
-          },
-          {
-            "type": "code",
-            "value": "hidden-source-map"
-          },
-          {
-            "type": "text",
-            "value": " 只上传到 Sentry 等带鉴权的服务，或 CI 产物内网留存。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）浏览器侧应避免暴露生产 map URL；Nginx 对 "
-          },
-          {
-            "type": "code",
-            "value": "*.map"
-          },
-          {
-            "type": "text",
-            "value": " 返回 404 或 IP 白名单。"
-          }
-        ]
-      ]
-    },
-    {
       "id": "q-pnpm",
       "navLabel": "pnpm 特点",
       "question": "pnpm 相比 npm/yarn 经典版有哪些差异？",
@@ -438,7 +608,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "strong",
@@ -460,7 +630,7 @@
         [
           {
             "type": "text",
-            "value": "2）老项目迁移可能遇包假设扁平路径，可用 "
+            "value": "2、老项目迁移可能遇包假设扁平路径，可用 "
           },
           {
             "type": "code",
@@ -516,19 +686,19 @@
         [
           {
             "type": "text",
-            "value": "1）共享 ui-kit、eslint 配置、工具函数一处改处处生效。"
+            "value": "1、共享 ui-kit、eslint 配置、工具函数一处改处处生效。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）原子提交可跨包改需求，版本对齐更容易。"
+            "value": "2、原子提交可跨包改需求，版本对齐更容易。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）代价：持续集成（CI）须按受影响包增量执行，发布流设计不当易引发全量构建失败。"
+            "value": "3、代价：持续集成（CI）须按受影响包增量执行，发布流设计不当易引发全量构建失败。"
           }
         ]
       ]
@@ -564,13 +734,13 @@
         [
           {
             "type": "text",
-            "value": "1）避免全仓扫描很慢，提交前快速拦住低级问题。"
+            "value": "1、避免全仓扫描很慢，提交前快速拦住低级问题。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）开发者可用 "
+            "value": "2、开发者可用 "
           },
           {
             "type": "code",
@@ -626,31 +796,31 @@
         [
           {
             "type": "text",
-            "value": "1）模型：持续交付适合主干开发加短生命周期分支；发布节奏固定可选发布分支；分支越多，同步与合并成本越高。"
+            "value": "1、模型：持续交付适合主干开发加短生命周期分支；发布节奏固定可选发布分支；分支越多，同步与合并成本越高。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）合并：merge 保留真实历史与合并点，便于定位与回退；rebase 得到线性历史，但只用于本地未共享的提交，改公共分支会打乱他人基线。"
+            "value": "2、合并：merge 保留真实历史与合并点，便于定位与回退；rebase 得到线性历史，但只用于本地未共享的提交，改公共分支会打乱他人基线。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）冲突：先同步主干再解冲突，小步提交缩小冲突面；只改语义，不顺带格式化，避免把冲突扩散成大面积差异。"
+            "value": "3、冲突：先同步主干再解冲突，小步提交缩小冲突面；只改语义，不顺带格式化，避免把冲突扩散成大面积差异。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4）回滚：已推送的提交优先用 revert 生成反向提交；reset 只用于本地未推送的历史整理；cherry-pick 把热修回迁到发布分支。"
+            "value": "4、回滚：已推送的提交优先用 revert 生成反向提交；reset 只用于本地未推送的历史整理；cherry-pick 把热修回迁到发布分支。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5）协作：提交保持单一意图，配合小范围评审；保护分支只允许通过合并进入，避免未验证代码直接推上主干。"
+            "value": "5、协作：提交保持单一意图，配合小范围评审；保护分支只允许通过合并进入，避免未验证代码直接推上主干。"
           }
         ]
       ]
@@ -686,13 +856,13 @@
         [
           {
             "type": "text",
-            "value": "1）可对 bundle 设体积 budget，防依赖悄悄变大。"
+            "value": "1、可对 bundle 设体积 budget，防依赖悄悄变大。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）目的：把低级错误拦在合并前；持续集成（CI）为准，本地 pre-commit 只是提效。"
+            "value": "2、目的：把低级错误拦在合并前；持续集成（CI）为准，本地 pre-commit 只是提效。"
           }
         ]
       ]
@@ -716,31 +886,31 @@
         [
           {
             "type": "text",
-            "value": "1）静态层：类型检查与 lint 在提交前拦住大部分低级问题，成本最低，适合作为默认门禁。"
+            "value": "1、静态层：类型检查与 lint 在提交前拦住大部分低级问题，成本最低，适合作为默认门禁。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）单元层：用 Vitest 覆盖纯函数、工具与状态逻辑，断言输入输出，不依赖真实网络与浏览器环境。"
+            "value": "2、单元层：用 Vitest 覆盖纯函数、工具与状态逻辑，断言输入输出，不依赖真实网络与浏览器环境。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）组件层：渲染后按用户可见的行为断言，而不是断言内部状态或私有方法；网络请求用拦截替换，保证用例稳定。"
+            "value": "3、组件层：渲染后按用户可见的行为断言，而不是断言内部状态或私有方法；网络请求用拦截替换，保证用例稳定。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4）端到端：Playwright 或 Cypress 只覆盖登录、下单这类关键路径，数据用独立环境与固定账号隔离。"
+            "value": "4、端到端：Playwright 或 Cypress 只覆盖登录、下单这类关键路径，数据用独立环境与固定账号隔离。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5）门禁：覆盖率是参考不是目标，持续集成只卡增量覆盖与失败用例；偶发失败要定位等待条件与数据竞争，不能靠重跑掩盖。"
+            "value": "5、门禁：覆盖率是参考不是目标，持续集成只卡增量覆盖与失败用例；偶发失败要定位等待条件与数据竞争，不能靠重跑掩盖。"
           }
         ]
       ]
@@ -772,7 +942,7 @@
         [
           {
             "type": "text",
-            "value": "1）方案谱系："
+            "value": "1、方案谱系："
           },
           {
             "type": "code",
@@ -794,7 +964,7 @@
         [
           {
             "type": "text",
-            "value": "2）qiankun：JS 用 Proxy 沙箱拦截 window，样式用 scoped 或 shadow DOM。生态成熟、文档多，但沙箱可被定时器与全局事件逃逸；子应用必须导出 "
+            "value": "2、qiankun：JS 用 Proxy 沙箱拦截 window，样式用 scoped 或 shadow DOM。生态成熟、文档多，但沙箱可被定时器与全局事件逃逸；子应用必须导出 "
           },
           {
             "type": "code",
@@ -808,13 +978,13 @@
         [
           {
             "type": "text",
-            "value": "3）无界（wujie）：WebComponent 套 iframe 做原生隔离——JS 在 iframe 内运行、天然独立 window，DOM 再投影到 shadow DOM。隔离彻底、子应用几乎零改造，代价是多一层调试链路，弹窗挂载与路由同步都要额外适配。"
+            "value": "3、无界（wujie）：WebComponent 套 iframe 做原生隔离——JS 在 iframe 内运行、天然独立 window，DOM 再投影到 shadow DOM。隔离彻底、子应用几乎零改造，代价是多一层调试链路，弹窗挂载与路由同步都要额外适配。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4）通信：qiankun 用 props 传参与 "
+            "value": "4、通信：qiankun 用 props 传参与 "
           },
           {
             "type": "code",
@@ -828,83 +998,7 @@
         [
           {
             "type": "text",
-            "value": "5）选型与挑战：共同痛点是样式泄漏、全局变量污染与公共依赖版本；隔离诉求强选无界，要细粒度共享依赖选 qiankun 加模块联邦，团队小、耦合紧密时 monorepo 单体更省事。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-babel-swc",
-      "navLabel": "Babel 与 SWC",
-      "question": "Babel 与 SWC/esbuild 在工程中各自承担什么职责？",
-      "questionNote": "语法降级与转换；类型检查仍靠 tsc；摇树在 bundler 阶段。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "把 JSX、TypeScript、新语法转成目标环境能跑的 JavaScript。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1）"
-          },
-          {
-            "type": "code",
-            "value": "Babel"
-          },
-          {
-            "type": "text",
-            "value": " 插件生态最全，定制抽象语法树（AST）方便。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2）"
-          },
-          {
-            "type": "code",
-            "value": "SWC"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "esbuild"
-          },
-          {
-            "type": "text",
-            "value": " 用 Rust/Go 实现，编译快，Vite 开发态常用 esbuild 转 TS。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3）类型检查仍靠 "
-          },
-          {
-            "type": "code",
-            "value": "tsc"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "vue-tsc"
-          },
-          {
-            "type": "text",
-            "value": "；生产摇树在 bundler，不是 Babel 单独完成。"
+            "value": "5、选型与挑战：共同痛点是样式泄漏、全局变量污染与公共依赖版本；隔离诉求强选无界，要细粒度共享依赖选 qiankun 加模块联邦，团队小、耦合紧密时 monorepo 单体更省事。"
           }
         ]
       ]
@@ -928,37 +1022,88 @@
         [
           {
             "type": "text",
-            "value": "1）路由：history 模式用 try_files 回退到入口页，刷新子路由不再 404；带内容指纹的产物文件可以直接长缓存。"
+            "value": "1、路由：history 模式用 try_files 回退到入口页，刷新子路由不再 404；带内容指纹的产物文件可以直接长缓存。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2）缓存：入口 HTML 明确 no-cache，带内容指纹的资源设 immutable 长缓存；注意中间层与内容分发网络别擅自缓存入口页，否则发版不生效。"
+            "value": "2、缓存：入口 HTML 明确 no-cache，带内容指纹的资源设 immutable 长缓存；注意中间层与内容分发网络别擅自缓存入口页，否则发版不生效。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3）传输：开启 gzip 或 brotli 压缩，静态资源放内容分发网络；注意别把已压缩文件再压一遍，白白消耗 CPU。"
+            "value": "3、传输：开启 gzip 或 brotli 压缩，静态资源放内容分发网络；注意别把已压缩文件再压一遍，白白消耗 CPU。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4）容器：多阶段构建先装依赖再构建，运行阶段只留 Nginx 与产物；配置与日志用挂载目录，镜像本身不带环境差异。"
+            "value": "4、容器：多阶段构建先装依赖再构建，运行阶段只留 Nginx 与产物；配置与日志用挂载目录，镜像本身不带环境差异。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5）配置：接口地址等运行时变量在启动时注入，别把环境写死进构建产物，否则一套镜像无法多环境复用。"
+            "value": "5、配置：接口地址等运行时变量在启动时注入，别把环境写死进构建产物，否则一套镜像无法多环境复用。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "6）运维：容器加健康检查与日志采集，进程异常退出能自动重启；静态目录只读挂载，避免运行期被改写。"
+            "value": "6、运维：容器加健康检查与日志采集，进程异常退出能自动重启；静态目录只读挂载，避免运行期被改写。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-sri",
+      "navLabel": "SRI 完整性校验",
+      "question": "子资源完整性（SRI）是什么？何时使用？",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "子资源完整性（SRI）让浏览器校验 CDN 脚本/样式的哈希，防止被篡改仍执行。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、标签写 "
+          },
+          {
+            "type": "code",
+            "value": "integrity=\"sha384-...\""
+          },
+          {
+            "type": "text",
+            "value": "，并配合合适的 "
+          },
+          {
+            "type": "code",
+            "value": "crossorigin"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、哈希与文件内容绑定：发版换文件必须换 integrity，适合版本化第三方库。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、不能替代 HTTPS；只保证「拿到的字节是预期的那份」。"
           }
         ]
       ]
@@ -981,7 +1126,7 @@
         [
           {
             "type": "text",
-            "value": "1）"
+            "value": "1、"
           },
           {
             "type": "strong",
@@ -995,7 +1140,7 @@
         [
           {
             "type": "text",
-            "value": "2）"
+            "value": "2、"
           },
           {
             "type": "strong",
@@ -1009,7 +1154,7 @@
         [
           {
             "type": "text",
-            "value": "3）"
+            "value": "3、"
           },
           {
             "type": "strong",

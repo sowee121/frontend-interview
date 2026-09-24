@@ -44,7 +44,7 @@ upsertItem(perf.data.items, {
       },
     ],
     [
-      { type: 'text', value: '1）' },
+      { type: 'text', value: '1、' },
       { type: 'strong', value: '行为埋点' },
       {
         type: 'text',
@@ -52,14 +52,14 @@ upsertItem(perf.data.items, {
       },
     ],
     [
-      { type: 'text', value: '2）' },
+      { type: 'text', value: '2、' },
       { type: 'strong', value: '性能监控（RUM）' },
       { type: 'text', value: '：Web Vitals、接口耗时、白屏率；用 ' },
       { type: 'code', value: 'PerformanceObserver' },
       { type: 'text', value: ' 采集，与 Lighthouse 互补。' },
     ],
     [
-      { type: 'text', value: '3）' },
+      { type: 'text', value: '3、' },
       { type: 'strong', value: '错误上报' },
       {
         type: 'text',
@@ -67,7 +67,7 @@ upsertItem(perf.data.items, {
       },
     ],
     [
-      { type: 'text', value: '4）可共用 ' },
+      { type: 'text', value: '4、可共用 ' },
       { type: 'code', value: 'sendBeacon' },
       { type: 'text', value: ' 通道，但指标定义与告警要分开，避免一个大盘塞所有字段。' },
     ],
@@ -88,7 +88,7 @@ upsertItem(eng.data.items, {
       { type: 'text', value: '用 i18n 库管文案 key，按语言拆包，切换 locale 时按需加载。' },
     ],
     [
-      { type: 'text', value: '1）Vue 用 ' },
+      { type: 'text', value: '1、Vue 用 ' },
       { type: 'code', value: 'vue-i18n' },
       { type: 'text', value: '，React 用 ' },
       { type: 'code', value: 'react-i18next' },
@@ -97,14 +97,14 @@ upsertItem(eng.data.items, {
       { type: 'text', value: '，避免硬编码。' },
     ],
     [
-      { type: 'text', value: '2）' },
+      { type: 'text', value: '2、' },
       { type: 'code', value: 'locales/zh-CN.json' },
       { type: 'text', value: ' 按语言拆分，路由级 ' },
       { type: 'code', value: 'import()' },
       { type: 'text', value: ' 懒加载；CI 可校验缺失 key。' },
     ],
     [
-      { type: 'text', value: '3）复数/插值用 ICU 或库内置；日期货币仍用 ' },
+      { type: 'text', value: '3、复数/插值用 ICU 或库内置；日期货币仍用 ' },
       { type: 'code', value: 'Intl' },
       { type: 'text', value: '。RTL、路由前缀见场景题「国际化与 RTL」。' },
     ],
@@ -128,20 +128,20 @@ upsertItem(net.data.items, {
       },
     ],
     [
-      { type: 'text', value: '1）请求头带 ' },
+      { type: 'text', value: '1、请求头带 ' },
       { type: 'code', value: 'Upgrade: websocket' },
       { type: 'text', value: '，服务端 101 后进入 WebSocket。' },
     ],
     [
       {
         type: 'text',
-        value: '2）适合聊天、协同、行情等低延迟双向场景；只读推送可评估服务端发送事件（SSE）。',
+        value: '2、适合聊天、协同、行情等低延迟双向场景；只读推送可评估服务端发送事件（SSE）。',
       },
     ],
     [
       {
         type: 'text',
-        value: '3）注意代理超时、握手鉴权；断线重连与心跳见场景题。',
+        value: '3、注意代理超时、握手鉴权；断线重连与心跳见场景题。',
       },
     ],
   ],
@@ -163,21 +163,21 @@ upsertItem(
         { type: 'text', value: '用 CSS 环境变量把内容顶进系统标定的安全区内。' },
       ],
       [
-        { type: 'text', value: '1）' },
+        { type: 'text', value: '1、' },
         { type: 'code', value: 'viewport-fit=cover' },
         { type: 'text', value: ' + ' },
         { type: 'code', value: 'padding-bottom: env(safe-area-inset-bottom)' },
         { type: 'text', value: ' 给固定底栏留白。' },
       ],
       [
-        { type: 'text', value: '2）四边用 ' },
+        { type: 'text', value: '2、四边用 ' },
         { type: 'code', value: 'safe-area-inset-*' },
         { type: 'text', value: '；旧 iOS 可写 ' },
         { type: 'code', value: 'constant()' },
         { type: 'text', value: ' 兜底。' },
       ],
       [
-        { type: 'text', value: '3）与 1px 细线、100vh/dvh 同属移动端常考点。' },
+        { type: 'text', value: '3、与 1px 细线、100vh/dvh 同属移动端常考点。' },
       ],
     ],
   },
@@ -196,17 +196,17 @@ upsertItem(
         { type: 'text', value: '先对齐设备宽度，再用弹性布局 + rem/vw，别只靠整页缩放。' },
       ],
       [
-        { type: 'text', value: '1）' },
+        { type: 'text', value: '1、' },
         { type: 'code', value: 'width=device-width, initial-scale=1' },
         { type: 'text', value: ' 是基线。' },
       ],
       [
-        { type: 'text', value: '2）布局用 flex/grid + ' },
+        { type: 'text', value: '2、布局用 flex/grid + ' },
         { type: 'code', value: 'rem' },
         { type: 'text', value: '；750 稿可用 postcss-pxtorem 或 vw，注意最小字号。' },
       ],
       [
-        { type: 'text', value: '3）触摸目标 ≥ 44px；1px 与安全区见同章相关题。' },
+        { type: 'text', value: '3、触摸目标 ≥ 44px；1px 与安全区见同章相关题。' },
       ],
     ],
   },
@@ -222,7 +222,7 @@ if (err && !JSON.stringify(err.answer).includes('error', 0)) {
 }
 if (err && !JSON.stringify(err.answer).includes('捕获阶段')) {
   err.answer.push([
-    { type: 'text', value: '4）资源失败用捕获阶段 ' },
+    { type: 'text', value: '4、资源失败用捕获阶段 ' },
     { type: 'code', value: "addEventListener('error', fn, true)" },
     { type: 'text', value: '；上报采样、去重、限流，防错误风暴。' },
   ])
@@ -230,7 +230,7 @@ if (err && !JSON.stringify(err.answer).includes('捕获阶段')) {
 const tel = sc.data.items.find((x) => x.id === 'q-telemetry')
 if (tel && !JSON.stringify(tel.answer).includes('IntersectionObserver')) {
   tel.answer.push([
-    { type: 'text', value: '3）曝光埋点：' },
+    { type: 'text', value: '3、曝光埋点：' },
     { type: 'code', value: 'IntersectionObserver' },
     { type: 'text', value: ' 可见比例 + 停留时长再上报，与 RUM 字段分开。' },
   ])
@@ -238,7 +238,7 @@ if (tel && !JSON.stringify(tel.answer).includes('IntersectionObserver')) {
 const i18n = sc.data.items.find((x) => x.id === 'q-i18n-rtl')
 if (i18n && !JSON.stringify(i18n.answer).includes('vue-i18n')) {
   i18n.answer.push([
-    { type: 'text', value: '4）语言包工程化见「国际化工程化」；Vue ' },
+    { type: 'text', value: '4、语言包工程化见「国际化工程化」；Vue ' },
     { type: 'code', value: 'vue-i18n' },
     { type: 'text', value: '，React ' },
     { type: 'code', value: 'react-i18next' },
@@ -264,7 +264,7 @@ upsertItem(
         },
       ],
       [
-        { type: 'text', value: '1）' },
+        { type: 'text', value: '1、' },
         { type: 'strong', value: '服务端' },
         { type: 'text', value: '：接口开 stream（如 ' },
         { type: 'code', value: 'stream: true' },
@@ -273,7 +273,7 @@ upsertItem(
         { type: 'text', value: '（SSE）或分块传输（chunked）的 JSON 行。' },
       ],
       [
-        { type: 'text', value: '2）' },
+        { type: 'text', value: '2、' },
         { type: 'strong', value: '前端收流' },
         { type: 'text', value: '：' },
         { type: 'code', value: 'fetch' },
@@ -290,14 +290,14 @@ upsertItem(
         { type: 'text', value: '，把 delta 拼到当前消息 state。' },
       ],
       [
-        { type: 'text', value: '3）' },
+        { type: 'text', value: '3、' },
         { type: 'strong', value: '和「打字机」的区别' },
         { type: 'text', value: '：真流式是网络层陆续到达；若全文已返回再用 ' },
         { type: 'code', value: 'setInterval' },
         { type: 'text', value: ' 逐字展示只是动效，不能降低首字等待时间。' },
       ],
       [
-        { type: 'text', value: '4）体验：' },
+        { type: 'text', value: '4、体验：' },
         { type: 'code', value: 'AbortController' },
         { type: 'text', value: ' 可停止生成；滚动条跟到底；失败要区分用户取消与断流重试。通道选型见「SSE 与 WebSocket」。' },
       ],
