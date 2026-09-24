@@ -14,21 +14,6 @@ const jsPath = path.join(jsonDir, 'javascript.json')
 const js = JSON.parse(fs.readFileSync(jsPath, 'utf8'))
 const byId = Object.fromEntries(js.items.map((i) => [i.id, i]))
 
-const MIGRATE_IDS = [
-  'q-let-const-tdz',
-  'q-optional-nullish',
-  'q-copy',
-  'q-for-in-of',
-  'q-promise',
-  'q-promise-chain-error',
-  'q-async-await',
-  'q-iterator',
-  'q-weakmap',
-  'q-dynamic-import',
-  'q-esm-cjs',
-  'q-proxy-reflect',
-]
-
 const ES6_NEW_ITEMS = [
   {
     id: 'q-destructuring',

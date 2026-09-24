@@ -2,8 +2,8 @@
   "slug": "electron",
   "title": "Electron",
   "documentTitle": "Electron",
-  "description": "进程模型与安全隔离、IPC 通信，以及打包发版、自动更新与自助终端超时回首页。",
-  "lead": "进程隔离与安全边界、IPC 通信、打包发版与远程更新，以及自助终端类的超时与运维。",
+  "description": "进程模型与安全隔离、IPC 通信，打包发版与自动更新，以及单实例、路径差异、原生模块与崩溃恢复。",
+  "lead": "进程隔离与安全边界、IPC 通信、打包发版与远程更新；再补单实例、路径/asar、原生模块与崩溃恢复，以及自助终端超时运维。",
   "items": [
     {
       "id": "q-electron-why",
@@ -609,6 +609,502 @@
           {
             "type": "text",
             "value": "3、触控热区够大；读卡等外设仍走主进程 IPC，不在页面直连驱动。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-electron-single-instance",
+      "navLabel": "单实例锁",
+      "question": "Electron 如何保证只跑一个实例？二次启动时怎样把参数交给已有窗口？",
+      "questionNote": "自助机与企业客户端常禁多开；二次启动多用于唤起窗口或处理自定义协议参数。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "主进程用 "
+          },
+          {
+            "type": "code",
+            "value": "app.requestSingleInstanceLock()"
+          },
+          {
+            "type": "text",
+            "value": " 争锁；抢不到就退出，已有进程在 "
+          },
+          {
+            "type": "code",
+            "value": "second-instance"
+          },
+          {
+            "type": "text",
+            "value": " 里处理新参数并聚焦窗口。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "const gotLock = app.requestSingleInstanceLock()\nif (!gotLock) {\n  app.quit()\n  return\n}\n\napp.on('second-instance', (_event, argv) => {\n  // argv 含本次启动参数（如自定义协议 URL）\n  const win = BrowserWindow.getAllWindows()[0]\n  if (win) {\n    if (win.isMinimized()) win.restore()\n    win.focus()\n  }\n  handleDeepLink(argv)\n})"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、锁在 "
+          },
+          {
+            "type": "code",
+            "value": "ready"
+          },
+          {
+            "type": "text",
+            "value": " 前尽早申请；失败进程立刻 "
+          },
+          {
+            "type": "code",
+            "value": "quit"
+          },
+          {
+            "type": "text",
+            "value": "，避免再创建窗口。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、自定义协议（如 "
+          },
+          {
+            "type": "code",
+            "value": "myapp://"
+          },
+          {
+            "type": "text",
+            "value": "）在 macOS 还要听 "
+          },
+          {
+            "type": "code",
+            "value": "open-url"
+          },
+          {
+            "type": "text",
+            "value": "；Windows 多从 "
+          },
+          {
+            "type": "code",
+            "value": "argv"
+          },
+          {
+            "type": "text",
+            "value": " 解析，注意开发态与安装态参数位置不同。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、多窗口时约定「唤起哪一个」：通常聚焦主窗或按业务路由打开对应页，避免 silent 多开。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-electron-paths",
+      "navLabel": "路径与 asar",
+      "question": "开发态与打包后路径有何差异？读写用户数据、读 asar 内资源各该用什么？",
+      "questionNote": "__dirname 在打包后仍指向 asar 内；可写目录必须走 app.getPath。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "代码与静态资源在 "
+          },
+          {
+            "type": "code",
+            "value": "app.asar"
+          },
+          {
+            "type": "text",
+            "value": " 里只读；日志、缓存、下载要用 "
+          },
+          {
+            "type": "code",
+            "value": "app.getPath('userData')"
+          },
+          {
+            "type": "text",
+            "value": " 等系统目录，不要写回安装目录。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "preload"
+          },
+          {
+            "type": "text",
+            "value": "、主进程脚本路径：开发用源码目录，打包后在 asar 内；用 "
+          },
+          {
+            "type": "code",
+            "value": "path.join(__dirname, 'preload.js')"
+          },
+          {
+            "type": "text",
+            "value": " 通常仍可用，因 Electron 能读 asar。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、需要解压到真实磁盘的原生 "
+          },
+          {
+            "type": "code",
+            "value": ".node"
+          },
+          {
+            "type": "text",
+            "value": "、可执行外置工具，打包装进 "
+          },
+          {
+            "type": "code",
+            "value": "asarUnpack"
+          },
+          {
+            "type": "text",
+            "value": "，运行时用 "
+          },
+          {
+            "type": "code",
+            "value": "process.resourcesPath"
+          },
+          {
+            "type": "text",
+            "value": " 拼到 "
+          },
+          {
+            "type": "code",
+            "value": "app.asar.unpacked"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、用户可选目录用 "
+          },
+          {
+            "type": "code",
+            "value": "dialog"
+          },
+          {
+            "type": "text",
+            "value": "；临时文件用 "
+          },
+          {
+            "type": "code",
+            "value": "app.getPath('temp')"
+          },
+          {
+            "type": "text",
+            "value": "。渲染进程不要自己猜绝对路径，经 IPC 问主进程。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "code",
+            "value": "file://"
+          },
+          {
+            "type": "text",
+            "value": " 加载本地页时注意路径编码与安全；更稳妥是自定义协议或 "
+          },
+          {
+            "type": "code",
+            "value": "loadURL"
+          },
+          {
+            "type": "text",
+            "value": " 指向打包后的 "
+          },
+          {
+            "type": "code",
+            "value": "index.html"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-electron-native-module",
+      "navLabel": "原生模块",
+      "question": "Electron 里使用 Node 原生模块要注意什么？为何常要 electron-rebuild？",
+      "questionNote": "ABI 与当前 Electron 自带的 Node/Chromium 对齐；打包时记得 asarUnpack。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "原生模块（"
+          },
+          {
+            "type": "code",
+            "value": ".node"
+          },
+          {
+            "type": "text",
+            "value": "）按 Node ABI 编译；Electron 的 Node 版本往往与系统 Node 不同，必须对应当前 Electron 重编。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、开发依赖装好后执行 "
+          },
+          {
+            "type": "code",
+            "value": "electron-rebuild"
+          },
+          {
+            "type": "text",
+            "value": "（或封装在 "
+          },
+          {
+            "type": "code",
+            "value": "postinstall"
+          },
+          {
+            "type": "text",
+            "value": "）；升级 Electron 大版本后要重跑，否则运行时报 "
+          },
+          {
+            "type": "code",
+            "value": "NODE_MODULE_VERSION"
+          },
+          {
+            "type": "text",
+            "value": " 不匹配。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、只在"
+          },
+          {
+            "type": "strong",
+            "value": "主进程"
+          },
+          {
+            "type": "text",
+            "value": "（或明确的工具进程）"
+          },
+          {
+            "type": "code",
+            "value": "require"
+          },
+          {
+            "type": "text",
+            "value": " 原生模块；不要经 "
+          },
+          {
+            "type": "code",
+            "value": "nodeIntegration"
+          },
+          {
+            "type": "text",
+            "value": " 暴露给页面。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、打包：把含 "
+          },
+          {
+            "type": "code",
+            "value": ".node"
+          },
+          {
+            "type": "text",
+            "value": " 的包列入 "
+          },
+          {
+            "type": "code",
+            "value": "asarUnpack"
+          },
+          {
+            "type": "text",
+            "value": "，否则从 asar 里加载常失败；CI 要按目标平台交叉编译或矩阵构建。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、能纯 JS/WASM 解决的优先不用原生依赖，减少发版与多架构成本。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-electron-crash",
+      "navLabel": "崩溃与无响应",
+      "question": "渲染进程崩溃或页面无响应时，Electron 侧一般怎么发现与恢复？",
+      "questionNote": "分清 crash（进程没了）与 unresponsive（主线程卡死）；自助机要能自动拉起。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "监听 "
+          },
+          {
+            "type": "code",
+            "value": "render-process-gone"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "unresponsive"
+          },
+          {
+            "type": "text",
+            "value": "，记录原因后 "
+          },
+          {
+            "type": "code",
+            "value": "loadURL"
+          },
+          {
+            "type": "text",
+            "value": " 重载或重建 "
+          },
+          {
+            "type": "code",
+            "value": "BrowserWindow"
+          },
+          {
+            "type": "text",
+            "value": "；关键路径不要只依赖单一渲染进程里的定时器。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "webContents.on('render-process-gone', (_e, details) => { ... })"
+          },
+          {
+            "type": "text",
+            "value": "：看 "
+          },
+          {
+            "type": "code",
+            "value": "details.reason"
+          },
+          {
+            "type": "text",
+            "value": "（如 "
+          },
+          {
+            "type": "code",
+            "value": "crashed"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "oom"
+          },
+          {
+            "type": "text",
+            "value": "），埋点后重建页面。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "code",
+            "value": "unresponsive"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "responsive"
+          },
+          {
+            "type": "text",
+            "value": "：主线程长时间阻塞时触发；可提示用户，必要时 "
+          },
+          {
+            "type": "code",
+            "value": "webContents.forcefullyCrashRenderer()"
+          },
+          {
+            "type": "text",
+            "value": " 再重载。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、主进程自身也要有兜底：未捕获异常记日志；自助机可用系统服务或外部看门狗在进程退出后拉起，避免黑屏无人值守。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、预防：大计算放 Worker 或主进程队列；外设 I/O 勿堵渲染；控制内存（少开隐藏窗、及时销毁不用的 "
+          },
+          {
+            "type": "code",
+            "value": "BrowserWindow"
+          },
+          {
+            "type": "text",
+            "value": "）。"
           }
         ]
       ]
