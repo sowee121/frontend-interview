@@ -2,8 +2,8 @@
   "slug": "project",
   "title": "项目题",
   "documentTitle": "项目题",
-  "description": "项目经历深挖题：小程序/Hybrid、ERP、SaaS 多租户配置化、自助终端、客服会话与在线考试。",
-  "lead": "从项目机制讲到取舍与边界：小程序/Hybrid、多租户配置化、订单与打印、实时会话与自助终端。",
+  "description": "项目经历深挖题：小程序/混合应用（Hybrid）、ERP、SaaS 多租户配置化、自助终端、客服会话与在线考试。",
+  "lead": "从项目机制讲到取舍与边界：小程序/混合应用（Hybrid）、多租户配置化、订单与打印、实时会话与自助终端。",
   "items": [
     {
       "id": "q-proj-request-layer",
@@ -586,7 +586,7 @@
           },
           {
             "type": "text",
-            "value": "主进程管窗口、外设与更新，渲染进程管 UI；preload 白名单 IPC；更新要校验并可回退。"
+            "value": "主进程管窗口、外设与更新，渲染进程管 UI；preload 白名单进程间通信（IPC）；更新要校验并可回退。"
           }
         ],
         [

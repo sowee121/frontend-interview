@@ -18,7 +18,7 @@
           },
           {
             "type": "text",
-            "value": "域名解析 → 建连 → 请求 HTML → 解析构建 DOM/CSSOM → 布局绘制 → 合成，各阶段可并行优化。"
+            "value": "域名解析 → 建连 → 请求 HTML → 解析构建文档对象模型（DOM）/ 样式对象（CSSOM）→ 布局绘制 → 合成，各阶段可并行优化。"
           }
         ],
         [
@@ -580,7 +580,7 @@
           },
           {
             "type": "text",
-            "value": "，适合会话标识或与后端约定的轻量标记。注意跨站请求同样可能带上 Cookie，这正是 CSRF 的前提。"
+            "value": "，适合会话标识或与后端约定的轻量标记。注意跨站请求同样可能带上 Cookie，这正是跨站请求伪造（CSRF）的前提。"
           }
         ],
         [
@@ -690,7 +690,7 @@
           },
           {
             "type": "text",
-            "value": "均受同源限制；勿存密钥与敏感明文；可与 Service Worker 配合做离线，但复杂度明显高于 localStorage。"
+            "value": "均受同源限制；勿存密钥与敏感明文；可与 Service Worker（可拦截请求的后台脚本）配合做离线，但复杂度明显高于 localStorage。"
           }
         ]
       ]
@@ -1159,7 +1159,7 @@
     {
       "id": "q-intersection-resize",
       "navLabel": "Intersection 与 Resize",
-      "question": "IntersectionObserver 与 ResizeObserver 一般用在哪些场景？",
+      "question": "交叉观察器（IntersectionObserver）与尺寸观察器（ResizeObserver）一般用在哪些场景？",
       "questionNote": "两者均为异步回调，较 scroll + getBoundingClientRect 更省主线程；须在触发后 unobserve。",
       "answer": [
         [
@@ -1169,7 +1169,7 @@
           },
           {
             "type": "text",
-            "value": "IntersectionObserver 监测元素与视口相交；ResizeObserver 监测元素尺寸变化；均比同步测量更省主线程。"
+            "value": "交叉观察器监测元素与视口相交；尺寸观察器监测元素尺寸变化；均比同步测量更省主线程。"
           }
         ],
         [

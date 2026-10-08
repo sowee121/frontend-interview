@@ -156,7 +156,7 @@
           },
           {
             "type": "text",
-            "value": " 调 Provider → 转成 SSE 事件。新会话用 "
+            "value": " 调模型上游（Provider）→ 转成服务端推送（SSE）事件。新会话用 "
           },
           {
             "type": "code",
@@ -1062,7 +1062,7 @@
           },
           {
             "type": "text",
-            "value": "GFM 表格、围栏代码、KaTeX、Mermaid 增量解析成本高；专用库处理好「半截 Markdown」重绘。"
+            "value": "GitHub 风格 Markdown（GFM）表格、围栏代码、KaTeX、Mermaid 增量解析成本高；专用库处理好「半截 Markdown」重绘。"
           }
         ],
         [

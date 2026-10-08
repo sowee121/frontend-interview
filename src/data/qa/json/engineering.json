@@ -2,7 +2,7 @@
   "slug": "engineering",
   "title": "工程化",
   "documentTitle": "工程化",
-  "description": "模块化与 Vite/Webpack、Tree-shaking、Monorepo、Git 协作、测试与静态部署，以及 husky、微前端与灰度回滚。",
+  "description": "模块化与 Vite/Webpack、摇树优化（Tree-shaking）、Monorepo、Git 协作、测试与静态部署，以及 husky、微前端与灰度回滚。",
   "lead": "工程化三条线：构建与模块化的选型、协作与质量（Git、测试、门禁）、发布与部署（容器化、灰度与回滚）。",
   "items": [
     {
@@ -18,7 +18,7 @@
           },
           {
             "type": "text",
-            "value": "CJS 用 "
+            "value": "CommonJS（CJS）用 "
           },
           {
             "type": "code",
@@ -26,7 +26,7 @@
           },
           {
             "type": "text",
-            "value": "，运行时加载、导出是值的拷贝；ESM 用 "
+            "value": "，运行时加载、导出是值的拷贝；ES 模块（ESM）用 "
           },
           {
             "type": "code",
@@ -190,7 +190,7 @@
         [
           {
             "type": "text",
-            "value": "3、生产环境 Vite 用 Rollup 产出摇树后的 bundle，速度取决于项目体积与配置，不宜一概而论（Vite 正在迁移到 Rust 版 Rolldown，默认构建引擎以当前版本为准）。"
+            "value": "3、生产环境 Vite 用 Rollup 产出摇树后的 bundle；也在迁移到 Rust 版打包内核 Rolldown，以当前版本默认为准。"
           }
         ]
       ]
@@ -292,7 +292,7 @@
     {
       "id": "q-tree-shaking",
       "navLabel": "Tree-shaking",
-      "question": "什么是 Tree-shaking？",
+      "question": "什么是摇树优化（Tree-shaking）？",
       "questionNote": "静态 ESM + 无副作用声明；lodash 整包导入是经典反例。",
       "answer": [
         [
@@ -414,7 +414,7 @@
           },
           {
             "type": "text",
-            "value": " 用 Rust/Go 实现，编译快，Vite 开发态常用 esbuild 转 TS。"
+            "value": " 是高速编译器（Rust/Go），Vite 开发态常用 esbuild 转 TypeScript。"
           }
         ],
         [

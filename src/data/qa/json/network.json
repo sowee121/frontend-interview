@@ -8,7 +8,7 @@
     {
       "id": "q-dns",
       "navLabel": "DNS 与建连",
-      "question": "前端如何减少 DNS 与 TLS 耗时？",
+      "question": "前端如何减少域名解析（DNS）与传输层安全（TLS）耗时？",
       "questionNote": "资源提示（Resource Hints）是前端可直接落地的优化；HTTP/2 下域名分片反效果。",
       "answer": [
         [
@@ -36,7 +36,7 @@
           },
           {
             "type": "text",
-            "value": " 进一步完成 TCP+TLS 握手。"
+            "value": " 进一步完成 TCP + 传输层安全（TLS）握手。"
           }
         ],
         [
@@ -48,7 +48,7 @@
         [
           {
             "type": "text",
-            "value": "HTTP/3 基于 QUIC/UDP 首包建连更快，属基础设施选型；页面侧把 "
+            "value": "HTTP/3 基于 QUIC（跑在 UDP 上）首包建连更快，属基础设施选型；页面侧把 "
           },
           {
             "type": "code",
@@ -186,7 +186,7 @@
           },
           {
             "type": "text",
-            "value": " 上，减少握手 RTT，弱网丢包只阻塞单流。"
+            "value": " 上，减少握手往返时延（RTT），弱网丢包只阻塞单流。"
           }
         ]
       ]
@@ -256,7 +256,7 @@
         [
           {
             "type": "text",
-            "value": "3、落地看 CDN/网关是否开启；前端仍用 "
+            "value": "3、落地看内容分发网络（CDN）/ 网关是否开启；前端仍用 "
           },
           {
             "type": "code",
@@ -268,7 +268,7 @@
           },
           {
             "type": "code",
-            "value": "XHR"
+            "value": "XMLHttpRequest"
           },
           {
             "type": "text",
@@ -334,7 +334,7 @@
           },
           {
             "type": "text",
-            "value": "；可用 HSTS 强制跳转 HTTPS。"
+            "value": "；可用 HTTP 严格传输安全（HSTS）强制跳转 HTTPS。"
           }
         ],
         [
@@ -589,7 +589,7 @@
       "id": "q-cors",
       "navLabel": "跨域",
       "question": "什么是跨域？有哪些常见解决方案？",
-      "questionNote": "CORS 是浏览器对 JS 读响应的限制；curl/服务端互调不受此限。",
+      "questionNote": "跨域资源共享（CORS）是浏览器对 JS 读响应的限制；curl/服务端互调不受此限。",
       "answer": [
         [
           {
@@ -598,7 +598,7 @@
           },
           {
             "type": "text",
-            "value": "协议/主机/端口任一不同即为跨源；浏览器限制 JS 读取跨源响应，需 CORS 或服务端代理。"
+            "value": "协议/主机/端口任一不同即为跨源；浏览器限制 JS 读取跨源响应，需跨域资源共享（CORS）或服务端代理。"
           }
         ],
         [
@@ -689,12 +689,8 @@
             "value": " 转后端同源；"
           },
           {
-            "type": "code",
-            "value": "JSONP"
-          },
-          {
             "type": "text",
-            "value": " 仅 GET，属历史方案。"
+            "value": "JSONP（用 script 标签绕过跨域的历史方案）仅支持 GET。"
           }
         ],
         [
@@ -876,7 +872,7 @@
           },
           {
             "type": "text",
-            "value": "XSS 是恶意脚本进入页面上下文；CSRF 是浏览器自动携带 Cookie 发状态改变请求，两者攻击面不同。"
+            "value": "跨站脚本（XSS）是恶意脚本进入页面上下文；跨站请求伪造（CSRF）是浏览器自动携带 Cookie 发状态改变请求，两者攻击面不同。"
           }
         ],
         [
@@ -1170,7 +1166,7 @@
     {
       "id": "q-jwt-basics",
       "navLabel": "JWT 结构",
-      "question": "JWT 三段分别是什么？前端使用时有哪些注意点？",
+      "question": "JWT（JSON Web Token）三段分别是什么？前端使用时有哪些注意点？",
       "questionNote": "payload 可解码但不可信；验签与吊销在服务端。前端关心存放位置与过期处理。",
       "answer": [
         [
@@ -1232,7 +1228,7 @@
           },
           {
             "type": "text",
-            "value": "JWT（JSON Web Token）是无状态的，服务端不保存会话，因此无法主动让某个 token 立即失效；要做登出或踢人只能靠短过期 + refresh token，或额外维护黑名单。"
+            "value": "JWT 是无状态的，服务端不保存会话，因此无法主动让某个 token 立即失效；要做登出或踢人只能靠短过期 + refresh token，或额外维护黑名单。"
           }
         ]
       ]
@@ -1330,8 +1326,8 @@
     {
       "id": "q-websocket-basics",
       "navLabel": "WebSocket 基础",
-      "question": "WebSocket 与 HTTP 是什么关系？",
-      "questionNote": "握手走 HTTP 升级；全双工长连接。",
+      "question": "WebSocket（全双工长连接）与 HTTP 是什么关系？",
+      "questionNote": "握手走 HTTP 升级；同一条连接上双向传帧。",
       "answer": [
         [
           {

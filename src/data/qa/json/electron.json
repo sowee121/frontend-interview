@@ -2,8 +2,8 @@
   "slug": "electron",
   "title": "Electron",
   "documentTitle": "Electron",
-  "description": "进程模型与安全隔离、IPC 通信，打包发版与自动更新，以及单实例、路径差异、原生模块与崩溃恢复。",
-  "lead": "进程隔离与安全边界、IPC 通信、打包发版与远程更新；再补单实例、路径/asar、原生模块与崩溃恢复，以及自助终端超时运维。",
+  "description": "进程模型与安全隔离、进程间通信（IPC），打包发版与自动更新，以及单实例、路径差异、原生模块与崩溃恢复。",
+  "lead": "进程隔离与安全边界、进程间通信（IPC）、打包发版与远程更新；再补单实例、路径/asar、原生模块与崩溃恢复，以及自助终端超时运维。",
   "items": [
     {
       "id": "q-electron-why",
@@ -861,7 +861,7 @@
       "id": "q-electron-native-module",
       "navLabel": "原生模块",
       "question": "Electron 里使用 Node 原生模块要注意什么？为何常要 electron-rebuild？",
-      "questionNote": "ABI 与当前 Electron 自带的 Node/Chromium 对齐；打包时记得 asarUnpack。",
+      "questionNote": "应用二进制接口（ABI）须与当前 Electron 自带的 Node/Chromium 对齐；打包时记得 asarUnpack。",
       "answer": [
         [
           {
@@ -878,7 +878,7 @@
           },
           {
             "type": "text",
-            "value": "）按 Node ABI 编译；Electron 的 Node 版本往往与系统 Node 不同，必须对应当前 Electron 重编。"
+            "value": "）按 Node 应用二进制接口（ABI）编译；Electron 的 Node 常与系统 Node 不同，须对应当前 Electron 重编。"
           }
         ],
         [
@@ -960,7 +960,7 @@
           },
           {
             "type": "text",
-            "value": "，否则从 asar 里加载常失败；CI 要按目标平台交叉编译或矩阵构建。"
+            "value": "，否则从 asar（Electron 只读归档）里加载常失败；持续集成（CI）要按目标平台交叉编译或矩阵构建。"
           }
         ],
         [

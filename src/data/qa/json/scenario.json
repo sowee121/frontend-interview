@@ -488,7 +488,7 @@
       "id": "q-fcp",
       "navLabel": "首屏优化",
       "question": "首屏加载偏慢时，应从哪些方面分析与优化？",
-      "questionNote": "资源、请求、体验三块；指标用 FCP/LCP + RUM 验证。",
+      "questionNote": "资源、请求、体验三块；指标用首次内容绘制（FCP）/ 最大内容绘制（LCP）+ 真实用户监控（RUM）验证。",
       "answer": [
         [
           {
@@ -519,7 +519,7 @@
           },
           {
             "type": "text",
-            "value": " 懒加载；图片 WebP/AVIF 与合适尺寸；关键 CSS 内联。"
+            "value": " 懒加载；图片用 WebP/AVIF 等现代格式与合适尺寸；关键 CSS 内联。"
           }
         ],
         [
@@ -681,7 +681,7 @@
           },
           {
             "type": "text",
-            "value": "；React 用 Error Boundary 包住路由子树。"
+            "value": "；React 用错误边界（Error Boundary）包住路由子树。"
           }
         ],
         [
@@ -749,7 +749,7 @@
           },
           {
             "type": "text",
-            "value": " 合并批量，关页 flush。"
+            "value": "（页面卸载时也能发出的上报）合并批量，关页 flush。"
           }
         ],
         [
@@ -1019,7 +1019,7 @@
           },
           {
             "type": "text",
-            "value": " 一类实现，而不是浏览器原生 "
+            "value": "（支持 POST 的 SSE 拉流）一类实现，而不是浏览器原生 "
           },
           {
             "type": "code",
