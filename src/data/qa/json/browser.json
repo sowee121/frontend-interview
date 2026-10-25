@@ -787,6 +787,7 @@
       "id": "q-httponly",
       "navLabel": "HttpOnly",
       "question": "Cookie 的 HttpOnly、Secure 分别做什么？",
+      "questionNote": "HttpOnly 挡住脚本读取 Cookie，Secure 则限制只在 HTTPS 请求里发送。",
       "answer": [
         [
           {
@@ -830,6 +831,7 @@
       "id": "q-cookie-session",
       "navLabel": "Cookie 与 Session",
       "question": "Cookie 和 Session 有何区别？前端鉴权里怎么配合？",
+      "questionNote": "Cookie 存在浏览器并随请求发送；Session 是服务端状态，常靠 Cookie 里的会话 id 找回。",
       "answer": [
         [
           {
@@ -959,6 +961,7 @@
       "id": "q-iframe-security",
       "navLabel": "iframe 安全",
       "question": "嵌入 iframe 时有哪些安全注意点？",
+      "questionNote": "iframe 扩大了点击劫持和跨源通信的面，用 sandbox 和 postMessage 的来源校验收口。",
       "answer": [
         [
           {
@@ -1344,6 +1347,7 @@
       "id": "q-ric",
       "navLabel": "requestIdleCallback",
       "question": "requestIdleCallback 做什么？和 requestAnimationFrame 怎么选？",
+      "questionNote": "requestIdleCallback 跑空闲时的低优先级任务，requestAnimationFrame 对齐下一帧绘制。",
       "answer": [
         [
           {
@@ -1403,6 +1407,7 @@
       "id": "q-sw-pwa",
       "navLabel": "Service Worker 与 PWA",
       "question": "Service Worker 是什么？和 PWA 有何关系？",
+      "questionNote": "Service Worker 在独立线程里拦截请求并缓存资源，PWA 的离线和可安装体验通常建立在它之上。",
       "answer": [
         [
           {

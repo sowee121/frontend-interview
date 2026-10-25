@@ -9,6 +9,7 @@
       "id": "q-be-overview",
       "navLabel": "前端与后端边界",
       "question": "前端为什么需要了解后端基础？日常会接触到哪些部分？",
+      "questionNote": "了解后端是为了联调时分清传参、服务逻辑和查询问题，也能写 BFF，但不做领域建模和高并发设计。",
       "answer": [
         [
           {
@@ -412,6 +413,7 @@
       "id": "q-stream-buffer",
       "navLabel": "Stream 与 Buffer",
       "question": "Node 里 Stream 和 Buffer 分别解决什么问题？",
+      "questionNote": "Buffer 是一块二进制内存；Stream 边读边写，并用背压避免大文件一次性进内存。",
       "answer": [
         [
           {

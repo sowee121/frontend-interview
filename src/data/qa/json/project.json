@@ -63,6 +63,7 @@
       "id": "q-proj-token-refresh",
       "navLabel": "Token 刷新",
       "question": "多个接口同时 401 时，怎么刷新 Token 才不乱？",
+      "questionNote": "同一时刻只刷新一次 Token，其余 401 排队等待，成功后重放请求，失败则统一登出。",
       "answer": [
         [
           {
@@ -104,6 +105,7 @@
       "id": "q-proj-anti-replay",
       "navLabel": "接口防重放",
       "question": "中后台接口防重放，前端该做哪些、不该做哪些？",
+      "questionNote": "前端每次带时间戳和 nonce 参与签名，是否重放由服务端验签和去重决定。",
       "answer": [
         [
           {
@@ -201,6 +203,7 @@
       "id": "q-proj-hybrid-login",
       "navLabel": "内嵌 H5 登录态",
       "question": "小程序或 App 内嵌 H5 时，登录态怎么打通更稳妥？",
+      "questionNote": "长期凭证留在原生侧，H5 用一次性票据换短期 Token，地址栏上不放明文令牌。",
       "answer": [
         [
           {
@@ -258,6 +261,7 @@
       "id": "q-proj-micro-auth",
       "navLabel": "微前端统一登录",
       "question": "微前端基座聚合多套中后台子系统时，统一登录和权限怎么收口？",
+      "questionNote": "登录态和路由权限收在基座，子应用只消费令牌和按钮级权限码。",
       "answer": [
         [
           {
@@ -317,6 +321,7 @@
       "id": "q-proj-rbac",
       "navLabel": "动态权限",
       "question": "后台里动态路由、菜单和按钮权限分别管什么？",
+      "questionNote": "路由决定能否进入页面，菜单决定是否可见，按钮决定能否操作，三者来自同一份权限码。",
       "answer": [
         [
           {
@@ -352,6 +357,7 @@
       "id": "q-proj-webview-sdk",
       "navLabel": "WebView 通信",
       "question": "内嵌 H5 与小程序/原生如何互相调用对方的方法？",
+      "questionNote": "H5 调容器走注入的 API 或官方 SDK，容器调 H5 则用执行脚本或 URL 传参。",
       "answer": [
         [
           {
@@ -519,6 +525,7 @@
       "id": "q-proj-mp-ci",
       "navLabel": "多环境与发布",
       "question": "小程序多环境切换和自动上传，你会怎么做？",
+      "questionNote": "环境由构建命令注入，上传用 miniprogram-ci，私钥只放在密钥库里。",
       "answer": [
         [
           {
@@ -578,6 +585,7 @@
       "id": "q-proj-electron-delivery",
       "navLabel": "Electron 搭建与更新",
       "question": "自助终端 Electron 如何做进程划分、IPC 与远程更新？",
+      "questionNote": "主进程管外设和更新，渲染进程只走 preload 暴露的白名单，更新失败要能回到旧包。",
       "answer": [
         [
           {
@@ -613,6 +621,7 @@
       "id": "q-proj-kiosk-device",
       "navLabel": "外设认证",
       "question": "自助终端读卡、扫码做身份认证，前端链路怎么走？",
+      "questionNote": "页面只发指令，读卡和扫码由主进程调本机中间件，结果经 IPC 回传后再做业务认证。",
       "answer": [
         [
           {
@@ -648,6 +657,7 @@
       "id": "q-proj-standard-custom",
       "navLabel": "标品与定制",
       "question": "ToB 既有标品又有定制时，前端怎么控差异？",
+      "questionNote": "差异优先做成配置或扩展点，客户分支只留给长期大定制，并定期合回主干。",
       "answer": [
         [
           {
@@ -683,6 +693,7 @@
       "id": "q-proj-order-state",
       "navLabel": "订单状态机",
       "question": "寄递类订单状态多、还多端展示，状态机怎么设计才不散？",
+      "questionNote": "状态码和可执行动作只维护一份，页面用纯函数判断能不能做，用映射表决定怎么展示。",
       "answer": [
         [
           {
@@ -748,6 +759,7 @@
       "id": "q-proj-order-sync",
       "navLabel": "多平台订单同步",
       "question": "ERP 要对接多个电商平台，订单同步与打单发货怎么做到不漏不重？",
+      "questionNote": "用平台订单号加店铺做幂等键，增量拉取之外再对账补漏，打单失败要能单独重试。",
       "answer": [
         [
           {
@@ -807,6 +819,7 @@
       "id": "q-proj-exam-state",
       "navLabel": "在线考试答卷",
       "question": "在线考试场景下，倒计时与答卷状态如何做得可靠？",
+      "questionNote": "倒计时以服务端截止时间为准，答卷先落本地再防抖上报，交卷请求本身要幂等。",
       "answer": [
         [
           {
@@ -866,6 +879,7 @@
       "id": "q-proj-ws-push",
       "navLabel": "WebSocket 推送",
       "question": "中后台用 WebSocket 推业务状态，断线后怎么处理？",
+      "questionNote": "推送按业务主键去重，连接恢复后还要补拉增量，通道不可用时退回轮询。",
       "answer": [
         [
           {
@@ -901,6 +915,7 @@
       "id": "q-proj-cs-realtime",
       "navLabel": "客服实时会话",
       "question": "客服工作台里，实时消息收发和会话列表一般怎么做？",
+      "questionNote": "消息用 msgId 去重，并以服务端确认才算发送成功；会话列表只留未读和最后一条摘要。",
       "answer": [
         [
           {
@@ -950,6 +965,7 @@
       "id": "q-proj-sse-assistant",
       "navLabel": "流式 AI 助手",
       "question": "中后台接入流式问答助手，前端还要额外处理哪些业务问题？",
+      "questionNote": "中后台接流式助手，额外要处理登录态、租户隔离、提问留痕，以及模型不可用时的降级。",
       "answer": [
         [
           {
@@ -991,6 +1007,7 @@
       "id": "q-proj-virtual-table",
       "navLabel": "虚拟表格",
       "question": "ERP 大表格卡顿时，虚拟滚动要注意什么？",
+      "questionNote": "只渲染可视区和少量缓冲行，行高要能算出来，离开页面时销毁表格实例。",
       "answer": [
         [
           {
@@ -1104,6 +1121,7 @@
       "id": "q-proj-tenant-theme",
       "navLabel": "多租户配置化",
       "question": "SaaS 多租户系统里，租户隔离、品牌主题与差异化配置应如何收口？",
+      "questionNote": "租户标识进请求头，品牌色写成 CSS 变量，字段差异用配置下发而不是客户分支。",
       "answer": [
         [
           {
@@ -1151,6 +1169,7 @@
       "id": "q-proj-i18n",
       "navLabel": "国际化",
       "question": "中后台做中英文切换，前端要盯哪些细节？",
+      "questionNote": "界面文案用 key 管理，请求带上语言，错误码再映射成文案，布局按更长的英文留出余量。",
       "answer": [
         [
           {
@@ -1224,6 +1243,7 @@
       "id": "q-proj-echarts",
       "navLabel": "图表封装",
       "question": "中后台封装 ECharts 时，生命周期和性能怎么管？",
+      "questionNote": "一个容器对应一个图表实例，数据变化调用 setOption，离开路由时必须 dispose。",
       "answer": [
         [
           {
@@ -1283,6 +1303,7 @@
       "id": "q-proj-print",
       "navLabel": "面单打印",
       "question": "后台面单打印有多种方案时，怎么选、怎么收口？",
+      "questionNote": "window.print 适合页内预览，本机套打走本地组件，云打印通过 WebSocket 下发指令。",
       "answer": [
         [
           {

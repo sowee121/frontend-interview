@@ -199,6 +199,7 @@
       "id": "q-loader-plugin",
       "navLabel": "Loader 与 Plugin",
       "question": "Webpack 里 Loader 和 Plugin 有何区别？",
+      "questionNote": "Loader 转换单个模块的内容，Plugin 挂在编译生命周期上做拆包、注入等更广的事。",
       "answer": [
         [
           {
@@ -250,6 +251,7 @@
       "id": "q-hmr",
       "navLabel": "HMR",
       "question": "热模块替换（HMR）大致如何工作？",
+      "questionNote": "HMR 用 WebSocket 推送变更模块，并在运行时替换，尽量保住当前页面状态。",
       "answer": [
         [
           {
@@ -1061,6 +1063,7 @@
       "id": "q-sri",
       "navLabel": "SRI 完整性校验",
       "question": "子资源完整性（SRI）是什么？何时使用？",
+      "questionNote": "SRI 用 integrity 哈希校验外链脚本和样式，防止 CDN 上的文件被篡改后仍执行。",
       "answer": [
         [
           {
@@ -1112,6 +1115,7 @@
       "id": "q-release-gray",
       "navLabel": "灰度与回滚",
       "question": "前端静态资源要支持灰度发版和快速回滚，工程上怎么做？",
+      "questionNote": "入口短缓存、带内容哈希的资源长缓存，切换入口指向的版本就能灰度或回滚。",
       "answer": [
         [
           {

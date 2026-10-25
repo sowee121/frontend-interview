@@ -9,6 +9,7 @@
       "id": "q-null-undefined",
       "navLabel": "null 和 undefined",
       "question": "null 与 undefined 有何区别？typeof null 为何返回 object？",
+      "questionNote": "undefined 表示缺省未赋值，null 表示显式置空；typeof null 因历史实现返回 \"object\"。",
       "answer": [
         [
           {
@@ -100,6 +101,7 @@
       "id": "q-loose-equality",
       "navLabel": "== 与 ===",
       "question": "== 与 === 有何区别？如何理解抽象相等比较（Abstract Equality Comparison）？",
+      "questionNote": "=== 在类型不同时直接为 false；== 会按抽象相等比较做隐式转换。",
       "answer": [
         [
           {
@@ -217,6 +219,7 @@
       "id": "q-type-detection",
       "navLabel": "类型判断",
       "question": "如何判断数组、null 与日期等类型？typeof 与 instanceof 是否足够？",
+      "questionNote": "typeof 适合原始类型，instanceof 沿原型链判断，对象的精确类型用 Object.prototype.toString。",
       "answer": [
         [
           {
@@ -498,6 +501,7 @@
       "id": "q-execution-context",
       "navLabel": "执行上下文与作用域链",
       "question": "执行上下文、作用域链与原型链分别承担什么职责？",
+      "questionNote": "执行上下文管理运行环境，作用域链解析标识符，原型链解析对象属性。",
       "answer": [
         [
           {
@@ -569,6 +573,7 @@
       "id": "q-closure",
       "navLabel": "闭包",
       "question": "什么是闭包？有哪些典型应用场景？",
+      "questionNote": "内层函数持有外层词法环境；外层执行完后，只要内层还被引用，那些变量就不会被回收。",
       "answer": [
         [
           {
@@ -608,6 +613,7 @@
       "id": "q-new",
       "navLabel": "new 做了什么",
       "question": "使用 new 调用构造函数时，运行时依次执行哪些步骤？",
+      "questionNote": "new 先创建对象并连上 prototype，再以它为 this 执行构造函数；若返回对象则用该对象作结果。",
       "answer": [
         [
           {
@@ -693,6 +699,7 @@
       "id": "q-proto",
       "navLabel": "原型链",
       "question": "请说明 JavaScript 中的原型链查找机制。",
+      "questionNote": "读属性时先查自身，没有就沿 [[Prototype]] 向上，直到 null。",
       "answer": [
         [
           {
@@ -800,6 +807,7 @@
       "id": "q-call-bind",
       "navLabel": "call/apply/bind",
       "question": "call、apply、bind 有何区别？各自适用于哪些场景？",
+      "questionNote": "call 和 apply 会立刻调用，bind 返回一个已经绑定 this 的新函数。",
       "answer": [
         [
           {
@@ -917,6 +925,7 @@
       "id": "q-this",
       "navLabel": "this 指向",
       "question": "函数中的 this 由什么因素决定？",
+      "questionNote": "普通函数的 this 由调用方式决定，箭头函数使用的是定义处外层的 this。",
       "answer": [
         [
           {
@@ -1066,6 +1075,7 @@
       "id": "q-eventloop",
       "navLabel": "事件循环",
       "question": "宏任务与微任务的执行顺序是怎样的？",
+      "questionNote": "每一轮先执行当前宏任务里的同步代码，再清空微任务队列，然后才取下一个宏任务。",
       "answer": [
         [
           {
@@ -1197,6 +1207,7 @@
       "id": "q-async-try-catch",
       "navLabel": "异步错误捕获",
       "question": "try/catch 能否捕获异步错误？正确做法是什么？",
+      "questionNote": "同步 try/catch 抓不到已离开当前调用栈的异步错误，要在 await 或 Promise 链上捕获。",
       "answer": [
         [
           {
@@ -1272,6 +1283,7 @@
       "id": "q-debounce",
       "navLabel": "防抖与节流",
       "question": "防抖与节流有何区别？分别适用于哪些场景？",
+      "questionNote": "防抖在触发停顿之后执行一次，节流则保证一个时间窗里最多执行一次。",
       "answer": [
         [
           {
@@ -1361,6 +1373,7 @@
       "id": "q-event-delegation",
       "navLabel": "事件委托",
       "question": "什么是事件委托？适用于哪些场景？",
+      "questionNote": "监听放在父节点上，靠冒泡和 event.target 处理子节点，后插入的子元素不用重新绑定。",
       "answer": [
         [
           {
@@ -1408,6 +1421,7 @@
       "id": "q-target-current",
       "navLabel": "target 与 currentTarget",
       "question": "事件对象里 target 和 currentTarget 有何区别？",
+      "questionNote": "target 是实际触发事件的节点，currentTarget 是当前正在执行的监听所在的节点。",
       "answer": [
         [
           {
@@ -1453,6 +1467,7 @@
       "id": "q-memory-leak",
       "navLabel": "常见内存泄漏",
       "question": "前端开发中有哪些常见的内存泄漏来源？",
+      "questionNote": "常见泄漏是定时器、事件监听和闭包一直握着 DOM 或大对象，离开页面时没有解开。",
       "answer": [
         [
           {
@@ -1512,6 +1527,7 @@
       "id": "q-observer-pubsub",
       "navLabel": "观察者与发布订阅",
       "question": "观察者模式和发布订阅模式有何区别？前端常见落点是什么？",
+      "questionNote": "观察者由主题直接通知对方；发布订阅多一层事件总线，双方互不持有对方。",
       "answer": [
         [
           {
@@ -1555,6 +1571,7 @@
       "id": "q-singleton",
       "navLabel": "单例模式",
       "question": "什么是单例模式？前端哪些场景会用到？",
+      "questionNote": "单例保证某一类全局只有一个实例，并提供统一入口，适合真正全局的配置或请求实例。",
       "answer": [
         [
           {
@@ -1590,6 +1607,7 @@
       "id": "q-solid",
       "navLabel": "SOLID 原则",
       "question": "SOLID 五原则分别指什么？前端落地时怎么理解？",
+      "questionNote": "五原则约束职责、扩展方式、子类型替换、接口粒度和依赖方向，前端多落在模块与组件边界。",
       "answer": [
         [
           {

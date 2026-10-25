@@ -26,6 +26,8 @@
     margin: 0 0 1.25rem;
     padding-bottom: 0.85rem;
     border-bottom: 1px solid $border;
+    word-break: break-all;
+    overflow-wrap: anywhere;
   }
 }
 
@@ -196,6 +198,8 @@
     font-size: 0.88rem;
     color: $muted;
     line-height: $line-height-tight;
+    word-break: break-all;
+    overflow-wrap: anywhere;
   }
 }
 

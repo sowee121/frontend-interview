@@ -3,7 +3,7 @@
   "title": "HTML/CSS",
   "documentTitle": "HTML/CSS",
   "description": "语义化、盒模型、Flex/Grid、BFC 与层叠，移动端适配，以及预处理器与原子化 CSS 的取舍。",
-  "lead": "布局与视觉的基础层：语义化与盒模型、Flex/Grid 与 BFC、层叠与定位；移动端看 viewport、1px 与 rem/em，样式工程看 Sass/Less 与 Tailwind。",
+  "lead": "布局与视觉：语义化与盒模型、Flex/Grid 与 BFC、层叠与定位；移动端看 viewport、1px 与 rem/em，样式工程看 Sass/Less 与 Tailwind。",
   "items": [
     {
       "id": "q-semantic",
@@ -235,6 +235,7 @@
       "id": "q-vertical-center",
       "navLabel": "垂直居中",
       "question": "CSS 垂直居中有哪些常用写法？",
+      "questionNote": "是否已知宽高、是单行还是块级，决定用 Flex、Grid、绝对定位还是行高居中。",
       "answer": [
         [
           {
@@ -358,6 +359,7 @@
       "id": "q-two-three-column",
       "navLabel": "两栏三栏布局",
       "question": "如何实现右侧自适应的两栏、中间自适应的三栏布局？",
+      "questionNote": "定宽栏写死尺寸，自适应栏用 flex:1 或 1fr 吃掉剩余空间。",
       "answer": [
         [
           {
@@ -793,6 +795,7 @@
       "id": "q-hide-element",
       "navLabel": "隐藏元素",
       "question": "CSS 隐藏元素有哪些方式？有何差异？",
+      "questionNote": "display:none 不占位，visibility:hidden 占位但不可见，opacity:0 仍然能被点到。",
       "answer": [
         [
           {
@@ -868,6 +871,7 @@
       "id": "q-text-ellipsis",
       "navLabel": "文本溢出省略",
       "question": "单行和多行文本溢出省略怎么写？",
+      "questionNote": "单行用 nowrap 配合 ellipsis，多行用 line-clamp 按行数裁切。",
       "answer": [
         [
           {
@@ -935,6 +939,7 @@
       "id": "q-anim-transition",
       "navLabel": "animation 与 transition",
       "question": "animation、transition、transform 分别做什么？",
+      "questionNote": "transform 改变形态，transition 补两态之间的过渡，animation 用关键帧做多段动画。",
       "answer": [
         [
           {

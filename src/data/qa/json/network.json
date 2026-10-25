@@ -195,6 +195,7 @@
       "id": "q-head-of-line",
       "navLabel": "队头阻塞",
       "question": "HTTP 队头阻塞指什么？HTTP/1.1 与 HTTP/2 如何缓解？",
+      "questionNote": "队头阻塞是前面的报文占住通道；HTTP/2 解开应用层的阻塞，HTTP/3 再减轻传输层的阻塞。",
       "answer": [
         [
           {
@@ -230,6 +231,7 @@
       "id": "q-http3",
       "navLabel": "HTTP/3",
       "question": "HTTP/3 相对 HTTP/2 主要改进是什么？",
+      "questionNote": "HTTP/3 跑在基于 UDP 的 QUIC 上，一条流丢包不再拖住同一连接上的其他流。",
       "answer": [
         [
           {
@@ -519,6 +521,7 @@
       "id": "q-cdn",
       "navLabel": "CDN",
       "question": "内容分发网络（CDN）是什么？静态资源为何常上 CDN？",
+      "questionNote": "CDN 把静态资源放在边缘节点就近返回，内容更新靠更换带哈希的 URL。",
       "answer": [
         [
           {
@@ -554,6 +557,7 @@
       "id": "q-redirect-codes",
       "navLabel": "重定向状态码",
       "question": "301、302、303、307、308 有何区别？",
+      "questionNote": "301 和 308 表示永久搬家，302 和 307 表示临时；307 与 308 会保持原来的方法和正文。",
       "answer": [
         [
           {
@@ -1033,6 +1037,7 @@
       "id": "q-csp",
       "navLabel": "CSP",
       "question": "内容安全策略（CSP）解决什么问题？怎么配？",
+      "questionNote": "CSP 用 script-src 等指令限制脚本来源，缩小 XSS 注入之后还能执行代码的范围。",
       "answer": [
         [
           {
@@ -1108,6 +1113,7 @@
       "id": "q-clickjacking",
       "navLabel": "点击劫持",
       "question": "什么是点击劫持？如何防范？",
+      "questionNote": "点击劫持用透明 iframe 骗用户点击，用 frame-ancestors 或 X-Frame-Options 禁止被嵌入。",
       "answer": [
         [
           {

@@ -13,6 +13,7 @@
       "id": "q-let-const-tdz",
       "navLabel": "let/const 与 TDZ",
       "question": "var、let、const 有何区别？什么是暂时性死区（TDZ）？",
+      "questionNote": "var 是函数作用域且可重复声明；let/const 是块级作用域，声明前处于暂时性死区。",
       "answer": [
         [
           {
@@ -154,6 +155,7 @@
       "id": "q-destructuring",
       "navLabel": "解构赋值",
       "question": "解构赋值支持哪些数据结构？剩余参数与展开运算符有何关系？",
+      "questionNote": "解构按模式从数组、对象或参数取值；剩余运算符收集，展开运算符是它的逆操作。",
       "answer": [
         [
           {
@@ -253,6 +255,7 @@
       "id": "q-arrow-and-params",
       "navLabel": "箭头函数与默认参数",
       "question": "箭头函数与普通函数有何区别？默认参数应如何使用？",
+      "questionNote": "箭头函数没有自己的 this，也不能当构造函数；默认参数在未传或传入 undefined 时生效。",
       "answer": [
         [
           {
@@ -376,6 +379,7 @@
       "id": "q-optional-nullish",
       "navLabel": "可选链与 ??（ES2020）",
       "question": "可选链 ?.、空值合并 ?? 与逻辑或 || 有何区别？",
+      "questionNote": "?. 在 null 或 undefined 时短路；?? 只把这两个当成空值，0 和空字符串会保留。",
       "answer": [
         [
           {
@@ -613,6 +617,7 @@
       "id": "q-symbol",
       "navLabel": "Symbol",
       "question": "Symbol 有什么用？",
+      "questionNote": "Symbol 是唯一的原始类型键，用来避免属性名冲突，并承载 iterator 等元协议。",
       "answer": [
         [
           {
@@ -680,6 +685,7 @@
       "id": "q-set-map",
       "navLabel": "Set 与 Map",
       "question": "Set / Map 与数组、普通对象有何区别？分别适用于哪些场景？",
+      "questionNote": "Set 保证值唯一；Map 的键可以是任意类型，频繁增删时比普通对象合适。",
       "answer": [
         [
           {
@@ -739,6 +745,7 @@
       "id": "q-weakmap",
       "navLabel": "WeakMap / WeakSet",
       "question": "WeakMap 与 Map 有何区别？有哪些典型用途？",
+      "questionNote": "WeakMap 的键必须是对象且为弱引用，适合存放与该对象同生命周期的私有数据。",
       "answer": [
         [
           {
@@ -868,6 +875,7 @@
       "id": "q-copy",
       "navLabel": "深浅拷贝",
       "question": "浅拷贝与深拷贝有何区别？有哪些常用实现方式？",
+      "questionNote": "浅拷贝只复制第一层引用，深拷贝才递归整棵结构；状态更新更常做不可变的浅拷贝。",
       "answer": [
         [
           {
@@ -1019,6 +1027,7 @@
       "id": "q-for-in-of",
       "navLabel": "for-in 与 for-of",
       "question": "for...in 与 for...of 有何区别？",
+      "questionNote": "for...in 遍历可枚举的键名，含原型链上的；for...of 遍历可迭代对象的值。",
       "answer": [
         [
           {
@@ -1180,6 +1189,7 @@
       "id": "q-generator",
       "navLabel": "Generator",
       "question": "Generator 是什么？有哪些使用场景？",
+      "questionNote": "Generator 用 function* 和 yield 把函数暂停成可以逐步取出的迭代器。",
       "answer": [
         [
           {
@@ -1247,6 +1257,7 @@
       "id": "q-promise",
       "navLabel": "Promise 组合方法",
       "question": "Promise.all / race / allSettled / any 有何区别？分别适用于哪些场景？",
+      "questionNote": "all 要全部成功，race 取最先落定的结果，allSettled 等全部结束，any 取最先成功。",
       "answer": [
         [
           {
@@ -1390,6 +1401,7 @@
       "id": "q-promise-chain-error",
       "navLabel": "Promise 链式与错误冒泡",
       "question": "Promise.then 为何能链式调用？错误如何沿链传播？",
+      "questionNote": "then 每次都返回新的 Promise，返回值或抛出的错误决定下一环成功还是失败。",
       "answer": [
         [
           {
@@ -1513,6 +1525,7 @@
       "id": "q-async-await",
       "navLabel": "async/await",
       "question": "async/await 与 Promise 有何关系？",
+      "questionNote": "async 函数的返回值一定包成 Promise，await 会暂停到这个 Promise 落定。",
       "answer": [
         [
           {
@@ -1700,6 +1713,7 @@
       "id": "q-cancel-promise",
       "navLabel": "中断 Promise",
       "question": "如何「中断」一个 Promise？和 AbortController 什么关系？",
+      "questionNote": "Promise 落定后不能撤销；取消要靠竞态丢掉结果，或把 AbortSignal 传给底层 IO。",
       "answer": [
         [
           {
@@ -1767,6 +1781,7 @@
       "id": "q-class",
       "navLabel": "Class 语法",
       "question": "ES6 class 与构造函数有何区别？继承应如何编写？",
+      "questionNote": "class 仍基于原型；extends 接上原型链，派生类的构造函数里要先调用 super()。",
       "answer": [
         [
           {
@@ -1936,6 +1951,7 @@
       "id": "q-proxy-reflect",
       "navLabel": "Proxy 与 Reflect",
       "question": "Proxy 可拦截哪些操作？Reflect 有何用途？",
+      "questionNote": "Proxy 拦截对对象的操作，Reflect 按默认行为把调用转发给原对象并带上正确的 this。",
       "answer": [
         [
           {
@@ -2075,6 +2091,7 @@
       "id": "q-dynamic-import",
       "navLabel": "动态 import",
       "question": "import() 动态导入返回什么？与静态 import 有何区别？",
+      "questionNote": "import() 返回模块命名空间的 Promise，适合按条件拆包；静态 import 更利于摇树。",
       "answer": [
         [
           {

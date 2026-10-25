@@ -299,6 +299,7 @@
       "id": "q-type-interface",
       "navLabel": "type 和 interface",
       "question": "type 与 interface 应如何选择？",
+      "questionNote": "interface 可以声明合并并用 extends 扩展，type 更适合联合、交叉和映射这类类型运算。",
       "answer": [
         [
           {
@@ -398,6 +399,7 @@
       "id": "q-enum",
       "navLabel": "枚举",
       "question": "TypeScript 枚举怎么用？和联合类型如何取舍？",
+      "questionNote": "数字枚举会生成运行时代码和反向映射；一组固定字面量用联合类型更轻，也更容易被摇掉。",
       "answer": [
         [
           {
@@ -563,6 +565,7 @@
       "id": "q-never-void",
       "navLabel": "never 与 void",
       "question": "never 和 void 有何区别？",
+      "questionNote": "void 表示函数没有可用的返回值，never 表示这个位置不可能产生任何值。",
       "answer": [
         [
           {
@@ -758,6 +761,7 @@
       "id": "q-type-assertion",
       "navLabel": "类型断言",
       "question": "类型断言是什么？和类型收窄有何不同？",
+      "questionNote": "类型断言只改变编译器的看法，运行时不做检查；类型收窄才是用控制流证明类型。",
       "answer": [
         [
           {

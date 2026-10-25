@@ -9,6 +9,7 @@
       "id": "q-mvc-mvp-mvvm",
       "navLabel": "MVC MVP MVVM",
       "question": "MVC、MVP、MVVM 分别如何分工？前端为何常谈 MVVM？",
+      "questionNote": "三者都把视图和数据拆开，差别在于谁负责更新视图，以及中间那一层有多厚。",
       "answer": [
         [
           {
@@ -1036,6 +1037,7 @@
       "id": "q-saas-zero-to-one",
       "navLabel": "SaaS 从 0 到 1",
       "question": "从 0 到 1 搭一个中后台 SaaS，前端前期要定哪些事？",
+      "questionNote": "先定构建、规范和流水线，再定登录、请求与权限，主题和国际化按需要后补。",
       "answer": [
         [
           {

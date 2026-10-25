@@ -3,7 +3,7 @@
   "title": "小程序",
   "documentTitle": "小程序",
   "description": "双线程架构、生命周期与路由、setData 与登录请求，分包与性能，以及 Taro / uni-app 跨端与微信云开发入门。",
-  "lead": "双线程架构与生命周期是基础，性能与工程落在 setData、登录域名与分包体积；跨端看 Taro 与 uni-app；云开发看云函数、云库与安全规则边界。",
+  "lead": "双线程架构与生命周期：性能与工程落在 setData、登录域名与分包体积；跨端看 Taro 与 uni-app；云开发看云函数、云库与安全规则边界。",
   "items": [
     {
       "id": "q-mp-vs-h5",
@@ -125,6 +125,7 @@
       "id": "q-mp-lifecycle",
       "navLabel": "生命周期",
       "question": "App、Page、Component 的生命周期分别有哪些？",
+      "questionNote": "App 管冷启动和前后台，Page 管页面入栈与展示，Component 管组件的挂载和卸载。",
       "answer": [
         [
           {
@@ -380,6 +381,7 @@
       "id": "q-mp-routing",
       "navLabel": "路由与页面栈",
       "question": "小程序路由如何跳转？页面栈是什么？",
+      "questionNote": "navigateTo 压栈，redirectTo 替换当前页，switchTab 切换 Tab，reLaunch 清空页面栈后重启。",
       "answer": [
         [
           {
@@ -599,6 +601,7 @@
       "id": "q-mp-component",
       "navLabel": "自定义组件",
       "question": "如何封装自定义组件？properties 与 data 有何区别？",
+      "questionNote": "properties 是外部传入的参数，data 是组件自己的状态，向外通知用 triggerEvent。",
       "answer": [
         [
           {
@@ -716,6 +719,7 @@
       "id": "q-mp-login",
       "navLabel": "微信登录",
       "question": "小程序登录流程是怎样的？code 能否作为前端长期凭证？",
+      "questionNote": "wx.login 的 code 只能向服务端换一次会话，session_key 留在服务端，客户端只持有业务 token。",
       "answer": [
         [
           {
@@ -961,6 +965,7 @@
       "id": "q-mp-storage",
       "navLabel": "本地存储",
       "question": "wx.setStorage 与 localStorage 是否相同？",
+      "questionNote": "小程序存储是异步接口，同步写法会堵住逻辑层，总容量也有上限。",
       "answer": [
         [
           {
@@ -1014,6 +1019,7 @@
       "id": "q-mp-share",
       "navLabel": "分享与转发",
       "question": "onShareAppMessage 如何使用？如何自定义分享卡片？",
+      "questionNote": "onShareAppMessage 返回标题、带参数的 path 和封面图，按钮用 open-type=\"share\" 触发。",
       "answer": [
         [
           {
@@ -1167,6 +1173,7 @@
       "id": "q-mp-performance",
       "navLabel": "性能优化",
       "question": "小程序性能优化通常从哪些方面展开？",
+      "questionNote": "小程序性能主要卡在主包体积、setData 的数据量、请求瀑布和启动阶段的重计算。",
       "answer": [
         [
           {

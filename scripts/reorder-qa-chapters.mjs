@@ -414,7 +414,7 @@ const CHAPTERS = {
       'q-ai-mcp',
       'q-agent-loop',
       'q-agent-plan-mode',
-      'q-agent-hitl',
+      'q-agent-workflow',
     ],
   },
 }

@@ -2,14 +2,14 @@
   "slug": "agent",
   "title": "Agent",
   "documentTitle": "Agent",
-  "description": "补全与 Agent 差异、提问与上下文、审代码与防幻觉，以及规则文件、模型上下文协议（MCP）与人在回路。",
-  "lead": "「Agent」泛指编码助手：多步闭环与人在回路、规则文件与上下文供给、审代码与防幻觉，以及权限与密钥边界。",
+  "description": "补全与 Agent 差异、提问与上下文、审代码与防幻觉，以及规则文件、模型上下文协议（MCP）与权限边界。",
+  "lead": "「Agent」泛指编码助手：多步闭环、规则文件与上下文供给、审代码与防幻觉，以及权限与密钥边界。",
   "items": [
     {
       "id": "q-ai-complete-vs-agent",
       "navLabel": "补全 vs Agent",
       "question": "Tab / 行内补全与 Agent 模式有何区别？",
-      "questionNote": "补全=单点预测；Agent=多步改多文件。",
+      "questionNote": "补全只预测下一小段；Agent 按目标改多个文件。",
       "answer": [
         [
           {
@@ -18,25 +18,25 @@
           },
           {
             "type": "text",
-            "value": "Tab 补全侧重光标处下一行预测，Agent 则按目标连续修改多个文件。"
+            "value": "Tab 补全猜光标处的下一段。Agent 按目标连续改多个文件，还能跑命令。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、Tab：光标处 inline 建议，快，适合样板、补类型、小函数。"
+            "value": "1、Tab：行内建议，快，适合样板、补类型、写小函数。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、Agent：可读取多文件、执行命令、产出 diff；适用于新增功能与重构。"
+            "value": "2、Agent：读多文件、执行命令、产出 diff，适合加功能和重构。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、Agent 改动面大，要小步 + 人审；长并行任务可交给支持 worktree / 多会话的桌面 Agent。"
+            "value": "3、Agent 改动面大，小步改、人工看 diff。并行任务用 git worktree 分开目录。"
           }
         ]
       ]
@@ -45,7 +45,7 @@
       "id": "q-ai-prompt",
       "navLabel": "怎么提问",
       "question": "向编码 Agent 提需求时，如何撰写 prompt 以提高成功率？",
-      "questionNote": "目标/约束/上下文/验收；@文件 或指明路径。",
+      "questionNote": "写明结果、边界、决定契约的文件，以及一条失败就能看出来的验收。",
       "answer": [
         [
           {
@@ -54,25 +54,25 @@
           },
           {
             "type": "text",
-            "value": "目标、约束、上下文（@ 文件/路径）与验收标准四要素齐备，比笼统描述更易得到正确结果。"
+            "value": "模型只根据本轮上下文行动。写明结果、不能动的边界、决定契约的文件，以及一条失败就能看出来的验收。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、给示例输入输出、报错栈，比「帮我优化」有效。"
+            "value": "1、结果写成可观察的行为或接口，附上输入输出或报错栈。「帮我优化」没有可判定的终点。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、一次一事；大需求先 Plan 再执行。"
+            "value": "2、一次只交一件事。跨模块的改动先出计划：要动的文件、步骤和风险，人工确认后再写。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、让 AI 先复述理解并列将改动的文件。"
+            "value": "3、点名相关文件或函数。先列出将改的文件，和预期不一致就停。"
           }
         ]
       ]
@@ -81,7 +81,7 @@
       "id": "q-ai-context",
       "navLabel": "上下文窗口",
       "question": "在 Cursor / Codex / Claude Code 中，对话变长后为何会「遗忘」上下文？应如何控制上下文？",
-      "questionNote": "token 上限；新会话、摘要、只带必要文件。",
+      "questionNote": "窗口有上限，满了就截断；拆会话、带摘要、只附必要文件。",
       "answer": [
         [
           {
@@ -90,49 +90,25 @@
           },
           {
             "type": "text",
-            "value": "上下文窗口有上限，历史+文件占满后旧内容会被截断。"
+            "value": "上下文窗口有上限。历史和文件占满后，更早的内容会被截掉，模型就「忘了」。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、子任务新开线程/会话；结论用短摘要带到下一轮。"
+            "value": "1、一件子任务一个会话。要带到下一轮的，只留短摘要。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、只 @ 相关文件，大文件指明函数或行号。"
+            "value": "2、只附相关文件。大文件指到函数或行号，不把整文件贴进去。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、项目规则文件自动注入，比每轮粘贴长文档省窗口："
-          },
-          {
-            "type": "code",
-            "value": ".cursor/rules/*.mdc"
-          },
-          {
-            "type": "text",
-            "value": "（Cursor；旧的单文件 .cursorrules 已废弃）、"
-          },
-          {
-            "type": "code",
-            "value": "CLAUDE.md"
-          },
-          {
-            "type": "text",
-            "value": "（Claude Code）、"
-          },
-          {
-            "type": "code",
-            "value": "AGENTS.md"
-          },
-          {
-            "type": "text",
-            "value": "（Codex）；内容宜对齐，避免三份各写一套矛盾约定。"
+            "value": "3、稳定约定放进项目规则，随会话注入，不必每轮再贴一遍。"
           }
         ]
       ]
@@ -140,8 +116,8 @@
     {
       "id": "q-ai-rules",
       "navLabel": "三份规则文件",
-      "question": "Cursor、Claude Code、Codex 各自的规则文件承担什么职责？如何撰写才有效？",
-      "questionNote": "三工具各一份项目级 Agent 说明；内容宜对齐、可执行，勿与 README 重复堆砌无效信息。",
+      "question": "Cursor、Claude Code、Codex 各自读哪些规则文件？怎样写才会被遵守？",
+      "questionNote": "Cursor 读 .mdc、AGENTS.md 和 CLAUDE.md；Claude Code 以 CLAUDE.md 为主；Codex 读 AGENTS.md。",
       "answer": [
         [
           {
@@ -150,7 +126,7 @@
           },
           {
             "type": "text",
-            "value": "都是「进仓库就被 Agent 读到」的持久说明，减少每轮重复交代技术栈和禁忌。"
+            "value": "都是进仓库就被注入的持久说明。Cursor 会同时读多份，核心约定写成同一套，避免一份写 pnpm、另一份写 npm。"
           }
         ],
         [
@@ -172,15 +148,23 @@
           },
           {
             "type": "text",
-            "value": "（旧的单文件 "
+            "value": " 按路径或相关性注入；项目根和子目录的 "
           },
           {
             "type": "code",
-            "value": ".cursorrules"
+            "value": "AGENTS.md"
           },
           {
             "type": "text",
-            "value": " 已废弃）约定命名、目录、必跑命令。"
+            "value": "、根目录 "
+          },
+          {
+            "type": "code",
+            "value": "CLAUDE.md"
+          },
+          {
+            "type": "text",
+            "value": " 也会读。"
           }
         ],
         [
@@ -194,7 +178,7 @@
           },
           {
             "type": "text",
-            "value": "：根目录 "
+            "value": "："
           },
           {
             "type": "code",
@@ -202,7 +186,23 @@
           },
           {
             "type": "text",
-            "value": " 写架构、测试方式、不要动的模块。"
+            "value": "（根目录或 "
+          },
+          {
+            "type": "code",
+            "value": ".claude/CLAUDE.md"
+          },
+          {
+            "type": "text",
+            "value": "）为主；目录里没有它时改读 "
+          },
+          {
+            "type": "code",
+            "value": "AGENTS.md"
+          },
+          {
+            "type": "text",
+            "value": "。"
           }
         ],
         [
@@ -212,11 +212,11 @@
           },
           {
             "type": "strong",
-            "value": "跨工具通用"
+            "value": "Codex"
           },
           {
             "type": "text",
-            "value": "："
+            "value": "：从项目根一直读到当前目录的 "
           },
           {
             "type": "code",
@@ -224,17 +224,13 @@
           },
           {
             "type": "text",
-            "value": " 是开放约定，Cursor 与 Codex 都会读，可做为各工具共用的那份说明；"
-          },
-          {
-            "type": "text",
-            "value": "三份文件的核心约定建议同步维护，避免一份让用 pnpm、另一份写 npm。"
+            "value": "，越近的目录越具体。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、写可执行的：禁改项、PR 检查项、链接到 "
+            "value": "4、写可执行的禁改项、检查命令，并链接到 "
           },
           {
             "type": "code",
@@ -242,7 +238,7 @@
           },
           {
             "type": "text",
-            "value": "；过时规则删掉，否则比缺失更具误导性。"
+            "value": "。过时的删掉，互相矛盾的约定比没有更误导。"
           }
         ]
       ]
@@ -251,7 +247,7 @@
       "id": "q-ai-review-code",
       "navLabel": "审 AI 代码",
       "question": "编码 Agent 生成的代码在提交前应重点审查哪些问题？",
-      "questionNote": "边界、安全、幻觉 API、过度抽象。",
+      "questionNote": "是否真解决、范围有没有变大、错误和空状态有没有处理。",
       "answer": [
         [
           {
@@ -260,33 +256,25 @@
           },
           {
             "type": "text",
-            "value": "须确认是否真正解决问题、改动范围（"
-          },
-          {
-            "type": "code",
-            "value": "scope"
-          },
-          {
-            "type": "text",
-            "value": "）是否悄然扩大，以及错误态与空状态是否处理。"
+            "value": "提交前看三件事：是否真解决问题、改动范围有没有变大、错误和空状态有没有处理。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、正确性：类型、异步、竞态；跑测试。"
+            "value": "1、对不对：类型、异步、竞态，跑测试。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、安全：跨站脚本（XSS）、密钥硬编码，以及「权限只在 UI 隐藏、后端并未校验」。"
+            "value": "2、安不安全：跨站脚本（XSS）、密钥硬编码、权限只藏在界面而后端没校验。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、可维护：是否多余抽象、是否符合项目模式。"
+            "value": "3、好不好改：有没有多余抽象，是否符合项目现有写法。"
           }
         ]
       ]
@@ -295,7 +283,7 @@
       "id": "q-ai-hallucination",
       "navLabel": "幻觉与验证",
       "question": "使用编码 Agent 写代码时，如何发现并避免编造不存在的 API 或依赖？",
-      "questionNote": "查文档、类型、build；勿轻信口头说法。",
+      "questionNote": "说得像真的，仓库里没有；用文档、类型和构建验证。",
       "answer": [
         [
           {
@@ -304,13 +292,13 @@
           },
           {
             "type": "text",
-            "value": "幻觉指表述逼真但仓库中并不存在对应 API/库，须以文档与构建结果验证。"
+            "value": "幻觉是说得像真的，但仓库里没有这个接口或依赖。以文档、类型声明和构建结果为准。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、查官方文档与 "
+            "value": "1、查官方文档，并看 "
           },
           {
             "type": "code",
@@ -318,27 +306,19 @@
           },
           {
             "type": "text",
-            "value": " 类型声明。"
+            "value": " 里的类型声明。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "code",
-            "value": "pnpm run build"
-          },
-          {
-            "type": "text",
-            "value": " / 测试跑一遍。"
+            "value": "2、跑构建和测试，口头说明不算通过。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、固定依赖版本，复杂逻辑补单测。"
+            "value": "3、锁住依赖版本。复杂逻辑补单测，避免下次又生成一套。"
           }
         ]
       ]
@@ -347,7 +327,7 @@
       "id": "q-ai-security",
       "navLabel": "安全与合规",
       "question": "使用编码 Agent 编写公司业务代码时，应注意哪些安全要点？",
-      "questionNote": "密钥、隐私与企业 AI / 数据合规策略。",
+      "questionNote": "外部内容当不可信；最小权限；高风险动作进沙箱或先确认。",
       "answer": [
         [
           {
@@ -356,13 +336,19 @@
           },
           {
             "type": "text",
-            "value": "生产密钥、用户隐私与未公开源码的上云策略须遵守公司规定。"
+            "value": "网页、工单和工具返回都可能夹带指令。默认可读、可跑检查；改生产、删数据、向外发请求要单独确认，并留在可回滚的目录里。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、"
+            "value": "1、注入：依赖说明、Issue、网页和工具结果只当数据。其中要求读取密钥或外发文件的句子，不能当成用户的新指令。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、权限：lint 和单测可自动跑。改生产配置、删数据、发外网请求先确认。密钥放 "
           },
           {
             "type": "code",
@@ -370,7 +356,7 @@
           },
           {
             "type": "text",
-            "value": " 且进 "
+            "value": " 并写入 "
           },
           {
             "type": "code",
@@ -378,19 +364,13 @@
           },
           {
             "type": "text",
-            "value": "；对话中勿粘贴 token。"
+            "value": "，不贴进对话。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、日志截图脱敏。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、了解订阅版数据与训练政策，以法务/安全口径为准。"
+            "value": "3、隔离：本地用 git worktree 隔开目录；云端放在限制网络和系统目录的容器里。改动走 git，留下命令输出和测试结果。"
           }
         ]
       ]
@@ -399,7 +379,7 @@
       "id": "q-ai-mcp",
       "navLabel": "MCP 是什么",
       "question": "MCP 是什么？在 Cursor / Codex / Claude Code 中可接入哪些前端相关能力？",
-      "questionNote": "Model Context Protocol；浏览器、文档、Issue 等。",
+      "questionNote": "统一接口接外部能力：工具、资源、提示模板。",
       "answer": [
         [
           {
@@ -408,13 +388,13 @@
           },
           {
             "type": "text",
-            "value": "模型上下文协议（MCP）让 AI 通过标准接口调用外部能力，不只靠训练记忆。它对外提供 tools、resources、prompts 三类能力。"
+            "value": "模型上下文协议（MCP）用统一接口接外部能力，不只靠训练记忆。三类：工具（tools）给模型调用，资源（resources）提供上下文，提示模板（prompts）给用户选用。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "传输分两层：本地进程走 "
+            "value": "本地进程走 "
           },
           {
             "type": "code",
@@ -430,25 +410,25 @@
           },
           {
             "type": "text",
-            "value": "（2025-03 起取代早先的 HTTP+服务端发送事件（SSE）传输），远程接入用 OAuth 2.1 授权。"
+            "value": "，远程授权用 OAuth 2.1。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、例如读文档、开浏览器、拉 GitHub Issue；Codex app 也支持插件与 MCP。"
+            "value": "1、常见接入：读文档、开浏览器、拉工单。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、前端：对照设计稿、看控制台/网络、跑 eslint，少手动复制。"
+            "value": "2、前端：对照设计稿、看控制台和网络、跑 eslint，少把内容来回复制。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、和检索增强生成（RAG）互补：MCP 偏执行动作，RAG 偏检索知识。"
+            "value": "3、和检索增强生成（RAG）互补：MCP 执行动作，RAG 检索知识。"
           }
         ]
       ]
@@ -457,7 +437,7 @@
       "id": "q-agent-loop",
       "navLabel": "Agent 闭环",
       "question": "什么是 Agent？与「聊天补全 / 单次 Tool Call」有何区别？",
-      "questionNote": "观察-思考-行动循环；能多步直到达标或失败。",
+      "questionNote": "看结果、再决策、再行动，直到完成或停下。",
       "answer": [
         [
           {
@@ -466,25 +446,25 @@
           },
           {
             "type": "text",
-            "value": "Agent 是带着目标、在环境里反复「看结果→再决策→再行动」的循环，不是单次问答。"
+            "value": "Agent 带着目标循环：看结果、再决策、再行动。单次问答做完就停。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、常见闭环（类 ReAct）：读状态 → 推理下一步 → 调工具/改文件 → 观察输出 → 直到完成或人力介入。"
+            "value": "1、常见闭环（类 ReAct）：读状态 → 决定下一步 → 调工具或改文件 → 看输出，直到完成或人工停下。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、单次补全/单次函数调用没有「根据执行结果改计划」；Agent 有状态、可重试、可换路径。"
+            "value": "2、单次补全和单次工具调用不会按结果改计划。Agent 能重试，也能换一条路径。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、各类编码 Agent 本质都是带工具权限的长循环；差别在环境（IDE/终端/桌面）与护栏。"
+            "value": "3、循环相同，差别在运行环境（编辑器、终端、桌面）和权限护栏。"
           }
         ]
       ]
@@ -493,7 +473,7 @@
       "id": "q-agent-plan-mode",
       "navLabel": "Plan 再执行",
       "question": "许多产品提供 Plan / Ask 模式后再切换至 Agent 执行，为何先规划更稳妥？",
-      "questionNote": "降 scope 漂移；大改前对齐方案与风险。",
+      "questionNote": "先只读出方案；人工确认后再改文件。",
       "answer": [
         [
           {
@@ -502,34 +482,34 @@
           },
           {
             "type": "text",
-            "value": "先让模型只读出方案与影响面，人确认后再授权写文件，避免一上来大面积乱改。"
+            "value": "先只读，写出要改的文件、步骤、风险和验收。人工确认后再改代码。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、Plan：列要改的文件、步骤、风险、验收；适合重构、跨模块需求。"
+            "value": "1、Plan 适合重构和跨模块需求。范围没对齐就先写方案，不直接改文件。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、确认后小步执行；某步验收失败就停，勿一次性「做完再说」。"
+            "value": "2、确认后小步改。某步验收失败就停，不要一次改完。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、工程上对标规格驱动（Spec）→ Agent 实现 → 测试/人审，比纯「口头指令直接改代码」可控。"
+            "value": "3、顺序是方案、实现、测试和人工复查。一句口头指令直接改代码，范围容易漂。"
           }
         ]
       ]
     },
     {
-      "id": "q-agent-hitl",
-      "navLabel": "人在回路",
-      "question": "Agent 自主执行命令、推送分支时，Human-in-the-Loop（人在回路）与沙箱权限应如何设置？",
-      "questionNote": "最小权限；写库/付费/删数据必须确认。",
+      "id": "q-agent-workflow",
+      "navLabel": "AI 工作流",
+      "question": "如何用 AI 工作流串起从需求分析到测试环境发布？",
+      "questionNote": "MasterGo 或 Pixso 读设计，Axure 或墨刀读原型；需求走需求平台，代码走代码仓库，自测走测试系统，构建流水线走云服务平台。",
       "answer": [
         [
           {
@@ -538,25 +518,37 @@
           },
           {
             "type": "text",
-            "value": "默认可读、可跑无害命令；高风险动作要审批门，并可用 worktree / 容器隔离副作用。"
+            "value": "设计用 MasterGo 或 Pixso 的 MCP 读画板，原型用 Axure 或墨刀的 MCP 读交互。需求与进度在需求平台，分支在代码仓库，自测在测试系统，构建流水线在云服务平台。约定放在仓库文档和规则里，重复环节写成技能（Skill）。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、分级：读文件、lint、单测 → 可自动；改生产配置、删库、发外网请求 → 明确确认。"
+            "value": "1、分析：从需求平台读取需求与验收，用设计 MCP 读取组件、变量和标注，用原型 MCP 读取页面和交互，并只检索仓库里相关文档与规则，整理成待改范围。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、隔离靠工具提供的能力：支持 worktree 的本地 Agent 会为任务开独立工作区；云端 Agent 则跑在容器或沙箱里，限制网络与系统目录访问。两者都能降低「执行失控」的成本。"
+            "value": "2、计划：先用 Plan 只读仓库，写出要改的文件、步骤、风险和验收。人工确认后再改代码，这一步不落文件。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、自主度越高，越必须配可回滚（git）与证据（日志/测试），而不是关掉所有确认。"
+            "value": "3、实现：按方案小步修改。并行任务用 git worktree 隔开目录。分支和合并请求在代码仓库查看。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、还原与联调：按设计稿还原界面。本地起页面后，Playwright MCP 按原型主路径点击，Chrome DevTools MCP 查看控制台和网络。失败把输出留在会话里继续改。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "5、测试环境：人工核对 git diff 后提交。推送触发云服务平台的构建流水线，看构建结果后把自测写回测试系统、进度写回需求平台。"
           }
         ]
       ]

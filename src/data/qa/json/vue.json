@@ -633,6 +633,7 @@
       "id": "q-vif-vfor",
       "navLabel": "v-if 与 v-for",
       "question": "为什么不建议在同一元素上同时用 v-if 和 v-for？",
+      "questionNote": "Vue 3 在同一节点上先处理 v-if 再处理 v-for，循环变量可能根本取不到。",
       "answer": [
         [
           {
@@ -716,6 +717,7 @@
       "id": "q-slot",
       "navLabel": "插槽 slot",
       "question": "Vue 插槽是什么？默认插槽与具名、作用域插槽怎么用？",
+      "questionNote": "插槽让父组件往子组件的预定位置填内容，作用域插槽再把子组件的数据交回父组件渲染。",
       "answer": [
         [
           {
@@ -1027,6 +1029,7 @@
       "id": "q-style-deep",
       "navLabel": "样式穿透",
       "question": "Vue 单文件 scoped CSS 怎么改子组件内部样式？",
+      "questionNote": ":deep() 让 scoped 标记只留在外层选择器上，从而能选中子组件内部的节点。",
       "answer": [
         [
           {
@@ -1582,6 +1585,7 @@
       "id": "q-teleport",
       "navLabel": "Teleport",
       "question": "Teleport 用来解决啥问题？",
+      "questionNote": "Teleport 把节点挂到另一个 DOM 容器，避开父级的溢出隐藏和层叠上下文，逻辑仍留在原组件。",
       "answer": [
         [
           {

@@ -313,6 +313,7 @@
       "id": "q-synthetic-event",
       "navLabel": "合成事件",
       "question": "React 合成事件与原生事件有何不同？",
+      "questionNote": "合成事件在根节点上委托，stopPropagation 停的是 React 树里的冒泡，不一定停掉原生监听。",
       "answer": [
         [
           {
@@ -472,6 +473,7 @@
       "id": "q-hooks-stale-closure",
       "navLabel": "Hooks 闭包陷阱",
       "question": "什么是 Hooks 闭包陷阱？如何避免？",
+      "questionNote": "effect 或回调捕获的是某一次渲染时的 state，之后再读到的仍是那一次的值。",
       "answer": [
         [
           {
@@ -1157,6 +1159,7 @@
       "id": "q-error-boundary",
       "navLabel": "错误边界",
       "question": "React 错误边界能捕获什么？怎么用？",
+      "questionNote": "错误边界只接住子树在渲染和生命周期里抛出的错误，事件处理和异步回调要自己捕获。",
       "answer": [
         [
           {
