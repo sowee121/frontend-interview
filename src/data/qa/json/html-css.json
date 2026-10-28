@@ -226,7 +226,7 @@
         [
           {
             "type": "code",
-            "value": ".box {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}"
+            "value": ".box {\n  display: flex;\n  justify-content: center; /* 主轴居中 */\n  align-items: center; /* 交叉轴居中 */\n}"
           }
         ]
       ]
@@ -532,7 +532,7 @@
         [
           {
             "type": "code",
-            "value": ".parent { position: relative; }\n.child {\n  position: absolute;\n  right: 0;\n  top: 0;\n}"
+            "value": ".parent { position: relative; } /* 给绝对定位子元素当参照 */\n.child {\n  position: absolute;\n  right: 0;\n  top: 0; /* 贴父级右上角 */\n}"
           }
         ]
       ]
@@ -1294,7 +1294,7 @@
         [
           {
             "type": "code",
-            "value": ".hairline::after {\n  content: '';\n  position: absolute;\n  left: 0; right: 0; bottom: 0;\n  border-bottom: 1px solid #ccc;\n  transform: scaleY(0.5);\n  transform-origin: 0 100%;\n}"
+            "value": ".hairline::after {\n  content: '';\n  position: absolute;\n  left: 0; right: 0; bottom: 0;\n  border-bottom: 1px solid #ccc; /* 先画 1 物理像素线 */\n  transform: scaleY(0.5); /* 再压成约 0.5px 视觉细线 */\n  transform-origin: 0 100%;\n}"
           }
         ]
       ]

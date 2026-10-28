@@ -858,7 +858,7 @@
         [
           {
             "type": "code",
-            "value": "fetch('/api', {\n  method: 'PUT',\n  headers: {\n    Authorization: 'Bearer xxx',\n    'Content-Type': 'application/json',\n  },\n  body: JSON.stringify({ a: 1 }),\n})\n// 浏览器先发 OPTIONS 预检"
+            "value": "fetch('/api', {\n  method: 'PUT', // 非简单方法 → 触发预检\n  headers: {\n    Authorization: 'Bearer xxx', // 自定义头也会触发预检\n    'Content-Type': 'application/json',\n  },\n  body: JSON.stringify({ a: 1 }),\n})\n// 浏览器先发 OPTIONS 预检"
           }
         ]
       ]

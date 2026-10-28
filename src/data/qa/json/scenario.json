@@ -120,7 +120,7 @@
         [
           {
             "type": "code",
-            "value": "let ctrl\nconst onSearch = debounce(async (q) => {\n  ctrl?.abort()\n  ctrl = new AbortController()\n  const res = await fetch('/s?q=' + q, { signal: ctrl.signal })\n  // ...\n}, 300)"
+            "value": "let ctrl\nconst onSearch = debounce(async (q) => {\n  ctrl?.abort() // 新关键词先取消旧请求，防竞态\n  ctrl = new AbortController()\n  const res = await fetch('/s?q=' + q, { signal: ctrl.signal })\n  // ...\n}, 300)"
           }
         ]
       ]
@@ -220,7 +220,7 @@
         [
           {
             "type": "code",
-            "value": "const io = new IntersectionObserver((entries) => {\n  if (entries[0].isIntersecting) loadMore()\n})\nio.observe(sentryEl)"
+            "value": "const io = new IntersectionObserver((entries) => {\n  if (entries[0].isIntersecting) loadMore() // 哨兵进入视口再翻页\n})\nio.observe(sentryEl) // 观察列表底部哨兵节点"
           }
         ]
       ]
@@ -954,7 +954,7 @@
         [
           {
             "type": "code",
-            "value": "function connect(retry = 0) {\n  const ws = new WebSocket(url)\n  ws.onopen = () => { retry = 0 } // 连上即复位，避免下次直接等最长间隔\n  ws.onclose = () => {\n    const delay = Math.min(1000 * 2 ** retry, 30000)\n    setTimeout(() => connect(retry + 1), delay)\n  }\n}"
+            "value": "function connect(retry = 0) {\n  const ws = new WebSocket(url)\n  ws.onopen = () => { retry = 0 } // 连上即复位，避免下次直接等最长间隔\n  ws.onclose = () => {\n    const delay = Math.min(1000 * 2 ** retry, 30000) // 指数退避，封顶 30s\n    setTimeout(() => connect(retry + 1), delay)\n  }\n}"
           }
         ]
       ]
@@ -1016,11 +1016,19 @@
           },
           {
             "type": "code",
-            "value": "fetchEventSource"
+            "value": "fetch"
           },
           {
             "type": "text",
-            "value": "（支持 POST 的 SSE 拉流）一类实现，而不是浏览器原生 "
+            "value": " + "
+          },
+          {
+            "type": "code",
+            "value": "ReadableStream"
+          },
+          {
+            "type": "text",
+            "value": " 读流，而不是浏览器原生 "
           },
           {
             "type": "code",

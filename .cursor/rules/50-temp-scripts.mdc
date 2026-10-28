@@ -1,0 +1,20 @@
+---
+description: git 提交后删除一次性题库脚本
+alwaysApply: true
+---
+
+# 提交后清理临时脚本
+
+`git commit` 成功后，删掉本次只用过一次、内容已经写入 `src/data/qa/json/` 的 `scripts/` 脚本，并去掉 README 与 `.cursor/rules` 里对它们的引用。
+
+## 删除
+
+- 文件名或注释表明一次性：`seed-*`、`split-*`、`expand-*`、`_patch-*`，以及「生成 / 迁移 / 补题 / 拆章」类脚本
+- 再跑会用内嵌旧题覆盖手工修订的种子脚本
+
+## 保留
+
+- `scripts/lint-qa-copy.mjs`：文案扫描，长期使用
+- `scripts/reorder-qa-chapters.mjs`：按配置重排题目的维护入口；只有确定不再重排、且顺序已落在 JSON 里时才删
+
+删除发生在提交之后时，工作区会多出未提交改动。不要为此自动再提交，除非用户明确要求。

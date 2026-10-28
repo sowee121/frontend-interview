@@ -348,7 +348,7 @@
         [
           {
             "type": "code",
-            "value": "// preload.js\nconst { contextBridge, ipcRenderer } = require('electron')\n\ncontextBridge.exposeInMainWorld('api', {\n  openFile: () => ipcRenderer.invoke('dialog:openFile'),\n  scan: (type) => ipcRenderer.invoke('device:scan', { type }),\n  onUpdateProgress: (cb) => {\n    const listener = (_e, data) => cb(data)\n    ipcRenderer.on('update:progress', listener)\n    return () => ipcRenderer.removeListener('update:progress', listener)\n  },\n})"
+            "value": "// preload.js：只暴露白名单 API，渲染进程不能直接 require electron\nconst { contextBridge, ipcRenderer } = require('electron')\n\ncontextBridge.exposeInMainWorld('api', {\n  openFile: () => ipcRenderer.invoke('dialog:openFile'), // 主进程 dialog\n  scan: (type) => ipcRenderer.invoke('device:scan', { type }),\n  onUpdateProgress: (cb) => {\n    const listener = (_e, data) => cb(data)\n    ipcRenderer.on('update:progress', listener)\n    return () => ipcRenderer.removeListener('update:progress', listener) // 记得解绑\n  },\n})"
           }
         ],
         [
@@ -648,7 +648,7 @@
         [
           {
             "type": "code",
-            "value": "const gotLock = app.requestSingleInstanceLock()\nif (!gotLock) {\n  app.quit()\n  return\n}\n\napp.on('second-instance', (_event, argv) => {\n  // argv 含本次启动参数（如自定义协议 URL）\n  const win = BrowserWindow.getAllWindows()[0]\n  if (win) {\n    if (win.isMinimized()) win.restore()\n    win.focus()\n  }\n  handleDeepLink(argv)\n})"
+            "value": "const gotLock = app.requestSingleInstanceLock() // 首个实例拿到锁\nif (!gotLock) {\n  app.quit() // 二次启动的进程直接退出\n  return\n}\n\napp.on('second-instance', (_event, argv) => {\n  // argv 含本次启动参数（如自定义协议 URL）\n  const win = BrowserWindow.getAllWindows()[0]\n  if (win) {\n    if (win.isMinimized()) win.restore()\n    win.focus() // 聚焦已有窗口，而不是再开一个\n  }\n  handleDeepLink(argv)\n})"
           }
         ],
         [

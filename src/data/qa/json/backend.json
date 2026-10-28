@@ -172,120 +172,6 @@
       ]
     },
     {
-      "id": "q-node-libuv",
-      "navLabel": "V8 与 libuv",
-      "question": "Node 里的 V8 和 libuv 分别负责什么？",
-      "questionNote": "V8 执行 JavaScript；libuv 管异步输入输出（I/O）与事件循环。二者合起来才构成 Node 运行时。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "Node 进程大致是「"
-          },
-          {
-            "type": "code",
-            "value": "V8"
-          },
-          {
-            "type": "text",
-            "value": " 执行 JavaScript」加「"
-          },
-          {
-            "type": "code",
-            "value": "libuv"
-          },
-          {
-            "type": "text",
-            "value": " 做异步 I/O 与事件循环」；再配上 "
-          },
-          {
-            "type": "code",
-            "value": "fs"
-          },
-          {
-            "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "http"
-          },
-          {
-            "type": "text",
-            "value": " 等内置模块。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "V8："
-          },
-          {
-            "type": "text",
-            "value": "与 Chrome 同源的 JavaScript 引擎，负责解析、编译与执行 JS；它不理解文件路径或网络端口，只跑语言本身。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "libuv："
-          },
-          {
-            "type": "text",
-            "value": "跨平台的 C 语言库，封装定时器、网络与文件等异步 I/O，并驱动事件循环；把「等磁盘 / 网络」从主线程挪走。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、网络等待多由操作系统多路复用（一次监听大量连接，就绪才处理；如 "
-          },
-          {
-            "type": "code",
-            "value": "epoll"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "kqueue"
-          },
-          {
-            "type": "text",
-            "value": "）通知 libuv，不必占满一个线程干等。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、文件读写、域名解析（DNS）、部分压缩等操作走 libuv 默认线程池；完成后把回调交回主线程的事件循环。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、主线程仍是单条 JS 执行流：CPU 密集计算会堵住所有请求；I/O 等待本身通常不会。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "一句话："
-          },
-          {
-            "type": "text",
-            "value": "「Node 单线程」指的是执行 JS 的主线程；背后的 I/O 与线程池由 libuv 协调。"
-          }
-        ]
-      ]
-    },
-    {
       "id": "q-node-event-loop",
       "navLabel": "Node 事件循环",
       "question": "Node 的事件循环与浏览器有何不同？",
@@ -1885,6 +1771,120 @@
           {
             "type": "text",
             "value": "3、响应结构：统一约定业务码、提示文案与数据三个字段，前端只写一套解包逻辑，不必每个接口各写一套。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-node-libuv",
+      "navLabel": "V8 与 libuv",
+      "question": "Node 里的 V8 和 libuv 分别负责什么？",
+      "questionNote": "V8 执行 JavaScript；libuv 管异步输入输出（I/O）与事件循环。二者合起来才构成 Node 运行时。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "Node 进程大致是「"
+          },
+          {
+            "type": "code",
+            "value": "V8"
+          },
+          {
+            "type": "text",
+            "value": " 执行 JavaScript」加「"
+          },
+          {
+            "type": "code",
+            "value": "libuv"
+          },
+          {
+            "type": "text",
+            "value": " 做异步 I/O 与事件循环」；再配上 "
+          },
+          {
+            "type": "code",
+            "value": "fs"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "http"
+          },
+          {
+            "type": "text",
+            "value": " 等内置模块。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "V8："
+          },
+          {
+            "type": "text",
+            "value": "与 Chrome 同源的 JavaScript 引擎，负责解析、编译与执行 JS；它不理解文件路径或网络端口，只跑语言本身。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "libuv："
+          },
+          {
+            "type": "text",
+            "value": "跨平台的 C 语言库，封装定时器、网络与文件等异步 I/O，并驱动事件循环；把「等磁盘 / 网络」从主线程挪走。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、网络等待多由操作系统多路复用（一次监听大量连接，就绪才处理；如 "
+          },
+          {
+            "type": "code",
+            "value": "epoll"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "kqueue"
+          },
+          {
+            "type": "text",
+            "value": "）通知 libuv，不必占满一个线程干等。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、文件读写、域名解析（DNS）、部分压缩等操作走 libuv 默认线程池；完成后把回调交回主线程的事件循环。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、主线程仍是单条 JS 执行流：CPU 密集计算会堵住所有请求；I/O 等待本身通常不会。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "一句话："
+          },
+          {
+            "type": "text",
+            "value": "「Node 单线程」指的是执行 JS 的主线程；背后的 I/O 与线程池由 libuv 协调。"
           }
         ]
       ]

@@ -1364,7 +1364,7 @@
         [
           {
             "type": "code",
-            "value": "function debounce(fn, wait) {\n  let t\n  return function (...args) {\n    clearTimeout(t)\n    t = setTimeout(() => fn.apply(this, args), wait)\n  }\n}\n// 搜索：onInput={debounce(fetchList, 300)}"
+            "value": "function debounce(fn, wait) {\n  let t\n  return function (...args) {\n    clearTimeout(t) // 每次触发先取消上一次\n    t = setTimeout(() => fn.apply(this, args), wait) // 静止 wait 后再跑\n  }\n}\n// 搜索：onInput={debounce(fetchList, 300)}"
           }
         ]
       ]
@@ -1412,7 +1412,7 @@
         [
           {
             "type": "code",
-            "value": "list.addEventListener('click', (e) => {\n  const item = e.target.closest('[data-id]')\n  if (!item || !list.contains(item)) return\n  console.log(item.dataset.id)\n})"
+            "value": "list.addEventListener('click', (e) => {\n  const item = e.target.closest('[data-id]') // 从点击目标向上找行\n  if (!item || !list.contains(item)) return // 点在空白或外部则忽略\n  console.log(item.dataset.id)\n})"
           }
         ]
       ]

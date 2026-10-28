@@ -76,6 +76,22 @@
             "type": "text",
             "value": "组件渲染对应一个 render watcher：渲染过程中访问的响应式属性被收集；属性变更后 watcher 入队，异步批量更新 DOM。"
           }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "defineProperty 读写时收集/触发依赖（示意）。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "Object.defineProperty(obj, 'count', {\n  get() {\n    dep.depend() // 收集当前 Watcher\n    return value\n  },\n  set(n) {\n    value = n\n    dep.notify() // 通知 Watcher 更新\n  },\n})"
+          }
         ]
       ]
     },
@@ -476,6 +492,22 @@
             "type": "text",
             "value": "常见场景：滚到某元素、聚焦 input、获取元素尺寸、初始化依赖 DOM 的三方库（图表、编辑器等）。"
           }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "改数据后等 DOM 更新再读。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "this.msg = 'hello'\nthis.$nextTick(() => {\n  console.log(this.$refs.p.textContent) // 已是 hello\n})\n\n// Vue 3\nmsg.value = 'hello'\nawait nextTick()\nconsole.log(pRef.value.textContent)"
+          }
         ]
       ]
     },
@@ -554,7 +586,7 @@
         [
           {
             "type": "code",
-            "value": "computed: {\n  fullName() { return this.first + this.last }\n},\nwatch: {\n  keyword: {\n    immediate: true,\n    handler(v) { this.fetch(v) } // 发请求\n  }\n}"
+            "value": "computed: {\n  fullName() { return this.first + this.last } // 纯派生，有缓存\n},\nwatch: {\n  keyword: {\n    immediate: true, // 一进来就跑一次\n    handler(v) { this.fetch(v) } // 有副作用：发请求\n  }\n}"
           }
         ]
       ]
@@ -625,6 +657,22 @@
           {
             "type": "text",
             "value": "，常见于 checkbox、select 等非 value 控件。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "父子约定 value + input。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "<!-- 父 -->\n<MyInput v-model=\"text\" />\n\n<!-- 子 -->\n<input\n  :value=\"value\"\n  @input=\"$emit('input', $event.target.value)\"\n/>\n\n<!-- 自定义 checkbox -->\n// model: { prop: 'checked', event: 'change' }"
           }
         ]
       ]
@@ -710,6 +758,22 @@
             "type": "text",
             "value": "3、列表很大时先过滤能少造虚拟节点。"
           }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "不要同节点叠用；先过滤再遍历。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "<!-- 不推荐 -->\n<li v-for=\"item in list\" v-if=\"item.ok\" :key=\"item.id\">\n\n<!-- 推荐：computed 过滤 -->\n<li v-for=\"item in visibleList\" :key=\"item.id\">\n{{ item.name }}\n</li>"
+          }
         ]
       ]
     },
@@ -769,6 +833,22 @@
           {
             "type": "text",
             "value": " 简写；和 props 分工：数据向下用 props，结构坑位用插槽。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "具名插槽与作用域插槽。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "<!-- 子 -->\n<header><slot name=\"header\" /></header>\n<slot :row=\"row\" />\n\n<!-- 父 -->\n<MyTable :data=\"list\">\n  <template #header>标题</template>\n  <template #default=\"{ row }\">{{ row.name }}</template>\n</MyTable>"
           }
         ]
       ]
@@ -855,6 +935,22 @@
           {
             "type": "text",
             "value": " 强耦合，老项目常见，新代码不推荐。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "父子 props / $emit。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "// 父\n<Child :title=\"title\" @save=\"onSave\" />\n\n// 子\nexport default {\n  props: ['title'],\n  methods: {\n    submit() {\n      this.$emit('save', this.form)\n    },\n  },\n}"
           }
         ]
       ]
@@ -1022,6 +1118,22 @@
             "type": "text",
             "value": "虚拟 DOM 并非性能银弹；静态多、更新少时，编译优化或局部直接操作也可能更快。Vue 2/3 均遵循上述列表原则。"
           }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "列表用稳定业务 id。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "<!-- 错 -->\n<div v-for=\"(item, i) in list\" :key=\"i\">\n\n<!-- 对 -->\n<div v-for=\"item in list\" :key=\"item.id\">\n  <input v-model=\"item.name\" />\n</div>"
+          }
         ]
       ]
     },
@@ -1081,6 +1193,22 @@
           {
             "type": "text",
             "value": " 换主题变量）就优先别穿透，改第三方库时穿透是最后手段，升级库易碎。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "scoped 下穿透子组件根内节点。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "<style scoped>\n/* :deep 让选择器穿透到子组件内部节点 */\n.panel :deep(.el-input__inner) {\n  border-radius: 8px;\n}\n</style>"
           }
         ]
       ]
@@ -1143,6 +1271,22 @@
           {
             "type": "text",
             "value": "3、mutation 必须同步，异步逻辑写在 action；严格模式开发可检测非法直接改 state。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "组件内读 state、提交 mutation。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "// store\nmutations: {\n  INC(state) { state.n += 1 },\n}\n\n// 组件\ncomputed: {\n  n() { return this.$store.state.n },\n},\nmethods: {\n  inc() { this.$store.commit('INC') },\n}"
           }
         ]
       ]
@@ -1410,6 +1554,22 @@
             "type": "text",
             "value": "3、取舍：复杂页面（权限、表格、弹窗交织）用组合式可读性更好；简单展示组件继续选项式亦可。"
           }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "按功能抽出 composable。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "// useUser.js：按功能抽出的 composable\nexport function useUser(userId) {\n  const user = ref(null)\n  const loading = ref(false)\n  async function load() {\n    loading.value = true\n    user.value = await fetchUser(userId)\n    loading.value = false\n  }\n  onMounted(load)\n  return { user, loading, load } // 共享逻辑，不共享同一份状态\n}\n\n// 组件里\nconst { user, loading } = useUser(props.id)"
+          }
         ]
       ]
     },
@@ -1578,6 +1738,22 @@
             "type": "text",
             "value": " 约定，不要直接改 props 对象。"
           }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "script setup 声明 props / emits。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "<script setup>\nconst props = defineProps({\n  title: { type: String, required: true },\n})\nconst emit = defineEmits(['change']) // 声明可触发事件\n\nfunction onInput(e) {\n  emit('change', e.target.value) // 子 → 父\n}\n</script>\n\n<template>\n  <input :value=\"title\" @input=\"onInput\" />\n</template>"
+          }
         ]
       ]
     },
@@ -1637,6 +1813,22 @@
           {
             "type": "text",
             "value": " 属性在测试或降级时留在原地渲染。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "弹层渲染到 body。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "<!-- 逻辑仍在组件树，DOM 挂到 body，避开父级 overflow -->\n<Teleport to=\"body\">\n  <div v-if=\"open\" class=\"modal\">\n    <slot />\n  </div>\n</Teleport>"
           }
         ]
       ]
@@ -1713,6 +1905,22 @@
           {
             "type": "text",
             "value": "3、何时用：跨路由/多组件共享的业务状态；局部 UI 仍用 ref/reactive。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "defineStore + 组件内使用。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "export const useCounterStore = defineStore('counter', {\n  state: () => ({ n: 0 }),\n  getters: {\n    double: (s) => s.n * 2, // 类似 computed\n  },\n  actions: {\n    inc() { this.n += 1 },\n  },\n})\n\nconst counter = useCounterStore()\ncounter.inc()\nconst { n, double } = storeToRefs(counter) // 解构仍保持响应式"
           }
         ]
       ]

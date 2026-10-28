@@ -710,7 +710,7 @@
         [
           {
             "type": "code",
-            "value": "Component({\n  properties: { title: { type: String, value: '' } },\n  methods: {\n    onTap() {\n      this.triggerEvent('ok', { id: 1 })\n    },\n  },\n})"
+            "value": "Component({\n  properties: { title: { type: String, value: '' } }, // 对外属性\n  methods: {\n    onTap() {\n      this.triggerEvent('ok', { id: 1 }) // 向使用方抛自定义事件\n    },\n  },\n})"
           }
         ]
       ]
@@ -1098,7 +1098,7 @@
         [
           {
             "type": "code",
-            "value": "onShareAppMessage() {\n  return {\n    title: '一起寄件',\n    path: '/pages/index/index?from=share',\n    imageUrl: 'https://cdn.example.com/share.png',\n  }\n}"
+            "value": "onShareAppMessage() {\n  return {\n    title: '一起寄件',\n    path: '/pages/index/index?from=share', // 好友打开落点页\n    imageUrl: 'https://cdn.example.com/share.png',\n  }\n}"
           }
         ]
       ]

@@ -125,7 +125,7 @@
         [
           {
             "type": "code",
-            "value": "const listToTree = (list, rootPid = null) => {\n  const map = new Map(list.map((x) => [x.id, { ...x, children: [] }]));\n  const roots = [];\n  for (const node of map.values()) {\n    if (node.parentId == rootPid || !map.has(node.parentId)) roots.push(node);\n    else map.get(node.parentId).children.push(node);\n  }\n  return roots;\n};\nconst treeToList = (roots) => {\n  const out = [];\n  const walk = (nodes, parentId = null) => {\n    for (const n of nodes || []) {\n      const { children, ...rest } = n;\n      out.push({ ...rest, parentId });\n      walk(children, n.id);\n    }\n  };\n  walk(roots, null);\n  return out;\n};"
+            "value": "const listToTree = (list, rootPid = null) => {\n  // 先建 id → 节点，方便 O(1) 挂父子\n  const map = new Map(list.map((x) => [x.id, { ...x, children: [] }]));\n  const roots = [];\n  for (const node of map.values()) {\n    // 无父或父不在表中 → 根；否则挂到父.children\n    if (node.parentId == rootPid || !map.has(node.parentId)) roots.push(node);\n    else map.get(node.parentId).children.push(node);\n  }\n  return roots;\n};\nconst treeToList = (roots) => {\n  const out = [];\n  const walk = (nodes, parentId = null) => {\n    for (const n of nodes || []) {\n      const { children, ...rest } = n; // 展开时丢掉 children 字段\n      out.push({ ...rest, parentId });\n      walk(children, n.id);\n    }\n  };\n  walk(roots, null);\n  return out;\n};"
           }
         ]
       ],
@@ -181,7 +181,7 @@
         [
           {
             "type": "code",
-            "value": "// 教学示意：演示 pending → fulfilled / rejected 两条路径与微任务调度\nclass MyPromise {\n  constructor(executor) {\n    this._state = 'pending' // 等待中\n    this._value = undefined\n    this._cb = []\n    const settle = (state, v) => {\n      if (this._state !== 'pending') return\n      this._state = state\n      this._value = v\n      queueMicrotask(() => this._cb.splice(0).forEach((fn) => fn()))\n    }\n    const resolve = (v) => settle('fulfilled', v)\n    const reject = (e) => settle('rejected', e)\n    try {\n      executor(resolve, reject)\n    } catch (e) {\n      reject(e) // executor 同步 throw → rejected\n    }\n  }\n  then(onFulfilled, onRejected) {\n    return new MyPromise((resolve, reject) => {\n      const run = () => {\n        const fn = this._state === 'fulfilled' ? onFulfilled : onRejected\n        // 回调缺失则把状态与值透传给下一环\n        if (fn == null) {\n          ;(this._state === 'fulfilled' ? resolve : reject)(this._value)\n          return\n        }\n        try {\n          // 简化：未做 thenable 展开，完整实现见 Promise/A+\n          resolve(fn(this._value))\n        } catch (e) {\n          reject(e)\n        }\n      }\n      this._state === 'pending' ? this._cb.push(run) : queueMicrotask(run)\n    })\n  }\n  catch(onRejected) {\n    return this.then(null, onRejected)\n  }\n}"
+            "value": "// 教学示意：演示 pending → fulfilled / rejected 两条路径与微任务调度\nclass MyPromise {\n  constructor(executor) {\n    this._state = 'pending' // 等待中\n    this._value = undefined\n    this._cb = []\n    const settle = (state, v) => {\n      if (this._state !== 'pending') return // 只能结算一次\n      this._state = state\n      this._value = v\n      // 微任务里刷 then 回调，保证异步性\n      queueMicrotask(() => this._cb.splice(0).forEach((fn) => fn()))\n    }\n    const resolve = (v) => settle('fulfilled', v)\n    const reject = (e) => settle('rejected', e)\n    try {\n      executor(resolve, reject)\n    } catch (e) {\n      reject(e) // executor 同步 throw → rejected\n    }\n  }\n  then(onFulfilled, onRejected) {\n    return new MyPromise((resolve, reject) => {\n      const run = () => {\n        const fn = this._state === 'fulfilled' ? onFulfilled : onRejected\n        // 回调缺失则把状态与值透传给下一环\n        if (fn == null) {\n          ;(this._state === 'fulfilled' ? resolve : reject)(this._value)\n          return\n        }\n        try {\n          // 简化：未做 thenable 展开，完整实现见 Promise/A+\n          resolve(fn(this._value))\n        } catch (e) {\n          reject(e)\n        }\n      }\n      // 未结算则排队；已结算则下一微任务执行\n      this._state === 'pending' ? this._cb.push(run) : queueMicrotask(run)\n    })\n  }\n  catch(onRejected) {\n    return this.then(null, onRejected)\n  }\n}"
           }
         ]
       ],
@@ -223,7 +223,7 @@
         [
           {
             "type": "code",
-            "value": "// allSettled：单项 rejected 也不让整体 reject；用 Promise.all 包一层\nconst allSettled = (arr) =>\n  Promise.all(\n    arr.map((p) =>\n      Promise.resolve(p).then(\n        (value) => ({ status: 'fulfilled', value }),\n        (reason) => ({ status: 'rejected', reason }),\n      ),\n    ),\n  );"
+            "value": "// allSettled：单项 rejected 也不让整体 reject；用 Promise.all 包一层\nconst allSettled = (arr) =>\n  Promise.all(\n    arr.map((p) =>\n      Promise.resolve(p).then(\n        (value) => ({ status: 'fulfilled', value }), // 成功也包成对象\n        (reason) => ({ status: 'rejected', reason }), // 失败转成 fulfilled 结果项\n      ),\n    ),\n  );"
           }
         ]
       ],
@@ -251,7 +251,7 @@
         [
           {
             "type": "code",
-            "value": "const pool = async (limit, tasks) => {\n  const ret = new Array(tasks.length);\n  let i = 0;\n  const workers = Array.from({ length: Math.min(limit, tasks.length) }, async () => {\n    while (i < tasks.length) {\n      const cur = i++;\n      ret[cur] = await tasks[cur]();\n    }\n  });\n  await Promise.all(workers);\n  return ret;\n};"
+            "value": "const pool = async (limit, tasks) => {\n  const ret = new Array(tasks.length);\n  let i = 0; // 共享下标，多 worker 抢任务\n  const workers = Array.from({ length: Math.min(limit, tasks.length) }, async () => {\n    while (i < tasks.length) {\n      const cur = i++; // 先占坑再 await，保证结果顺序\n      ret[cur] = await tasks[cur]();\n    }\n  });\n  await Promise.all(workers);\n  return ret;\n};"
           }
         ]
       ],

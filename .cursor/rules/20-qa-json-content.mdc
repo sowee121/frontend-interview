@@ -12,5 +12,5 @@ alwaysApply: false
 - **分步写法**：`1、2、3、` 每步占一个段落（一个 `answer[]` 元素），不要在同段用 `；2、` 串联。
 - **缩写与术语**：首次出现必须带中文释义（如「跨站脚本攻击（XSS）」）；不要堆缩写墙。
 - **编程题（coding 章）**：通常用“单段 code”承载函数实现；解释性内容放 `questionNote` 或另起段落。
-- **维护与自检**：改完文案后运行 `node scripts/lint-qa-copy.mjs`；重排题目顺序用 `node scripts/reorder-qa-chapters.mjs`；Agent 章种子数据见 `scripts/seed-agent-chapter.mjs`（勿在无需求时重跑覆盖手工修订）。
+- **维护与自检**：改完文案后运行 `node scripts/lint-qa-copy.mjs`；重排题目顺序用 `node scripts/reorder-qa-chapters.mjs`。一次性种子、迁移、补题脚本在对应提交完成后删除。
 

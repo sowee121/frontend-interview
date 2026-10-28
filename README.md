@@ -82,10 +82,9 @@ pnpm preview
 | 脚本 | 说明 |
 |------|------|
 | `reorder-qa-chapters.mjs` | 按配置重排各章 `items` 顺序 |
-| `expand-cross-topic-qa.mjs` | 向现有章追加跨专题题目（埋点、i18n、WebSocket 等） |
-| `seed-agent-chapter.mjs` | 生成/更新 Agent 章 JSON |
-| `split-es6-chapter.mjs` | 从 javascript 章拆出 ES6 章（一次性迁移用） |
 | `lint-qa-copy.mjs` | 答案/题面文案规范扫描：单段/单题体量、裸缩写、伪代码、`text` 段反引号残留、空段、隐私词、过时术语、同章 `navLabel` 重复、跨章指回提示、出题人/备考口吻（`editorial-hint`） |
+
+一次性种子、迁移、补题脚本在内容写入 JSON 并提交后删除，不长期留在 `scripts/`。
 
 ## 项目结构
 

@@ -1942,7 +1942,7 @@
         [
           {
             "type": "code",
-            "value": "class Animal {\n  constructor(name) { this.name = name }\n  speak() { return this.name }\n}\nclass Dog extends Animal {\n  constructor(name, age) {\n    super(name)\n    this.age = age\n  }\n}"
+            "value": "class Animal {\n  constructor(name) { this.name = name }\n  speak() { return this.name } // 实例方法在原型上\n}\nclass Dog extends Animal {\n  constructor(name, age) {\n    super(name) // 必须先调父类构造\n    this.age = age\n  }\n}"
           }
         ]
       ]
@@ -2082,7 +2082,7 @@
         [
           {
             "type": "code",
-            "value": "const obj = { a: 1 }\nconst p = new Proxy(obj, {\n  get(target, key, receiver) {\n    console.log('get', key)\n    return Reflect.get(target, key, receiver)\n  },\n})\np.a // 打印 get a，再返回 1"
+            "value": "const obj = { a: 1 }\nconst p = new Proxy(obj, {\n  get(target, key, receiver) {\n    console.log('get', key) // 拦截读取\n    // Reflect 保持 this/原型链语义与直接访问一致\n    return Reflect.get(target, key, receiver)\n  },\n})\np.a // 打印 get a，再返回 1"
           }
         ]
       ]

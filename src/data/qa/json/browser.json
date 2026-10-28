@@ -1154,7 +1154,7 @@
         [
           {
             "type": "code",
-            "value": "const bc = new BroadcastChannel('auth')\nbc.postMessage({ type: 'logout' })\nbc.onmessage = (e) => {\n  if (e.data.type === 'logout') clearToken()\n}"
+            "value": "const bc = new BroadcastChannel('auth') // 同名频道跨标签页互通\nbc.postMessage({ type: 'logout' })\nbc.onmessage = (e) => {\n  if (e.data.type === 'logout') clearToken() // 收到后清本地登录态\n}"
           }
         ]
       ]

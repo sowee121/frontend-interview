@@ -2,14 +2,14 @@
   "slug": "ai",
   "title": "AI",
   "documentTitle": "AI",
-  "description": "流式对话 SSE 链路、停止生成与多轮会话，以及思考块、流式 Markdown 与滚动体验。",
-  "lead": "流式对话的四段：端到端链路与事件协议、停止与多轮会话、思考块与上下文处理、Markdown 与滚动体验。",
+  "description": "从前端视角看流式对话：fetch 读流与常见坑、帧解析与状态、停止与渲染性能、Markdown 兜底与断流。",
+  "lead": "前端流式对话主线：通道选型与 fetch 读流 → 帧与状态 → 停止/性能/Markdown → 断流与兜底。",
   "items": [
     {
       "id": "q-ai-chat-e2e",
-      "navLabel": "端到端链路",
-      "question": "从用户发送到气泡展示完整回答，流式 AI 对话前后端如何衔接？",
-      "questionNote": "乐观插入 → POST 服务端发送事件（SSE，Server-Sent Events）→ meta/delta/done → 落库/路由；模型只推片段，逐字观感来自前端累加与动画。",
+      "navLabel": "前端链路速览",
+      "question": "从用户发送到气泡展示完整回答，前端侧要串哪些步骤？",
+      "questionNote": "乐观插入 → POST（stream: true）→ 累加 delta.content → [DONE] 收尾；卸载/停止要 abort。",
       "answer": [
         [
           {
@@ -18,7 +18,15 @@
           },
           {
             "type": "text",
-            "value": "前端先乐观追加 user + 空 assistant，再 POST 开 SSE；服务端建/取会话、落 user，再以 "
+            "value": "前端先乐观插入 user + 空 assistant，再 POST 开流；请求带 "
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": " 与 "
           },
           {
             "type": "code",
@@ -26,37 +34,21 @@
           },
           {
             "type": "text",
-            "value": " 调模型，把上游流归一成 "
+            "value": "。逐字效果来自前端拼接 "
           },
           {
             "type": "code",
-            "value": "meta/delta/done"
+            "value": "choices[0].delta.content"
           },
           {
             "type": "text",
-            "value": " 推到浏览器。模型本身只负责推片段，「一个字一个字露出来」多半是前端字符串累加 + 渲染动效。"
+            "value": "，不是模型「按字返回」。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、"
-          },
-          {
-            "type": "strong",
-            "value": "发送："
-          },
-          {
-            "type": "text",
-            "value": "校验非空、生成中禁止连点；本地立刻插入用户消息与空助手气泡，"
-          },
-          {
-            "type": "code",
-            "value": "isStreaming=true"
-          },
-          {
-            "type": "text",
-            "value": "，创建 "
+            "value": "1、发送：防连点，本地占位，创建 "
           },
           {
             "type": "code",
@@ -70,47 +62,15 @@
         [
           {
             "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "strong",
-            "value": "请求："
-          },
-          {
-            "type": "text",
-            "value": "body 典型含 "
+            "value": "2、请求：body 通常含 "
           },
           {
             "type": "code",
-            "value": "query"
+            "value": "model"
           },
           {
             "type": "text",
             "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "sessionCode?"
-          },
-          {
-            "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "provider"
-          },
-          {
-            "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "model?"
-          },
-          {
-            "type": "text",
-            "value": "、过滤后的 "
           },
           {
             "type": "code",
@@ -118,75 +78,15 @@
           },
           {
             "type": "text",
-            "value": "。带 body 的对话要用 "
+            "value": "（"
           },
           {
             "type": "code",
-            "value": "@microsoft/fetch-event-source"
+            "value": "role"
           },
           {
             "type": "text",
-            "value": " 这类库，原生 "
-          },
-          {
-            "type": "code",
-            "value": "EventSource"
-          },
-          {
-            "type": "text",
-            "value": " 只能 GET。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、"
-          },
-          {
-            "type": "strong",
-            "value": "服务端："
-          },
-          {
-            "type": "text",
-            "value": "ensureSession → 落用户消息 → 以 "
-          },
-          {
-            "type": "code",
-            "value": "stream: true"
-          },
-          {
-            "type": "text",
-            "value": " 调模型上游（Provider）→ 转成服务端推送（SSE）事件。新会话用 "
-          },
-          {
-            "type": "code",
-            "value": "meta"
-          },
-          {
-            "type": "text",
-            "value": " 回正式 "
-          },
-          {
-            "type": "code",
-            "value": "sessionCode"
-          },
-          {
-            "type": "text",
-            "value": " 与标题。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4、"
-          },
-          {
-            "type": "strong",
-            "value": "前端消费："
-          },
-          {
-            "type": "text",
-            "value": "delta 拼到当前助手的 "
+            "value": " + "
           },
           {
             "type": "code",
@@ -194,53 +94,51 @@
           },
           {
             "type": "text",
-            "value": " / "
+            "value": "）、"
           },
           {
             "type": "code",
-            "value": "reasoning"
+            "value": "stream: true"
           },
           {
             "type": "text",
-            "value": "；"
-          },
-          {
-            "type": "code",
-            "value": "done"
-          },
-          {
-            "type": "text",
-            "value": " 收尾；"
-          },
-          {
-            "type": "code",
-            "value": "error"
-          },
-          {
-            "type": "text",
-            "value": " 写错误字段。新会话收到 "
-          },
-          {
-            "type": "code",
-            "value": "meta"
-          },
-          {
-            "type": "text",
-            "value": " 后把 pending 占位换成真码并更新路由。"
+            "value": "。打到自家 BFF（Backend for Frontend）；请求头里的 token 是用户登录态，模型密钥只放服务端。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5、"
+            "value": "3、消费：每帧取 "
           },
           {
-            "type": "strong",
-            "value": "停止："
+            "type": "code",
+            "value": "delta.content"
           },
           {
             "type": "text",
-            "value": "前端 "
+            "value": " 拼进当前助手气泡；见到 "
+          },
+          {
+            "type": "code",
+            "value": "finish_reason"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "data: [DONE]"
+          },
+          {
+            "type": "text",
+            "value": " 后结束 loading。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、停止与卸载："
           },
           {
             "type": "code",
@@ -248,61 +146,7 @@
           },
           {
             "type": "text",
-            "value": "；服务端监听连接 "
-          },
-          {
-            "type": "code",
-            "value": "close"
-          },
-          {
-            "type": "text",
-            "value": " 打断上游，有产出则落部分结果，通常不再发 "
-          },
-          {
-            "type": "code",
-            "value": "done"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "6、"
-          },
-          {
-            "type": "strong",
-            "value": "边界："
-          },
-          {
-            "type": "text",
-            "value": "切会话或停止后要提升序号、丢弃迟到回调，防止两路流写进同一条消息；响应非 2xx 或不是 "
-          },
-          {
-            "type": "code",
-            "value": "text/event-stream"
-          },
-          {
-            "type": "text",
-            "value": " 要当致命错误，不要走库的默认无限重连。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "主路径伪代码。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "// 前端\nappend(user); append(emptyAssistant)\nconst ac = new AbortController()\nawait streamChat({ query, sessionCode, messages, signal: ac.signal }, {\n  onMeta: ({ sessionCode }) => replacePending(sessionCode),\n  onDelta: (d) => appendToLastAssistant(d),\n  onDone: () => isStreaming = false,\n})\n// 停止：ac.abort()"
+            "value": " 关掉连接；页面切走或组件卸载也要 abort，避免后台还在写状态。已生成文本保留在气泡里。"
           }
         ]
       ]
@@ -311,7 +155,7 @@
       "id": "q-ai-stream-why-sse",
       "navLabel": "为何用 SSE",
       "question": "实现 AI 流式对话时，为何常用 SSE 而非一次性 JSON 或 WebSocket？",
-      "questionNote": "单向推 token、走 HTTP；注意关代理缓冲，对比一次性整包返回和全双工场景。",
+      "questionNote": "单向推 token、走 HTTP；注意代理缓冲会「憋流」；对比整包与 WebSocket。",
       "answer": [
         [
           {
@@ -320,7 +164,15 @@
           },
           {
             "type": "text",
-            "value": "对话为「服务端持续输出 token」，SSE 适合单向推流；无需为回包另开 WebSocket，体验亦优于等待整段 JSON。"
+            "value": "对话是「服务端持续输出 token」，SSE 适合单向推流；比整包 JSON 首字更快，也无需为下行另开 WebSocket。常见响应类型是 "
+          },
+          {
+            "type": "code",
+            "value": "text/event-stream"
+          },
+          {
+            "type": "text",
+            "value": "。"
           }
         ],
         [
@@ -334,7 +186,7 @@
           },
           {
             "type": "text",
-            "value": "：首字延迟低，用户边看边等；失败也可保留已生成部分。"
+            "value": "：首字延迟低，边看边等；失败也可保留已生成部分。"
           }
         ],
         [
@@ -348,7 +200,7 @@
           },
           {
             "type": "text",
-            "value": "：实现与鉴权更贴 REST；多数聊天只需下行。要双向低延迟（如协同、语音）再上 WS。"
+            "value": "：实现与鉴权更贴 REST；多数聊天只需下行。协同、语音等双向场景再上 WS。"
           }
         ],
         [
@@ -358,27 +210,35 @@
           },
           {
             "type": "strong",
-            "value": "注意"
+            "value": "前端体感坑："
           },
           {
             "type": "text",
-            "value": "：原生 "
+            "value": "若半天没字然后整段蹦出，多半是代理/CDN 把流攒住了。响应应是 "
           },
           {
             "type": "code",
-            "value": "EventSource"
+            "value": "text/event-stream"
           },
           {
             "type": "text",
-            "value": " 只支持 GET；带 messages 的对话要用 POST SSE 库或 "
+            "value": "，并常带 "
           },
           {
             "type": "code",
-            "value": "fetch"
+            "value": "Cache-Control: no-cache"
           },
           {
             "type": "text",
-            "value": " 读流。"
+            "value": "；需与后端一起关掉缓冲（如 Nginx "
+          },
+          {
+            "type": "code",
+            "value": "X-Accel-Buffering: no"
+          },
+          {
+            "type": "text",
+            "value": "）。"
           }
         ],
         [
@@ -388,23 +248,11 @@
           },
           {
             "type": "strong",
-            "value": "落地坑："
+            "value": "连接数："
           },
           {
             "type": "text",
-            "value": "代理与内容分发网络（CDN）默认会缓冲响应，必须显式关闭（如 Nginx 的 "
-          },
-          {
-            "type": "code",
-            "value": "X-Accel-Buffering: no"
-          },
-          {
-            "type": "text",
-            "value": " 配合服务端逐帧 flush），否则流会被整段攒住；"
-          },
-          {
-            "type": "text",
-            "value": "HTTP/1.1 下同域并发连接数有限，SSE 占满后其他请求会排队，高并发场景建议走 HTTP/2。"
+            "value": "HTTP/1.1 下浏览器同域并发有限，一条长 SSE 会占坑，其他接口可能排队；站点走 HTTP/2 更稳。"
           }
         ]
       ]
@@ -413,7 +261,7 @@
       "id": "q-ai-stream-post-sse",
       "navLabel": "POST SSE",
       "question": "带对话上下文的流式接口，前端为何通常不用原生 EventSource？应如何发起？",
-      "questionNote": "EventSource 仅 GET；工程常用 fetch-event-source 做 POST + signal。",
+      "questionNote": "EventSource 仅 GET、难带自定义头；用 fetch POST（messages + stream: true）读 ReadableStream。",
       "answer": [
         [
           {
@@ -422,7 +270,31 @@
           },
           {
             "type": "text",
-            "value": "要把 query/messages 放 body，应用支持 POST 的 SSE 客户端，并挂上 "
+            "value": "要把 "
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": " 放 body，用 "
+          },
+          {
+            "type": "code",
+            "value": "fetch"
+          },
+          {
+            "type": "text",
+            "value": " 开 POST，再对 "
+          },
+          {
+            "type": "code",
+            "value": "response.body"
+          },
+          {
+            "type": "text",
+            "value": " 读流，并挂 "
           },
           {
             "type": "code",
@@ -439,40 +311,32 @@
             "value": "1、"
           },
           {
-            "type": "text",
-            "value": "常用 "
+            "type": "strong",
+            "value": "限制："
           },
           {
             "type": "code",
-            "value": "@microsoft/fetch-event-source"
+            "value": "EventSource"
           },
           {
             "type": "text",
-            "value": " 的 "
+            "value": " 只能 GET，无 JSON body，也不能设 "
           },
           {
             "type": "code",
-            "value": "fetchEventSource"
+            "value": "Authorization"
           },
           {
             "type": "text",
-            "value": "："
+            "value": "（最多 "
           },
           {
             "type": "code",
-            "value": "method: \"POST\""
+            "value": "withCredentials"
           },
           {
             "type": "text",
-            "value": "、JSON body、"
-          },
-          {
-            "type": "code",
-            "value": "signal"
-          },
-          {
-            "type": "text",
-            "value": "。"
+            "value": " 带 Cookie）。"
           }
         ],
         [
@@ -481,764 +345,24 @@
             "value": "2、"
           },
           {
-            "type": "text",
-            "value": "也可 "
-          },
-          {
-            "type": "code",
-            "value": "fetch"
-          },
-          {
-            "type": "text",
-            "value": " + "
-          },
-          {
-            "type": "code",
-            "value": "response.body.getReader()"
-          },
-          {
-            "type": "text",
-            "value": " 自己按行解析 "
-          },
-          {
-            "type": "code",
-            "value": "event:/data:"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、"
-          },
-          {
-            "type": "text",
-            "value": "校验响应是 "
-          },
-          {
-            "type": "code",
-            "value": "text/event-stream"
-          },
-          {
-            "type": "text",
-            "value": " 且 2xx；否则当致命错误，避免库默认无限重连。"
-          }
-        ],
-        [
-          {
             "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "发起示意。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "await fetchEventSource('/api/chat', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ query, sessionCode, messages }),\n  signal: abort.signal,\n  openWhenHidden: true, // 切后台不断流（按产品需要）\n  onmessage(ev) { /* 按 ev.event 处理 */ },\n  onerror(err) { throw err }, // 停掉默认重试\n})"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-ai-stream-protocol",
-      "navLabel": "事件协议设计",
-      "question": "自建 AI 流式对话时，前后端 SSE 事件应如何设计？",
-      "questionNote": "推荐 meta/delta/done/error；勿让前端直接消费各家原始帧；OpenAI 的 [DONE] 属 Chat Completions 形态。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "网关层把模型原始流归一成少数业务事件，前端只认这些事件。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、"
+            "value": "发起："
           },
           {
             "type": "code",
-            "value": "meta"
+            "value": "Content-Type: application/json"
           },
           {
             "type": "text",
-            "value": "：会话码、标题等首包元数据（新会话尤其有用）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、"
+            "value": "；body 含 "
           },
           {
             "type": "code",
-            "value": "delta"
-          },
-          {
-            "type": "text",
-            "value": "：增量，可区分 "
-          },
-          {
-            "type": "code",
-            "value": "text"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "reasoning"
-          },
-          {
-            "type": "text",
-            "value": " 等 type；data 为 JSON。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、"
-          },
-          {
-            "type": "code",
-            "value": "done"
-          },
-          {
-            "type": "text",
-            "value": "：正常结束（"
-          },
-          {
-            "type": "code",
-            "value": "finishReason"
-          },
-          {
-            "type": "text",
-            "value": "）；"
-          },
-          {
-            "type": "code",
-            "value": "error"
-          },
-          {
-            "type": "text",
-            "value": "：可展示的失败信息。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4、"
-          },
-          {
-            "type": "strong",
-            "value": "边界："
-          },
-          {
-            "type": "text",
-            "value": "用户 abort 时可能收不到 "
-          },
-          {
-            "type": "code",
-            "value": "done"
-          },
-          {
-            "type": "text",
-            "value": "，不要假设「每轮必有结束标记」。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "OpenAI 的 Chat Completions 以 "
-          },
-          {
-            "type": "code",
-            "value": "data: [DONE]"
-          },
-          {
-            "type": "text",
-            "value": " 表示结束，"
-          },
-          {
-            "type": "code",
-            "value": "Responses API"
-          },
-          {
-            "type": "text",
-            "value": " 已改为 "
-          },
-          {
-            "type": "code",
-            "value": "response.completed"
-          },
-          {
-            "type": "text",
-            "value": " 这类命名事件；这些差异应在服务端消化，别让前端直接对接各家原始帧。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "SSE 帧形态。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "event: delta\ndata: {\"type\":\"text\",\"content\":\"你好\"}\n\nevent: done\ndata: {\"sessionCode\":\"abc\",\"finishReason\":\"stop\"}"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-ai-stream-append",
-      "navLabel": "前端状态机",
-      "question": "前端收到 delta 后应如何维护状态？如何避免两路流式响应状态错乱？",
-      "questionNote": "当前助手消息累加；streamSeq / 会话切换时丢弃旧回调。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "只往「本轮助手消息」尾部拼接；换会话或 stop 后升高世代号，旧流回调直接 return。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、"
-          },
-          {
-            "type": "text",
-            "value": "发起时占位一条 "
-          },
-          {
-            "type": "code",
-            "value": "role: assistant"
+            "value": "model"
           },
           {
             "type": "text",
             "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "content: \"\""
-          },
-          {
-            "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "streaming: true"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "code",
-            "value": "delta"
-          },
-          {
-            "type": "text",
-            "value": "："
-          },
-          {
-            "type": "code",
-            "value": "content += chunk"
-          },
-          {
-            "type": "text",
-            "value": "（reasoning 同理另字段）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、"
-          },
-          {
-            "type": "code",
-            "value": "done"
-          },
-          {
-            "type": "text",
-            "value": " 清 streaming；"
-          },
-          {
-            "type": "code",
-            "value": "error"
-          },
-          {
-            "type": "text",
-            "value": " 标失败文案。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4、"
-          },
-          {
-            "type": "code",
-            "value": "streamSeq++"
-          },
-          {
-            "type": "text",
-            "value": " 在 stop / 切路由时执行；回调首行比对序号防状态错乱。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "防状态错乱。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "let streamSeq = 0\nasync function start() {\n  const seq = ++streamSeq\n  await streamChat({\n    onDelta(text) {\n      if (seq !== streamSeq) return // 已过期\n      append(text)\n    },\n  })\n}\nfunction stop() {\n  abort.abort()\n  streamSeq++\n}"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-ai-reasoning-block",
-      "navLabel": "思考块实现",
-      "question": "大模型「思考过程」与正文如何分通道？流式半标签、历史展示与是否回传上游应注意什么？",
-      "questionNote": "字段通道 vs content 内 <think>；UI 折叠；reasoning 是否回传按厂商约定。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "统一成 "
-          },
-          {
-            "type": "code",
-            "value": "delta.type = reasoning | text"
-          },
-          {
-            "type": "text",
-            "value": "；前端分字段累加；落库可展示。回传策略按厂商约定：多数厂商要求剔除推理字段，"
-          },
-          {
-            "type": "strong",
-            "value": "带工具调用的扩展思考则需原样回传"
-          },
-          {
-            "type": "text",
-            "value": "（含 signature），以文档为准。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、"
-          },
-          {
-            "type": "strong",
-            "value": "双通道产出："
-          },
-          {
-            "type": "text",
-            "value": "优先读上游 delta 专有字段（如"
-          },
-          {
-            "type": "code",
-            "value": "reasoning_content"
-          },
-          {
-            "type": "text",
-            "value": "/"
-          },
-          {
-            "type": "code",
-            "value": "thinking"
-          },
-          {
-            "type": "text",
-            "value": "）；若内容里混"
-          },
-          {
-            "type": "code",
-            "value": "<think>"
-          },
-          {
-            "type": "text",
-            "value": "/"
-          },
-          {
-            "type": "code",
-            "value": "<reasoning>"
-          },
-          {
-            "type": "text",
-            "value": "等，用流式解析器拆成 reasoning/text。"
-          },
-          {
-            "type": "strong",
-            "value": "一旦走字段通道，正文侧只剥标签出 text，防双通道重复。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "strong",
-            "value": "跨 chunk 半标签："
-          },
-          {
-            "type": "text",
-            "value": "缓冲未完成前缀（最长可能 open 标签后缀），finish 时 flush，避免把"
-          },
-          {
-            "type": "code",
-            "value": "<thi"
-          },
-          {
-            "type": "text",
-            "value": "当正文吐出。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、"
-          },
-          {
-            "type": "strong",
-            "value": "前端 UI："
-          },
-          {
-            "type": "text",
-            "value": "独立"
-          },
-          {
-            "type": "code",
-            "value": "ReasoningBlock"
-          },
-          {
-            "type": "text",
-            "value": "；流式默认展开 +「正在思考」动效，正文开始后停扫光；结束后折叠显示用时。用户手动折叠后勿强制重开。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4、"
-          },
-          {
-            "type": "strong",
-            "value": "仅推理无正文："
-          },
-          {
-            "type": "text",
-            "value": "前后端约定占位文案（如「本轮无正文输出」），保证历史成对、列表不空白。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "5、"
-          },
-          {
-            "type": "strong",
-            "value": "持久化："
-          },
-          {
-            "type": "text",
-            "value": "DB 里单列存 "
-          },
-          {
-            "type": "code",
-            "value": "reasoning"
-          },
-          {
-            "type": "text",
-            "value": "；加载历史默认折叠展示；"
-          },
-          {
-            "type": "code",
-            "value": "toHistoryPayload"
-          },
-          {
-            "type": "text",
-            "value": " 只带 "
-          },
-          {
-            "type": "code",
-            "value": "role+content"
-          },
-          {
-            "type": "text",
-            "value": "，跳过空、出错、已停止与占位的助手行，推理字段再按厂商规则决定是否附加。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "SSE delta 形状。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "event: delta\ndata: {\"type\":\"reasoning\",\"content\":\"...\"}\n\nevent: delta\ndata: {\"type\":\"text\",\"content\":\"...\"}"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-ai-markdown-stream",
-      "navLabel": "流式 Markdown",
-      "question": "助手消息以 Markdown（代码 / 表格 / 公式 / Mermaid）流式渲染，如何选型？未闭合 fence 与渲染失败如何兜底？",
-      "questionNote": "流式友好组件 + 插件；失败降级源码；主题跟 CSS 变量。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "用支持增量更新的 Markdown 组件（如 Streamdown）挂 code/math/mermaid/cjk；流式开"
-          },
-          {
-            "type": "code",
-            "value": "isAnimating"
-          },
-          {
-            "type": "text",
-            "value": "，失败可降级源码。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、"
-          },
-          {
-            "type": "strong",
-            "value": "为何不手写："
-          },
-          {
-            "type": "text",
-            "value": "GitHub 风格 Markdown（GFM）表格、围栏代码、KaTeX、Mermaid 增量解析成本高；专用库处理好「半截 Markdown」重绘。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "strong",
-            "value": "流式期："
-          },
-          {
-            "type": "text",
-            "value": "内容字符串持续"
-          },
-          {
-            "type": "code",
-            "value": "+="
-          },
-          {
-            "type": "text",
-            "value": "；仅当前生成中的助手条开动画。Mermaid/公式在 fence 未闭合时允许短暂失败，done 后再稳。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、"
-          },
-          {
-            "type": "strong",
-            "value": "Mermaid："
-          },
-          {
-            "type": "text",
-            "value": "渲染前可修常见模型错法（全角冒号、错误 chart 关键字等）；仍失败用 Fallback 展示源码，勿整页红错。system prompt 可约束半角语法。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4、"
-          },
-          {
-            "type": "strong",
-            "value": "安全："
-          },
-          {
-            "type": "text",
-            "value": "优先信任组件默认消毒；勿"
-          },
-          {
-            "type": "code",
-            "value": "dangerouslySetInnerHTML"
-          },
-          {
-            "type": "text",
-            "value": "塞原始模型输出。图片预览可自研 Lightbox。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "5、"
-          },
-          {
-            "type": "strong",
-            "value": "布局："
-          },
-          {
-            "type": "text",
-            "value": "块级内容撑高会顶掉贴底跟随——对列表"
-          },
-          {
-            "type": "code",
-            "value": "ResizeObserver"
-          },
-          {
-            "type": "text",
-            "value": "+ 贴底阈值一起处理。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-ai-stream-idle",
-      "navLabel": "空闲与重连",
-      "question": "流式对话中空闲超时与自动重连应注意什么？",
-      "questionNote": "对话流不宜默认无限重连；长时间无事件应主动失败。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "业务流失败应显式结束；默认自动重连容易重复计费或重复写消息。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、"
-          },
-          {
-            "type": "code",
-            "value": "fetch-event-source"
-          },
-          {
-            "type": "text",
-            "value": " 默认会重试——"
-          },
-          {
-            "type": "code",
-            "value": "onerror"
-          },
-          {
-            "type": "text",
-            "value": " 里 "
-          },
-          {
-            "type": "code",
-            "value": "throw"
-          },
-          {
-            "type": "text",
-            "value": " 可停下。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "text",
-            "value": "前后端都可做空闲超时：N 秒无 SSE 事件则 abort 并提示网络/模型卡住。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、"
-          },
-          {
-            "type": "text",
-            "value": "用户主动 stop 与网络闪断要区分文案；重试前确认不会再插入第二条助手消息。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-ai-stream-session",
-      "navLabel": "会话与多轮",
-      "question": "流式多轮对话中，sessionCode 与 messages 通常如何配合？",
-      "questionNote": "新会话先占位再被 meta 换真码；多轮把历史消息放 body。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "每次请求带上必要历史（或服务端按 session 取）；新会话用 meta 回写正式 sessionCode。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、"
-          },
-          {
-            "type": "text",
-            "value": "body 带 "
           },
           {
             "type": "code",
@@ -1246,121 +370,31 @@
           },
           {
             "type": "text",
-            "value": " 或只带 "
+            "value": "、"
           },
           {
             "type": "code",
-            "value": "sessionCode"
+            "value": "stream: true"
           },
           {
             "type": "text",
-            "value": " 由服务端拼上下文——两者择一为主，避免双源冲突。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "text",
-            "value": "无会话时前端可暂用 pending 占位；收到 "
+            "value": "。响应要 2xx 且 "
           },
           {
             "type": "code",
-            "value": "meta.sessionCode"
+            "value": "Content-Type"
           },
           {
             "type": "text",
-            "value": " 再替换路由/本地列表。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、"
-          },
-          {
-            "type": "text",
-            "value": "会话 404：停止写入并引导回列表，勿把错误当普通 delta。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-ai-context-filter",
-      "navLabel": "多轮上下文过滤",
-      "question": "发给大模型的 messages 应从前端/历史中过滤哪些内容？为何 reasoning 不宜原样回传？",
-      "questionNote": "只留干净 role+content；错/停/占位/空助手剔除，推理字段按厂商约定。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "只传对下一轮有用的对话正文；推理、错误条、停止提示、空气泡通常都不进上游 messages，推理字段则要看厂商约定。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、"
-          },
-          {
-            "type": "strong",
-            "value": "保留："
-          },
-          {
-            "type": "text",
-            "value": "user 全文；assistant 有实质"
+            "value": " 含 "
           },
           {
             "type": "code",
-            "value": "content"
+            "value": "text/event-stream"
           },
           {
             "type": "text",
-            "value": "的行。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "strong",
-            "value": "剔除："
-          },
-          {
-            "type": "text",
-            "value": "空 "
-          },
-          {
-            "type": "code",
-            "value": "content"
-          },
-          {
-            "type": "text",
-            "value": "；纯 "
-          },
-          {
-            "type": "code",
-            "value": "errorMessage"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "statusMessage"
-          },
-          {
-            "type": "text",
-            "value": "；「仅推理」占位正文；以及推理字段（多数厂商要求剔除，带工具调用的扩展思考需原样回传）。"
+            "value": "。"
           }
         ],
         [
@@ -1370,17 +404,55 @@
           },
           {
             "type": "strong",
-            "value": "原因："
+            "value": "读流："
+          },
+          {
+            "type": "code",
+            "value": "res.body.getReader()"
           },
           {
             "type": "text",
-            "value": "推理内容往往很长、含内部思辨，回传既费 token 也污染角色设定，所以通用做法是剔除。"
-          }
-        ],
-        [
+            "value": " 循环 "
+          },
+          {
+            "type": "code",
+            "value": "read()"
+          },
           {
             "type": "text",
-            "value": "但 Anthropic 的扩展思考在带 tool use 的多轮中要求原样回传（含 signature），OpenAI Responses 的 reasoning item 同理，需以厂商文档为准。错误与停止属产品态，不是对话内容。"
+            "value": "，"
+          },
+          {
+            "type": "code",
+            "value": "TextDecoder"
+          },
+          {
+            "type": "text",
+            "value": " 解码，按 "
+          },
+          {
+            "type": "code",
+            "value": "\\n\\n"
+          },
+          {
+            "type": "text",
+            "value": " 切帧，解析 "
+          },
+          {
+            "type": "code",
+            "value": "data:"
+          },
+          {
+            "type": "text",
+            "value": " 行（常见流式接口不一定带自定义 "
+          },
+          {
+            "type": "code",
+            "value": "event:"
+          },
+          {
+            "type": "text",
+            "value": "）。"
           }
         ],
         [
@@ -1390,11 +462,35 @@
           },
           {
             "type": "strong",
-            "value": "服务端："
+            "value": "取消："
           },
           {
             "type": "text",
-            "value": "仍可再拼 system；以客户端过滤后的 history + 本轮 query 为准，避免双源「前端一套、DB 一套」不一致。"
+            "value": "把 "
+          },
+          {
+            "type": "code",
+            "value": "abort.signal"
+          },
+          {
+            "type": "text",
+            "value": " 传给 fetch；用户点停止或路由离开时 "
+          },
+          {
+            "type": "code",
+            "value": "abort()"
+          },
+          {
+            "type": "text",
+            "value": "。捕获时把 "
+          },
+          {
+            "type": "code",
+            "value": "AbortError"
+          },
+          {
+            "type": "text",
+            "value": " 当正常取消，不要当失败 Toast。"
           }
         ],
         [
@@ -1404,22 +500,438 @@
           },
           {
             "type": "text",
-            "value": "过滤示意。"
+            "value": "流式请求骨架。"
           }
         ],
         [
           {
             "type": "code",
-            "value": "messages\n  .filter(m => !(m.role==='assistant' && (!m.content.trim() || m.content===PLACEHOLDER)))\n  .map(m => ({ role: m.role, content: m.content }))\n// 不传 reasoning / errorMessage / statusMessage"
+            "value": "// token=用户登录态（不是模型 Key）；model/input 为入参\nconst abort = new AbortController()\nlet content = '' // 当前助手气泡文案\nconst res = await fetch('/api/chat', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n    Authorization: `Bearer ${token}`,\n  },\n  body: JSON.stringify({\n    model,\n    stream: true, // 开启流式\n    messages: [{ role: 'user', content: input }],\n  }),\n  signal: abort.signal, // 停止/卸载时 abort.abort()\n})\n// 不是 SSE 就别当流式读\nif (!res.ok || !res.headers.get('content-type')?.includes('text/event-stream')) {\n  throw new Error('bad stream')\n}\nconst reader = res.body.getReader() // 按块读响应体\nconst decoder = new TextDecoder()\nlet buf = '' // 拼接不完整的 SSE 半包\ntry {\n  while (true) {\n    const { done, value } = await reader.read()\n    if (done) break // 连接结束 ≠ 业务完成，还要看 [DONE]\n    buf += decoder.decode(value, { stream: true }) // 保留跨块半字符\n    const parts = buf.split('\\n\\n') // SSE 事件以空行分隔\n    buf = parts.pop() ?? '' // 最后一段可能不完整，留到下次\n    for (const part of parts) {\n      const line = part.split('\\n').find((l) => l.startsWith('data: '))\n      if (!line) continue\n      const data = line.slice('data: '.length) // 去掉前缀，剩下 JSON 或 [DONE]\n      if (data === '[DONE]') return // 正常结束\n      const json = JSON.parse(data)\n      const text = json.choices?.[0]?.delta?.content // 本帧增量文本\n      if (text) content += text // 拼到当前助手消息\n    }\n  }\n} catch (err) {\n  if (err?.name === 'AbortError') return // 用户取消，不当失败\n  throw err\n}"
           }
         ]
       ]
     },
     {
-      "id": "q-ai-stream-ux",
-      "navLabel": "停止与滚动",
-      "question": "AI 对话流式输出时，停止生成与消息区自动滚动应如何实现？",
-      "questionNote": "停止优先 Abort 断连接（服务端感知 close 停上游），未必有独立 stop 接口；滚动用贴底开关，上滑不追。",
+      "id": "q-ai-stream-parse-pitfalls",
+      "navLabel": "读流常见坑",
+      "question": "用 fetch 读 SSE 时，半包、中文乱码与「假结束」分别要注意什么？",
+      "questionNote": "网络 chunk 边界 ≠ SSE 事件边界；TextDecoder 要开 stream；reader done 不等于收到 [DONE]。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "字节块先缓冲再按空行切事件；解码开 "
+          },
+          {
+            "type": "code",
+            "value": "stream: true"
+          },
+          {
+            "type": "text",
+            "value": "；正常结束以 "
+          },
+          {
+            "type": "code",
+            "value": "data: [DONE]"
+          },
+          {
+            "type": "text",
+            "value": "（及 "
+          },
+          {
+            "type": "code",
+            "value": "finish_reason"
+          },
+          {
+            "type": "text",
+            "value": "）为准。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "半包/粘包："
+          },
+          {
+            "type": "text",
+            "value": "一次 "
+          },
+          {
+            "type": "code",
+            "value": "read()"
+          },
+          {
+            "type": "text",
+            "value": " 可能半帧或多帧粘连。缓冲后按 "
+          },
+          {
+            "type": "code",
+            "value": "\\n\\n"
+          },
+          {
+            "type": "text",
+            "value": " 切开，末段不完整留到下一轮。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "UTF-8 截断："
+          },
+          {
+            "type": "text",
+            "value": "中文、emoji 可能跨两个 "
+          },
+          {
+            "type": "code",
+            "value": "Uint8Array"
+          },
+          {
+            "type": "text",
+            "value": "；用 "
+          },
+          {
+            "type": "code",
+            "value": "decoder.decode(value, { stream: true })"
+          },
+          {
+            "type": "text",
+            "value": " 暂存半字符。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "假结束："
+          },
+          {
+            "type": "code",
+            "value": "reader.read().done"
+          },
+          {
+            "type": "text",
+            "value": " 只表示连接关掉。应以 "
+          },
+          {
+            "type": "code",
+            "value": "[DONE]"
+          },
+          {
+            "type": "text",
+            "value": " 为准；未收到则提示断流并保留已生成文本。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "错误："
+          },
+          {
+            "type": "text",
+            "value": "非 2xx 先当失败；若 JSON 里带 "
+          },
+          {
+            "type": "code",
+            "value": "error"
+          },
+          {
+            "type": "text",
+            "value": " 对象也要停写并提示，不能只看连接是否还开着。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "缓冲与解码。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "// reader 来自：const reader = res.body.getReader()\nlet buf = '' // 跨多次 read 的残留文本\nconst decoder = new TextDecoder()\nconst { done, value } = await reader.read() // value: Uint8Array 字节块\nif (done) {\n  // 连接关了但没见过 [DONE] → 当断流，不是成功收尾\n  break\n}\nbuf += decoder.decode(value, { stream: true }) // stream:true 保住跨块 UTF-8\nconst parts = buf.split('\\n\\n') // 按 SSE 空行切完整事件\nbuf = parts.pop() ?? '' // 半帧留下一轮再拼"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-ai-stream-events-state",
+      "navLabel": "流式帧与状态",
+      "question": "常见大模型流式 SSE 帧长什么样？前端如何累加并避免双流错乱？",
+      "questionNote": "data 行是增量 JSON；拼 delta.content；用 requestId 丢弃停止/切会话后的旧回调。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "每帧 "
+          },
+          {
+            "type": "code",
+            "value": "data:"
+          },
+          {
+            "type": "text",
+            "value": " 后是一段增量 JSON；前端只往本轮助手拼接 "
+          },
+          {
+            "type": "code",
+            "value": "delta.content"
+          },
+          {
+            "type": "text",
+            "value": "，停止或切会话后用 "
+          },
+          {
+            "type": "code",
+            "value": "requestId"
+          },
+          {
+            "type": "text",
+            "value": " 丢掉旧流。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "帧形态："
+          },
+          {
+            "type": "text",
+            "value": "多数行是 "
+          },
+          {
+            "type": "code",
+            "value": "data: {JSON}"
+          },
+          {
+            "type": "text",
+            "value": "；结束还有 "
+          },
+          {
+            "type": "code",
+            "value": "data: [DONE]"
+          },
+          {
+            "type": "text",
+            "value": "。JSON 里看 "
+          },
+          {
+            "type": "code",
+            "value": "choices[0].delta"
+          },
+          {
+            "type": "text",
+            "value": " 与 "
+          },
+          {
+            "type": "code",
+            "value": "finish_reason"
+          },
+          {
+            "type": "text",
+            "value": "（如 "
+          },
+          {
+            "type": "code",
+            "value": "stop"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "length"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "tool_calls"
+          },
+          {
+            "type": "text",
+            "value": "）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "增量："
+          },
+          {
+            "type": "text",
+            "value": "首包 "
+          },
+          {
+            "type": "code",
+            "value": "delta"
+          },
+          {
+            "type": "text",
+            "value": " 可含 "
+          },
+          {
+            "type": "code",
+            "value": "role: \"assistant\""
+          },
+          {
+            "type": "text",
+            "value": "；之后主要是 "
+          },
+          {
+            "type": "code",
+            "value": "delta.content"
+          },
+          {
+            "type": "text",
+            "value": " 字符串片段，直接 "
+          },
+          {
+            "type": "code",
+            "value": "content += text"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "状态："
+          },
+          {
+            "type": "text",
+            "value": "先占位一条 "
+          },
+          {
+            "type": "code",
+            "value": "role: \"assistant\""
+          },
+          {
+            "type": "text",
+            "value": " 空气泡；收到 "
+          },
+          {
+            "type": "code",
+            "value": "[DONE]"
+          },
+          {
+            "type": "text",
+            "value": " 后清 streaming。下一轮把完整 "
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": " 再传回去。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "防错乱："
+          },
+          {
+            "type": "text",
+            "value": "每次开流记一个递增 "
+          },
+          {
+            "type": "code",
+            "value": "requestId"
+          },
+          {
+            "type": "text",
+            "value": "；停止或切会话时 "
+          },
+          {
+            "type": "code",
+            "value": "requestId++"
+          },
+          {
+            "type": "text",
+            "value": "，旧回调对不上就 return。用户 abort 时可能收不到 "
+          },
+          {
+            "type": "code",
+            "value": "[DONE]"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "流式帧与防错乱。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "// —— 服务端推过来的帧（示意）——\n// 增量：拼 delta.content\ndata: {\"choices\":[{\"delta\":{\"content\":\"你\"},\"finish_reason\":null}]}\n\n// 收尾：finish_reason 有值，content 常为空\ndata: {\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\"}]}\n\n// 流正常结束\ndata: [DONE]\n\n// —— 前端防双流错乱 ——\nlet requestId = 0 // 全局当前轮次\nlet content = '' // 当前助手气泡\nconst myId = ++requestId // 本轮开流时记下\n// 停止或切会话时：requestId++ ，旧轮 myId 全部失效\nfunction onChunk(json) {\n  if (myId !== requestId) return // 已不是本轮，丢弃迟到数据\n  content += json.choices?.[0]?.delta?.content ?? ''\n}"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-ai-stream-stop",
+      "navLabel": "停止生成",
+      "question": "AI 对话流式输出时，「停止生成」应如何实现？",
+      "questionNote": "前端 abort 断连接；保留半截；requestId 丢弃迟到 delta；卸载也要停。",
       "answer": [
         [
           {
@@ -1436,7 +948,7 @@
           },
           {
             "type": "text",
-            "value": " 关掉 SSE，后端靠连接关闭打断模型；滚动只在用户贴底时跟随，上滑阅读则关掉自动追底。"
+            "value": " 关掉请求；UI 保留半截并结束 streaming。连接一断，对端通常会停生成。"
           }
         ],
         [
@@ -1445,82 +957,32 @@
             "value": "1、"
           },
           {
-            "type": "strong",
-            "value": "停止："
-          },
-          {
             "type": "code",
             "value": "AbortController.abort()"
           },
           {
             "type": "text",
-            "value": "；递增 "
+            "value": " 打断 "
           },
           {
             "type": "code",
-            "value": "streamSeq"
+            "value": "fetch"
           },
           {
             "type": "text",
-            "value": " 丢弃迟到的 "
+            "value": "；同时 "
           },
           {
             "type": "code",
-            "value": "delta"
+            "value": "requestId++"
           },
           {
             "type": "text",
-            "value": "。许多产品"
-          },
-          {
-            "type": "strong",
-            "value": "没有"
-          },
-          {
-            "type": "text",
-            "value": "独立的 stop 接口——断掉 HTTP 后，服务端在 "
+            "value": "，丢弃迟到的 "
           },
           {
             "type": "code",
-            "value": "close"
-          },
-          {
-            "type": "text",
-            "value": " 回调里 "
-          },
-          {
-            "type": "code",
-            "value": "abort"
-          },
-          {
-            "type": "text",
-            "value": " 上游即可；若业务另有 stop 接口可做双保险。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "strong",
-            "value": "停止后的姿态："
-          },
-          {
-            "type": "text",
-            "value": "前端保留已生成文本、清 "
-          },
-          {
-            "type": "code",
-            "value": "isStreaming"
-          },
-          {
-            "type": "text",
-            "value": " 并标记消息为已停止，不要继续停留在半截动画；服务端有产出就落部分结果，通常不再补发 "
-          },
-          {
-            "type": "code",
-            "value": "done"
+            "value": "delta.content"
           },
           {
             "type": "text",
@@ -1530,75 +992,59 @@
         [
           {
             "type": "text",
-            "value": "3、"
-          },
-          {
-            "type": "strong",
-            "value": "展示："
-          },
-          {
-            "type": "text",
-            "value": "正文用 SSE 累加；Markdown 组件可加 "
-          },
-          {
-            "type": "code",
-            "value": "isAnimating"
-          },
-          {
-            "type": "text",
-            "value": " 做流式观感。"
+            "value": "2、多数场景前端不必等独立 stop 接口：abort 掉 HTTP 就够。若产品另有 stop 接口，可在 abort 同时调一次做双保险。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、"
-          },
-          {
-            "type": "strong",
-            "value": "滚动："
-          },
-          {
-            "type": "text",
-            "value": "维护 "
+            "value": "3、停止后：保留已生成文本、清 streaming、标记已停止；若用了 rAF 合并，立刻把缓冲写入并 "
           },
           {
             "type": "code",
-            "value": "follow"
+            "value": "cancelAnimationFrame"
           },
           {
             "type": "text",
-            "value": " 标记；距底 ≤ 阈值（如 80px）视为贴底，才自动 "
+            "value": "。通常收不到完整的 "
           },
           {
             "type": "code",
-            "value": "scrollTop = scrollHeight"
+            "value": "[DONE]"
           },
           {
             "type": "text",
-            "value": "。上滑后 "
-          },
-          {
-            "type": "code",
-            "value": "follow=false"
-          },
-          {
-            "type": "text",
-            "value": "，可显示「回到底部」再打开跟随。"
+            "value": "。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5、"
+            "value": "4、不要用组件状态布尔在读流循环里判停（如 React "
           },
           {
-            "type": "strong",
-            "value": "边界："
+            "type": "code",
+            "value": "useState"
           },
           {
             "type": "text",
-            "value": "路由切换或换会话也要 abort + 提升序号，避免旧流写进新对话。"
+            "value": "）——闭包易读到旧值；用 "
+          },
+          {
+            "type": "code",
+            "value": "AbortSignal"
+          },
+          {
+            "type": "text",
+            "value": " 或 ref。用户取消常得到 "
+          },
+          {
+            "type": "code",
+            "value": "AbortError"
+          },
+          {
+            "type": "text",
+            "value": "，与网络失败分开提示。路由离开/组件卸载同样要 abort。"
           }
         ],
         [
@@ -1608,13 +1054,405 @@
           },
           {
             "type": "text",
-            "value": "停止 + 贴底跟随。"
+            "value": "停止。"
           }
         ],
         [
           {
             "type": "code",
-            "value": "// 停止\nctrl.abort()\nstreamSeq++  // 旧流回调里 if (seq !== streamSeq) return\n\n// 贴底才跟随\nconst NEAR = 80\nconst distance = el.scrollHeight - el.scrollTop - el.clientHeight\nfollow = distance <= NEAR  // 上滑则 false\nif (follow) el.scrollTop = el.scrollHeight"
+            "value": "const ctrl = new AbortController()\nlet requestId = 0\nlet content = ''\nlet pending = '' // rAF 合并时，先攒着还没写入 content\nlet raf = 0\nlet streaming = false\n\n// 开流：const myId = ++requestId; fetch(..., { signal: ctrl.signal })\n// 用户点停止，或 beforeUnmount / onBeforeUnmount：\nctrl.abort() // 打断 fetch\nrequestId++ // 旧回调 if (myId !== requestId) return\nif (raf) {\n  cancelAnimationFrame(raf)\n  raf = 0\n}\nif (pending) {\n  content += pending // 未刷屏的字立刻写入\n  pending = ''\n}\nstreaming = false"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-ai-stream-render-perf",
+      "navLabel": "流式渲染性能",
+      "question": "AI 流式对话输出时，前端渲染性能与消息区自动滚动应如何处理？",
+      "questionNote": "rAF 合并 delta.content；只更新当前气泡；重型 Markdown 延后；贴底才跟随，上滑不追。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "网络可每 token 到达，UI 不必每 token 整树重绘；合并更新、缩小范围，滚动只在用户贴底时跟随。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "合并写入："
+          },
+          {
+            "type": "text",
+            "value": "先拼字符串，用 "
+          },
+          {
+            "type": "code",
+            "value": "requestAnimationFrame"
+          },
+          {
+            "type": "text",
+            "value": " 或短节流再触发视图更新；停止或收到 "
+          },
+          {
+            "type": "code",
+            "value": "[DONE]"
+          },
+          {
+            "type": "text",
+            "value": " 时立刻写入缓冲并 "
+          },
+          {
+            "type": "code",
+            "value": "cancelAnimationFrame"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "缩小范围："
+          },
+          {
+            "type": "text",
+            "value": "历史气泡用稳定 "
+          },
+          {
+            "type": "code",
+            "value": "key"
+          },
+          {
+            "type": "text",
+            "value": " 并避免无意义重渲染（如 React "
+          },
+          {
+            "type": "code",
+            "value": "memo"
+          },
+          {
+            "type": "text",
+            "value": "）；只更新当前 streaming 那一条。长列表可虚拟化。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "重活延后："
+          },
+          {
+            "type": "text",
+            "value": "高亮、公式、图渲染放到 fence 闭合或流结束后再跑，避免半截内容反复全量解析。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "贴底滚动："
+          },
+          {
+            "type": "text",
+            "value": "距底 ≤ 阈值视为贴底才 "
+          },
+          {
+            "type": "code",
+            "value": "scrollTop = scrollHeight"
+          },
+          {
+            "type": "text",
+            "value": "；用户上滑阅读则关掉自动追底。块级撑高可用 "
+          },
+          {
+            "type": "code",
+            "value": "ResizeObserver"
+          },
+          {
+            "type": "text",
+            "value": " 配合。"
+          }
+        ],
+        [
+          {
+            "type": "strong",
+            "value": "示例："
+          },
+          {
+            "type": "text",
+            "value": "合并写入 + 贴底。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "const el = document.getElementById('msg-list') // 消息列表滚动容器\nlet content = '' // 当前助手气泡文案\nlet pending = '' // 先拼字，不每个 token 都触发渲染\nlet raf = 0\nlet follow = true // 是否贴底自动滚动\n\nfunction onDelta(text) { // 每收到一段 delta.content 调用\n  pending += text\n  if (raf) return // 本帧已排队，等一起刷\n  raf = requestAnimationFrame(() => {\n    content += pending // 合并写入，减少重渲染\n    pending = ''\n    raf = 0\n    if (follow) el.scrollTop = el.scrollHeight // 仅贴底时追滚\n  })\n}\n\nconst NEAR = 80 // 距底多少像素算「还在底部」\nel.addEventListener('scroll', () => {\n  const distance = el.scrollHeight - el.scrollTop - el.clientHeight\n  follow = distance <= NEAR // 上滑离开底部后不再强制滚到底\n})"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-ai-markdown-stream",
+      "navLabel": "流式 Markdown",
+      "question": "助手消息流式渲染 Markdown 时，如何选型？未闭合 fence 闪烁与渲染失败如何兜底？",
+      "questionNote": "增量友好方案；未闭合块先降级；失败纯文本；勿裸插模型 HTML。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "用支持增量更新的 Markdown 方案处理半截语法；流式期轻量渲染，闭合或 "
+          },
+          {
+            "type": "code",
+            "value": "[DONE]"
+          },
+          {
+            "type": "text",
+            "value": " 后再加重；失败降纯文本。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "为何不裸手写："
+          },
+          {
+            "type": "text",
+            "value": "表格、围栏代码、公式、图语法在流式下常处于「未闭合」中间态，专用增量方案比每次整篇重解析更稳。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "闪烁："
+          },
+          {
+            "type": "text",
+            "value": "代码块/公式迟迟不闭合时，解析器会反复失败重绘。已闭合块先定稿；末尾未闭合段按纯文本或「进行中」区展示，闭合后再替换加重渲染。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "降级："
+          },
+          {
+            "type": "text",
+            "value": "单块超时或抛错时 Fallback 源码/纯文本，用错误边界兜住。多轮只把干净的 "
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": "（"
+          },
+          {
+            "type": "code",
+            "value": "role"
+          },
+          {
+            "type": "text",
+            "value": " + "
+          },
+          {
+            "type": "code",
+            "value": "content"
+          },
+          {
+            "type": "text",
+            "value": "）回传，去掉错误条与空气泡。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "安全："
+          },
+          {
+            "type": "text",
+            "value": "优先用组件自带消毒；不要把模型 HTML 直接塞进 DOM（如 React 的 "
+          },
+          {
+            "type": "code",
+            "value": "dangerouslySetInnerHTML"
+          },
+          {
+            "type": "text",
+            "value": "），防止跨站脚本攻击（XSS）。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-ai-stream-idle",
+      "navLabel": "空闲与断流",
+      "question": "流式对话中空闲超时与断线重试应注意什么？",
+      "questionNote": "对话流不宜默认自动重连；已出字后保留半截；未收到 [DONE] 当断流。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "失败应显式结束；静默自动重连容易重复计费，或把已展示文本再拼一遍。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "不要照搬 EventSource："
+          },
+          {
+            "type": "text",
+            "value": "原生会按 "
+          },
+          {
+            "type": "code",
+            "value": "retry"
+          },
+          {
+            "type": "text",
+            "value": " 自动重连并带 "
+          },
+          {
+            "type": "code",
+            "value": "Last-Event-ID"
+          },
+          {
+            "type": "text",
+            "value": "。大模型生成流通常不能按事件 id 续推；自管 "
+          },
+          {
+            "type": "code",
+            "value": "fetch"
+          },
+          {
+            "type": "text",
+            "value": " 也不应默认重放同一轮生成。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "已出字："
+          },
+          {
+            "type": "text",
+            "value": "保留半截并提示断流，交给用户重试；重试等于带更新后的 "
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": " 再开一次 "
+          },
+          {
+            "type": "code",
+            "value": "stream: true"
+          },
+          {
+            "type": "text",
+            "value": "，勿在旧气泡上静默续写造成重复。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "空闲："
+          },
+          {
+            "type": "text",
+            "value": "前端侧 N 秒收不到新的 "
+          },
+          {
+            "type": "code",
+            "value": "data:"
+          },
+          {
+            "type": "text",
+            "value": " 就 "
+          },
+          {
+            "type": "code",
+            "value": "abort"
+          },
+          {
+            "type": "text",
+            "value": " 并提示卡住。对端若发 "
+          },
+          {
+            "type": "code",
+            "value": ":"
+          },
+          {
+            "type": "text",
+            "value": " 注释心跳，只是保活，不能当成生成完成。用户 stop（"
+          },
+          {
+            "type": "code",
+            "value": "AbortError"
+          },
+          {
+            "type": "text",
+            "value": "）与网络闪断文案要区分。"
           }
         ]
       ]
