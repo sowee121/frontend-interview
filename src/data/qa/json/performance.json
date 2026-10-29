@@ -3,7 +3,7 @@
   "title": "性能",
   "documentTitle": "性能",
   "description": "优化维度与白屏首屏、拆包懒加载与长列表，以及主线程卡顿、图片优化与以 LCP / INP / CLS 为核心的性能监控。",
-  "lead": "以白屏/首屏/卡顿为入口：拆包与懒加载，主线程与长列表，验收看最大内容绘制（LCP）、交互到下次绘制（INP）、累积布局偏移（CLS）。",
+  "lead": "以白屏、首屏、卡顿为入口：拆包与懒加载、主线程与长列表；验收优先看 LCP、INP、CLS。",
   "items": [
     {
       "id": "q-perf-overview",
@@ -32,7 +32,7 @@
           },
           {
             "type": "text",
-            "value": "路由/组件拆包、压缩与摇树优化（Tree-shaking）、图片体积与格式、关键请求并行与缓存。"
+            "value": "路由/组件拆包、压缩与Tree-shaking、图片体积与格式、关键请求并行与缓存。"
           }
         ],
         [
@@ -60,7 +60,7 @@
           },
           {
             "type": "text",
-            "value": "内容分发网络（CDN）、缓存策略、合并或减少请求、避免阻塞渲染的脚本。"
+            "value": "CDN、缓存策略、合并或减少请求、避免阻塞渲染的脚本。"
           }
         ],
         [
@@ -70,7 +70,7 @@
           },
           {
             "type": "strong",
-            "value": "验收：看最大内容绘制（LCP）、交互到下次绘制（INP）、累积布局偏移（CLS），以及白屏/首屏与接口耗时。"
+            "value": "验收：先看 LCP（最大内容绘制）、INP（交互是否跟得上）、CLS（布局是否晃），再补白屏/首屏与接口耗时。"
           }
         ]
       ]
@@ -148,23 +148,7 @@
           },
           {
             "type": "text",
-            "value": "交互卡不卡，核心看交互到下次绘制（INP）；用性能观察器（"
-          },
-          {
-            "type": "code",
-            "value": "PerformanceObserver"
-          },
-          {
-            "type": "text",
-            "value": "）监听长任务（"
-          },
-          {
-            "type": "code",
-            "value": "longtask"
-          },
-          {
-            "type": "text",
-            "value": "），火焰图看长条，真实用户监控（RUM）统计超 50ms 次数。"
+            "value": "交互卡不卡看交互到下次绘制（INP）；用 PerformanceObserver 听长任务，火焰图找长条，线上按分位统计超 50ms 次数。"
           }
         ],
         [
@@ -208,7 +192,7 @@
           },
           {
             "type": "text",
-            "value": "：重计算宜迁移至 "
+            "value": "：重计算放到 "
           },
           {
             "type": "code",
@@ -300,7 +284,7 @@
           },
           {
             "type": "text",
-            "value": " 或盲目提层会占内存，应针对热路径。"
+            "value": " 或盲目提层会占内存，只针对热路径。"
           }
         ],
         [
@@ -390,7 +374,7 @@
           },
           {
             "type": "text",
-            "value": "：走内容分发网络（CDN）并压缩；首屏外用 "
+            "value": "：走CDN并压缩；首屏外用 "
           },
           {
             "type": "code",
@@ -466,7 +450,7 @@
           },
           {
             "type": "text",
-            "value": " 一类动态导入，配合构建拆 chunk；首屏路由仍应优先加载。"
+            "value": " 一类动态导入，配合构建拆 chunk；首屏路由仍要优先加载。"
           }
         ],
         [
@@ -480,7 +464,7 @@
           },
           {
             "type": "text",
-            "value": "首屏关键图不宜懒加载；拆包过细会增加请求次数，需结合首屏路径权衡。"
+            "value": "首屏关键图不要懒加载；拆包过细会增加请求次数，要结合首屏路径权衡。"
           }
         ]
       ]
@@ -686,7 +670,7 @@
           },
           {
             "type": "text",
-            "value": "：只做域名解析（DNS）。"
+            "value": "：只做DNS。"
           }
         ],
         [
@@ -696,7 +680,7 @@
           },
           {
             "type": "text",
-            "value": "：解析 + TCP + 传输层安全（TLS），适合马上要用第三方接口或 CDN。"
+            "value": "：解析 + TCP + TLS，适合马上要用第三方接口或 CDN。"
           }
         ],
         [
@@ -714,7 +698,7 @@
           },
           {
             "type": "text",
-            "value": " 类型须与真实请求一致，滥用会抢带宽。"
+            "value": " 类型要与真实请求一致，滥用会抢带宽。"
           }
         ],
         [
@@ -724,7 +708,7 @@
           },
           {
             "type": "text",
-            "value": "：空闲预取下一路由 chunk。可与网络安全章 DNS/TLS 优化一起答。"
+            "value": "：空闲预取下一路由 chunk。和 dns-prefetch / preconnect 同一套资源提示思路。"
           }
         ],
         [
@@ -807,7 +791,7 @@
       "id": "q-monitor",
       "navLabel": "性能监控",
       "question": "线上性能监控通常关注哪些方面？",
-      "questionNote": "真实用户监控（RUM）与实验室审计工具 Lighthouse 互补；强调分位与维度切片。",
+      "questionNote": "线上真实用户数据为主，Lighthouse 实验室跑分为辅；按版本、机型切片看长尾。",
       "answer": [
         [
           {
@@ -816,19 +800,19 @@
           },
           {
             "type": "text",
-            "value": "在真实用户环境打点，按版本、地区、机型切片，发现长尾问题。"
+            "value": "线上真实用户打点才能看到长尾；实验室跑分用来复现和对比，两者互补。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、指标：先看核心网页指标（Core Web Vitals）——最大内容绘制（LCP）、交互到下次绘制（INP，2024 年起取代首次输入延迟 FID）、累积布局偏移（CLS）；再补首字节时间（TTFB）、首次内容绘制（FCP）、长任务、接口 P95 与白屏率。"
+            "value": "1、指标：优先 LCP、INP、CLS（Core Web Vitals；INP 已取代 FID）。再补 TTFB、FCP、长任务、接口 P95、白屏率。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、实现：用 PerformanceObserver 监听 largest-contentful-paint、longtask，用 web-vitals 库采集 INP / CLS 更省事。"
+            "value": "2、采集：PerformanceObserver 听 LCP / longtask；INP、CLS 可用 web-vitals 库。按版本、地区、机型切片，别只看平均值。"
           }
         ],
         [
@@ -842,7 +826,7 @@
           },
           {
             "type": "text",
-            "value": " 尽量把队列发出去；与单次 Lighthouse 跑分互补，不宜仅依赖实验室数据。"
+            "value": " 尽量把队列发出去；不要只拿一次 Lighthouse 分数当结论。"
           }
         ]
       ]
@@ -880,19 +864,7 @@
         [
           {
             "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "strong",
-            "value": "性能监控（RUM）：Core Web Vitals（LCP、INP、CLS）、接口耗时、白屏率；用 "
-          },
-          {
-            "type": "code",
-            "value": "PerformanceObserver"
-          },
-          {
-            "type": "text",
-            "value": " 采集，与 Lighthouse 互补。"
+            "value": "2、性能监控（RUM）：看 LCP、INP、CLS、接口耗时、白屏率；用 PerformanceObserver 采集，和 Lighthouse 实验室跑分互补。"
           }
         ],
         [

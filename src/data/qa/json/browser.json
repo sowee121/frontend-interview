@@ -9,7 +9,7 @@
       "id": "q-url",
       "navLabel": "输入网址到显示",
       "question": "从输入网址到页面显示，大致经历哪些阶段？",
-      "questionNote": "按阶段串联：域名解析、建连、HTML/CSS 解析至布局绘制。",
+      "questionNote": "DNS → 建连 → 拉 HTML → 解析样式与 DOM → 布局绘制；哪里慢就优化哪里。",
       "answer": [
         [
           {
@@ -18,7 +18,7 @@
           },
           {
             "type": "text",
-            "value": "域名解析 → 建连 → 请求 HTML → 解析构建文档对象模型（DOM）/ 样式对象（CSSOM）→ 布局绘制 → 合成，各阶段可并行优化。"
+            "value": "主干是：解析域名、建连、拉 HTML，再边解析边构建 DOM/CSSOM，然后布局、绘制、合成。各阶段常可并行，优化要对准瓶颈。"
           }
         ],
         [
@@ -28,11 +28,11 @@
           },
           {
             "type": "strong",
-            "value": "域名解析（DNS）"
+            "value": "DNS："
           },
           {
             "type": "text",
-            "value": "：域名 → IP，依次查浏览器缓存、系统缓存、hosts、递归 DNS。"
+            "value": "域名换成 IP，先查浏览器/系统缓存和 hosts，没有再走递归解析。"
           }
         ],
         [
@@ -42,19 +42,11 @@
           },
           {
             "type": "strong",
-            "value": "TCP 三次握手"
+            "value": "建连："
           },
           {
             "type": "text",
-            "value": " 建连；HTTPS 再经 "
-          },
-          {
-            "type": "strong",
-            "value": "传输层安全（TLS）握手"
-          },
-          {
-            "type": "text",
-            "value": " 协商对称密钥与证书校验。"
+            "value": "TCP 三次握手；HTTPS 还要做 TLS 握手（证书校验、协商加密）。"
           }
         ],
         [
@@ -94,7 +86,7 @@
           },
           {
             "type": "strong",
-            "value": "样式对象（CSSOM）"
+            "value": "CSSOM"
           },
           {
             "type": "text",
@@ -134,7 +126,7 @@
         [
           {
             "type": "text",
-            "value": "6、复杂动画宜采用 "
+            "value": "6、复杂动画优先走 "
           },
           {
             "type": "strong",
@@ -331,7 +323,7 @@
       "id": "q-repaint",
       "navLabel": "重排与重绘",
       "question": "重排（reflow）与重绘（repaint）有何区别？如何减少开销？",
-      "questionNote": "布局与绘制代价不同；宜能结合 DevTools Performance 说明优化手段。",
+      "questionNote": "布局代价高于绘制；可结合 DevTools Performance 看强制同步布局与合成层。",
       "answer": [
         [
           {
@@ -413,7 +405,7 @@
       "id": "q-event-flow",
       "navLabel": "捕获与冒泡",
       "question": "DOM 事件捕获、冒泡与阻止传播应如何表述？",
-      "questionNote": "事件流三阶段与 API 语义要分清；`preventDefault` 不等于阻止冒泡。",
+      "questionNote": "事件流三阶段与 API 语义要分清；preventDefault 不等于阻止冒泡。",
       "answer": [
         [
           {
@@ -483,7 +475,9 @@
           {
             "type": "text",
             "value": " 只拦默认行为（如链接跳转），不阻止冒泡。"
-          },
+          }
+        ],
+        [
           {
             "type": "code",
             "value": "passive: true"
@@ -523,7 +517,7 @@
       "id": "q-storage",
       "navLabel": "本地存储",
       "question": "Cookie、localStorage、sessionStorage 应如何选择？",
-      "questionNote": "选型看容量、生命周期、是否随请求发送、能否设安全属性；勿混用场景。",
+      "questionNote": "选型看容量、生命周期、是否随请求发送、能否设安全属性；场景不要混用。",
       "answer": [
         [
           {
@@ -690,7 +684,7 @@
           },
           {
             "type": "text",
-            "value": "均受同源限制；勿存密钥与敏感明文；可与 Service Worker（可拦截请求的后台脚本）配合做离线，但复杂度明显高于 localStorage。"
+            "value": "均受同源限制；不要存密钥与敏感明文；可与 Service Worker（可拦截请求的后台脚本）配合做离线，但复杂度明显高于 localStorage。"
           }
         ]
       ]
@@ -822,7 +816,7 @@
           },
           {
             "type": "text",
-            "value": " 等，勿把刷新令牌放非 HttpOnly Cookie 又给 JS 读。"
+            "value": " 等，不要把刷新令牌放在非 HttpOnly Cookie 里又给 JS 读。"
           }
         ]
       ]
@@ -961,7 +955,7 @@
       "id": "q-iframe-security",
       "navLabel": "iframe 安全",
       "question": "嵌入 iframe 时有哪些安全注意点？",
-      "questionNote": "iframe 扩大了点击劫持和跨源通信的面，用 sandbox 和 postMessage 的来源校验收口。",
+      "questionNote": "iframe 扩大了点击劫持和跨源通信的面，用 sandbox 和 postMessage 的来源校验统一处理。",
       "answer": [
         [
           {
@@ -970,7 +964,7 @@
           },
           {
             "type": "text",
-            "value": "iframe 扩大攻击面：点击劫持、跨域脚本、权限逃逸；用沙箱与通信白名单收敛。"
+            "value": "iframe 扩大攻击面：点击劫持、跨域脚本、权限逃逸；用 sandbox 和 postMessage 来源校验把风险压住。"
           }
         ],
         [
@@ -1045,7 +1039,7 @@
       "id": "q-cross-tab",
       "navLabel": "跨标签页通信",
       "question": "两个标签页之间如何互相传递消息？",
-      "questionNote": "同源与跨域方案不同；注意 `storage` 事件触发页自身收不到。",
+      "questionNote": "同源与跨域方案不同；注意 storage 事件触发页自身收不到。",
       "answer": [
         [
           {
@@ -1163,7 +1157,7 @@
       "id": "q-intersection-resize",
       "navLabel": "Intersection 与 Resize",
       "question": "交叉观察器（IntersectionObserver）与尺寸观察器（ResizeObserver）一般用在哪些场景？",
-      "questionNote": "两者均为异步回调，较 scroll + getBoundingClientRect 更省主线程；须在触发后 unobserve。",
+      "questionNote": "两者均为异步回调，较 scroll + getBoundingClientRect 更省主线程；要在触发后 unobserve。",
       "answer": [
         [
           {
@@ -1245,7 +1239,7 @@
       "id": "q-web-worker",
       "navLabel": "Web Worker",
       "question": "Web Worker 与主线程如何通信？适用于哪些场景？",
-      "questionNote": "Worker 无 DOM 访问权；大数据传输优先考虑 Transferable 零拷贝。",
+      "questionNote": "Worker 碰不到 DOM；大数据优先 Transferable 零拷贝转移。",
       "answer": [
         [
           {
@@ -1398,7 +1392,7 @@
         [
           {
             "type": "text",
-            "value": "3、Safari 等支持不完整时需降级；框架调度器往往自建优先级，不直接依赖它。"
+            "value": "3、Safari 等支持不完整时要降级；框架调度器往往自建优先级，不直接依赖它。"
           }
         ]
       ]
@@ -1416,13 +1410,13 @@
           },
           {
             "type": "text",
-            "value": "Service Worker 是独立线程的网络代理脚本，可拦截请求、缓存资源；渐进式 Web 应用（PWA）常靠它做离线与安装体验。"
+            "value": "Service Worker 是独立线程里的网络代理，可拦截请求、缓存资源；渐进式 Web 应用（PWA）的离线与可安装体验通常建在它上面。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、须 HTTPS（localhost 除外）；生命周期含安装、激活、fetch 事件。"
+            "value": "1、要 HTTPS（localhost 除外）；生命周期含安装、激活、fetch 事件。"
           }
         ],
         [

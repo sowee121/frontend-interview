@@ -9,7 +9,7 @@
       "id": "q-semantic",
       "navLabel": "语义化",
       "question": "语义化标签有哪些作用？",
-      "questionNote": "覆盖无障碍、搜索引擎优化（SEO）与可维护性三方面。",
+      "questionNote": "无障碍、搜索引擎优化（SEO）、可维护性：语义标签把结构说清楚。",
       "answer": [
         [
           {
@@ -18,7 +18,7 @@
           },
           {
             "type": "text",
-            "value": "用语义标签明确页面结构，便于辅助技术、搜索引擎与开发者理解内容层次。"
+            "value": "用语义标签明确页面结构，方便辅助技术、搜索引擎与开发者理解内容层次。"
           }
         ],
         [
@@ -50,7 +50,7 @@
         [
           {
             "type": "text",
-            "value": "纯布局、无语义的容器仍可使用 "
+            "value": "纯布局、没语义的容器继续用 "
           },
           {
             "type": "code",
@@ -58,7 +58,7 @@
           },
           {
             "type": "text",
-            "value": "；不宜为追求形式而滥用 "
+            "value": "；别为了“看起来语义”硬套 "
           },
           {
             "type": "code",
@@ -74,8 +74,8 @@
     {
       "id": "q-box",
       "navLabel": "盒模型",
-      "question": "请说明标准盒模型与 IE 盒模型的区别，以及 box-sizing 的取值含义。",
-      "questionNote": "两种盒模型的差异在于 width 是否包含 padding/border；多数项目默认采用 border-box。",
+      "question": "标准盒模型与 IE 盒模型差在哪？box-sizing 取值含义是什么？",
+      "questionNote": "差别在 width 算不算上 padding/border；项目里多半全局 border-box。",
       "answer": [
         [
           {
@@ -84,7 +84,7 @@
           },
           {
             "type": "text",
-            "value": "标准盒模型 width 不含 padding/border；border-box 将三者计入 width，布局更直观。"
+            "value": "标准盒模型的 width 不含 padding/border；border-box 把三者算进 width，定宽布局更省心。"
           }
         ],
         [
@@ -102,7 +102,7 @@
           },
           {
             "type": "text",
-            "value": " 仅含内容区，"
+            "value": " 只含内容区，"
           },
           {
             "type": "code",
@@ -110,7 +110,7 @@
           },
           {
             "type": "text",
-            "value": " 向外扩展，总占位 = width + padding + border。"
+            "value": " 往外扩，总占位 = width + padding + border。"
           }
         ],
         [
@@ -128,13 +128,13 @@
           },
           {
             "type": "text",
-            "value": " 含内容 + padding + border，调整 padding 不易导致整行溢出，栅格布局更直观。"
+            "value": " 含内容 + padding + border，加 padding 不容易把整行撑破，栅格更好算。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "很多项目全局写 "
+            "value": "很多项目一上来全局写 "
           },
           {
             "type": "code",
@@ -142,7 +142,7 @@
           },
           {
             "type": "text",
-            "value": "，避免各组件各自算宽度。"
+            "value": "，省得每个组件各自算宽度。"
           }
         ]
       ]
@@ -151,7 +151,7 @@
       "id": "q-flex",
       "navLabel": "Flex 居中",
       "question": "如何实现元素的水平垂直居中？",
-      "questionNote": "Flex 是一维居中首选；Grid 适合二维布局；传统方案可简要提及。",
+      "questionNote": "一维居中优先 Flex；二维对齐用 Grid；绝对定位 + translate 是旧兜底。",
       "answer": [
         [
           {
@@ -160,7 +160,7 @@
           },
           {
             "type": "text",
-            "value": "父容器具备确定高度时，Flex 三行属性即可实现居中；二维布局优先 Grid。"
+            "value": "父容器有确定高度时，Flex 三行属性就能居中；二维布局优先 Grid。"
           }
         ],
         [
@@ -210,7 +210,7 @@
           },
           {
             "type": "text",
-            "value": "；兼容旧代码时可补充说明。"
+            "value": "；维护旧代码时还能用。"
           }
         ],
         [
@@ -235,7 +235,7 @@
       "id": "q-vertical-center",
       "navLabel": "垂直居中",
       "question": "CSS 垂直居中有哪些常用写法？",
-      "questionNote": "是否已知宽高、是单行还是块级，决定用 Flex、Grid、绝对定位还是行高居中。",
+      "questionNote": "是否已知宽高、单行还是块，决定 Flex、Grid、绝对定位还是行高。",
       "answer": [
         [
           {
@@ -244,7 +244,7 @@
           },
           {
             "type": "text",
-            "value": "按是否已知宽高、是否单行，选 Flex/Grid/定位/行高。"
+            "value": "先看知不知道宽高、是不是单行，再在 Flex / Grid / 定位 / 行高里选。"
           }
         ],
         [
@@ -272,7 +272,7 @@
           },
           {
             "type": "text",
-            "value": " 一行居中。"
+            "value": " 一行搞定行列居中。"
           }
         ],
         [
@@ -286,7 +286,7 @@
           },
           {
             "type": "text",
-            "value": "；单行文本也可用相等上下 padding 或 line-height。"
+            "value": "；单行文本也能用上下相等 padding 或 line-height。"
           }
         ]
       ]
@@ -294,8 +294,8 @@
     {
       "id": "q-grid",
       "navLabel": "Grid 入门",
-      "question": "CSS Grid 与 Flex 如何分工？各自适用哪些场景？",
-      "questionNote": "Flex 负责一维主轴分配，Grid 负责二维行列；一维布局用 Flex，二维用 Grid。",
+      "question": "CSS Grid 与 Flex 怎么分工？各适合什么场景？",
+      "questionNote": "Flex 管一维主轴；Grid 管二维行列。一维用 Flex，二维用 Grid。",
       "answer": [
         [
           {
@@ -304,7 +304,7 @@
           },
           {
             "type": "text",
-            "value": "Flex 负责一维主轴分配，Grid 负责二维行列排布；按布局维度选型。"
+            "value": "Flex 管一维主轴怎么分空间，Grid 管二维行列怎么铺；按维度选就行。"
           }
         ],
         [
@@ -314,7 +314,7 @@
           },
           {
             "type": "text",
-            "value": "：一维主轴分配空间，适用于导航栏、按钮组、单行多列；"
+            "value": "：一维主轴分空间，导航栏、按钮组、单行多列够用；"
           },
           {
             "type": "strong",
@@ -322,7 +322,7 @@
           },
           {
             "type": "text",
-            "value": "：二维行列同时排列，适用于整页仪表盘、卡片矩阵与复杂对齐。"
+            "value": "：行列一起排，整页仪表盘、卡片矩阵、复杂对齐更合适。"
           }
         ],
         [
@@ -350,7 +350,7 @@
         [
           {
             "type": "text",
-            "value": "与 Flex 不同，Grid 子项可同时参与行、列两个方向的对齐。"
+            "value": "和 Flex 不同，Grid 子项可以同时在行、列两个方向对齐。"
           }
         ]
       ]
@@ -359,7 +359,7 @@
       "id": "q-two-three-column",
       "navLabel": "两栏三栏布局",
       "question": "如何实现右侧自适应的两栏、中间自适应的三栏布局？",
-      "questionNote": "定宽栏写死尺寸，自适应栏用 flex:1 或 1fr 吃掉剩余空间。",
+      "questionNote": "定宽栏写死尺寸，自适应栏用 flex:1 或 1fr 吃剩余空间。",
       "answer": [
         [
           {
@@ -368,7 +368,7 @@
           },
           {
             "type": "text",
-            "value": "固定侧用定宽，自适应侧吃剩余空间；Flex 或 Grid 最直。"
+            "value": "定宽侧写死宽度，自适应侧吃掉剩余空间；Flex 或 Grid 最直接。"
           }
         ],
         [
@@ -412,13 +412,13 @@
           },
           {
             "type": "text",
-            "value": "；注意中间内容 min-width 防撑破。"
+            "value": "；中间内容记得 min-width，防止被撑破。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、旧式 float + BFC 也可，维护成本更高，新项目优先 Flex/Grid。"
+            "value": "3、旧式 float + BFC 也能做，但维护更贵，新项目优先 Flex/Grid。"
           }
         ]
       ]
@@ -426,8 +426,8 @@
     {
       "id": "q-position",
       "navLabel": "position",
-      "question": "请说明 position 各取值的区别与定位参照物。",
-      "questionNote": "重点说明参照元素；祖先存在 transform 时 fixed 定位失效是常见陷阱。",
+      "question": "position 各取值差在哪？定位参照物分别是谁？",
+      "questionNote": "关键是参照谁；祖先有 transform 时，fixed 会相对该祖先定位。",
       "answer": [
         [
           {
@@ -436,7 +436,7 @@
           },
           {
             "type": "text",
-            "value": "各取值决定定位方式与参照物；祖先含 transform 时 fixed 失效是常见陷阱。"
+            "value": "取值决定怎么定位、相对谁；祖先带 transform 时 fixed 会相对该祖先，是常见坑。"
           }
         ],
         [
@@ -446,7 +446,7 @@
           },
           {
             "type": "text",
-            "value": "：默认，处于正常文档流；"
+            "value": "：默认，跟文档流走；"
           },
           {
             "type": "code",
@@ -490,7 +490,7 @@
           },
           {
             "type": "text",
-            "value": " 时，fixed 将相对该祖先定位，属常见陷阱。"
+            "value": " 时，fixed 将相对该祖先定位，是常见陷阱。"
           }
         ],
         [
@@ -500,7 +500,7 @@
           },
           {
             "type": "text",
-            "value": "：在滚动容器内吸顶/吸底，需指定 "
+            "value": "：在滚动容器里吸顶/吸底，要写 "
           },
           {
             "type": "code",
@@ -508,7 +508,7 @@
           },
           {
             "type": "text",
-            "value": " 等阈值；父级 "
+            "value": " 等；父级 "
           },
           {
             "type": "code",
@@ -516,7 +516,7 @@
           },
           {
             "type": "text",
-            "value": " 会导致失效。"
+            "value": " 会让它失效。"
           }
         ],
         [
@@ -540,8 +540,8 @@
     {
       "id": "q-bfc",
       "navLabel": "BFC",
-      "question": "什么是块级格式化上下文（BFC）？有哪些典型作用？",
-      "questionNote": "块级格式化上下文（BFC）是一块相对隔离的布局区域；其触发条件决定了能解决哪些布局问题。",
+      "question": "什么是 BFC？能解决哪些布局问题？",
+      "questionNote": "BFC 是一块相对隔离的布局区；怎么触发，决定能解决哪些布局问题。",
       "answer": [
         [
           {
@@ -550,7 +550,7 @@
           },
           {
             "type": "text",
-            "value": "块级格式化上下文（BFC）是一块区域，块级盒子在里面按规则竖直堆叠，和外面布局相对隔离。"
+            "value": "BFC（块级格式化上下文）是一块区域，块级盒子在里面按规则竖直堆叠，和外面布局相对隔离。"
           }
         ],
         [
@@ -576,7 +576,7 @@
           },
           {
             "type": "text",
-            "value": "（专门造 BFC）、"
+            "value": "（专门用来造 BFC）、"
           },
           {
             "type": "code",
@@ -634,7 +634,7 @@
           },
           {
             "type": "text",
-            "value": "普通流里浮动元素盖住后面块级盒子的内容区（清浮动场景）。"
+            "value": "浮动盖住后面普通流块级盒子内容区的情况（清浮动场景）。"
           }
         ]
       ]
@@ -643,7 +643,7 @@
       "id": "q-specificity",
       "navLabel": "选择器优先级",
       "question": "CSS 选择器优先级如何比较？",
-      "questionNote": "按 id、类/属性/伪类、标签/伪元素分档计数；同权重时以后出现的规则为准。",
+      "questionNote": "按 id、类/属性/伪类、标签/伪元素分档计数；同权看后出现的规则。",
       "answer": [
         [
           {
@@ -652,7 +652,7 @@
           },
           {
             "type": "text",
-            "value": "权重按「行内 style、id、类/属性/伪类、标签/伪元素」四档计数，同权重看谁后出现。"
+            "value": "权重按「行内 style、id、类/属性/伪类、标签/伪元素」四档计数，同权看谁写在后面。"
           }
         ],
         [
@@ -674,7 +674,7 @@
           },
           {
             "type": "text",
-            "value": " 可覆盖普通作者样式，但可维护性较差，宜仅在覆盖第三方样式时使用。"
+            "value": " 可覆盖普通作者样式，但不好维护，一般只在覆盖第三方样式时使用。"
           }
         ],
         [
@@ -684,7 +684,7 @@
           },
           {
             "type": "text",
-            "value": " 里选择器权重为 0，用来降低优先级；"
+            "value": " 里权重算 0，专门用来压低优先级；"
           },
           {
             "type": "code",
@@ -692,7 +692,7 @@
           },
           {
             "type": "text",
-            "value": " 取括号里最高权重。"
+            "value": " 取括号里最高的那档权重。"
           }
         ]
       ]
@@ -701,7 +701,7 @@
       "id": "q-stacking",
       "navLabel": "层叠上下文",
       "question": "什么是层叠上下文？它与 z-index 有何关系？",
-      "questionNote": "层叠上下文形成独立的叠放层级；子元素 z-index 无法超越外层更高上下文。",
+      "questionNote": "层叠上下文自成一层；子元素 z-index 跨不过外层更高的上下文。",
       "answer": [
         [
           {
@@ -718,7 +718,7 @@
           },
           {
             "type": "text",
-            "value": " 只和兄弟在同一上下文里比。"
+            "value": " 只跟同一上下文里的兄弟比。"
           }
         ],
         [
@@ -732,7 +732,7 @@
           },
           {
             "type": "text",
-            "value": " 也可能无法覆盖相邻组件，因"
+            "value": " 也可能盖不住旁边组件，因为"
           },
           {
             "type": "strong",
@@ -786,7 +786,7 @@
           },
           {
             "type": "text",
-            "value": " 等。遮罩无法完整覆盖时，优先检查父级是否新建了层叠上下文。"
+            "value": " 等。遮罩盖不全时，先查父级是不是新建了层叠上下文。"
           }
         ]
       ]
@@ -795,7 +795,7 @@
       "id": "q-hide-element",
       "navLabel": "隐藏元素",
       "question": "CSS 隐藏元素有哪些方式？有何差异？",
-      "questionNote": "display:none 不占位，visibility:hidden 占位但不可见，opacity:0 仍然能被点到。",
+      "questionNote": "display:none 不占位；visibility:hidden 占位不可见；opacity:0 还能被点到。",
       "answer": [
         [
           {
@@ -804,7 +804,7 @@
           },
           {
             "type": "text",
-            "value": "差异在是否占位、是否可点、是否被读屏/爬虫关注。"
+            "value": "差别在：占不占位、能不能点、读屏/爬虫还看不看得到。"
           }
         ],
         [
@@ -862,7 +862,7 @@
           },
           {
             "type": "text",
-            "value": " / 高 z-index 遮罩用于无障碍「可见隐藏」时要谨慎选型。"
+            "value": " / 高 z-index 遮罩做无障碍「视觉隐藏」时，要按场景选，别混用。"
           }
         ]
       ]
@@ -871,7 +871,7 @@
       "id": "q-text-ellipsis",
       "navLabel": "文本溢出省略",
       "question": "单行和多行文本溢出省略怎么写？",
-      "questionNote": "单行用 nowrap 配合 ellipsis，多行用 line-clamp 按行数裁切。",
+      "questionNote": "单行：nowrap + ellipsis；多行：-webkit-line-clamp 按行裁。",
       "answer": [
         [
           {
@@ -880,7 +880,7 @@
           },
           {
             "type": "text",
-            "value": "单行靠 nowrap + ellipsis；多行靠线盒裁剪（-webkit-line-clamp）或定高溢出。"
+            "value": "单行用 nowrap + ellipsis；多行用 -webkit-line-clamp 裁行，或定高溢出。"
           }
         ],
         [
@@ -922,7 +922,7 @@
         [
           {
             "type": "text",
-            "value": "3、注意容器要有限宽；与 flex 子项时可能要 "
+            "value": "3、容器要有限宽；当 flex 子项时往往还要 "
           },
           {
             "type": "code",
@@ -939,7 +939,7 @@
       "id": "q-anim-transition",
       "navLabel": "animation 与 transition",
       "question": "animation、transition、transform 分别做什么？",
-      "questionNote": "transform 改变形态，transition 补两态之间的过渡，animation 用关键帧做多段动画。",
+      "questionNote": "transform 改形态；transition 补两态过渡；animation 用关键帧做多段动画。",
       "answer": [
         [
           {
@@ -948,7 +948,7 @@
           },
           {
             "type": "text",
-            "value": "transform 描述形态变化；transition 在属性变化时过渡；animation 用关键帧做多段动画。"
+            "value": "transform 描述形态怎么变；transition 在属性变化时补过渡；animation 用关键帧做多段动画。"
           }
         ],
         [
@@ -962,7 +962,7 @@
           },
           {
             "type": "text",
-            "value": "：位移/缩放/旋转，常走合成层，利于性能。"
+            "value": "：位移/缩放/旋转，常走上合成层，对性能更友好。"
           }
         ],
         [
@@ -976,7 +976,7 @@
           },
           {
             "type": "text",
-            "value": "：适合 hover、状态切换的起终点过渡。"
+            "value": "：适合 hover、状态切换这种「起点到终点」。"
           }
         ],
         [
@@ -998,7 +998,7 @@
           },
           {
             "type": "text",
-            "value": "：循环、多关键帧、进场动效；可叠加二者。"
+            "value": "：循环、多关键帧、进场动效；也能和 transition 叠着用。"
           }
         ]
       ]
@@ -1007,8 +1007,18 @@
       "id": "q-dark-mode",
       "navLabel": "深色模式",
       "question": "如何通过 CSS 实现跟随系统的深色模式？",
-      "questionNote": "系统偏好用 media query，用户手动切换用 class；两套机制可并存，手动优先级更高。",
+      "questionNote": "系统偏好用媒体查询；手动切换用 class；两套可并存，手动优先。",
       "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "系统用 prefers-color-scheme；用户手动用根上 class 切变量；两套可并存，手动优先。"
+          }
+        ],
         [
           {
             "type": "text",
@@ -1020,7 +1030,7 @@
           },
           {
             "type": "text",
-            "value": " 写暗色变量覆盖，跟随系统偏好。"
+            "value": " 覆盖暗色变量，跟系统走。"
           }
         ],
         [
@@ -1042,7 +1052,7 @@
           },
           {
             "type": "text",
-            "value": " class 切换暗色；系统一套、用户手动一套，手动优先级更高。"
+            "value": " class 切暗色；系统一套、手动一套，手动优先。"
           }
         ],
         [
@@ -1056,7 +1066,7 @@
           },
           {
             "type": "text",
-            "value": " 让原生表单与滚动条跟系统 UI 协调；图片与图标注意对比度，参考 Web 内容无障碍指南（WCAG）。"
+            "value": " 让原生控件和滚动条跟系统 UI 协调；图片/图标注意对比度，对照 Web 内容无障碍指南（WCAG）。"
           }
         ],
         [
@@ -1081,7 +1091,7 @@
       "id": "q-mobile-viewport",
       "navLabel": "移动端 viewport",
       "question": "移动端 H5 的 viewport 与布局应注意哪些方面？",
-      "questionNote": "device-width、flex/rem，应避免整页 scale 缩放。",
+      "questionNote": "先对齐 device-width，再用 flex/rem；别靠整页 scale 硬缩放。",
       "answer": [
         [
           {
@@ -1090,7 +1100,7 @@
           },
           {
             "type": "text",
-            "value": "先对齐设备宽度，再结合弹性布局与 rem/vw，不宜仅依赖整页缩放。"
+            "value": "先对齐设备宽度，再用弹性布局和 rem/vw，别只靠整页 scale。"
           }
         ],
         [
@@ -1104,13 +1114,13 @@
           },
           {
             "type": "text",
-            "value": " 是基线。"
+            "value": " 是基本盘。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、布局采用 flex/grid，配合 "
+            "value": "2、布局用 flex/grid，配合 "
           },
           {
             "type": "code",
@@ -1118,13 +1128,13 @@
           },
           {
             "type": "text",
-            "value": "；750 设计稿可用 postcss-pxtorem 或 vw，注意最小字号限制。"
+            "value": "；750 稿可用 postcss-pxtorem 或 vw，留意最小字号。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、触摸目标宜 ≥ 44px。"
+            "value": "3、可点区域尽量 ≥ 44px。"
           }
         ]
       ]
@@ -1132,8 +1142,8 @@
     {
       "id": "q-rem-em",
       "navLabel": "rem / em / vw",
-      "question": "rem、em、vw/vh 分别适用于哪些场景？",
-      "questionNote": "rem 相对根字号建立体系；em 相对当前或父级字号，嵌套时易放大；vw/vh 相对视口，需注意移动端 100vh 问题。",
+      "question": "rem、em、vw/vh 各适合什么场景？",
+      "questionNote": "rem 跟根字号；em 跟当前/父级，嵌套易放大；vw/vh 跟视口，注意移动端 100vh。",
       "answer": [
         [
           {
@@ -1142,7 +1152,7 @@
           },
           {
             "type": "text",
-            "value": "rem 相对根字号建立体系；em 相对当前或父级字号，嵌套时易被层层放大；vw/vh 相对视口，移动端须注意 100vh 问题。"
+            "value": "rem 跟根字号建体系；em 跟当前或父级字号，嵌套容易层层放大；vw/vh 跟视口，移动端要小心 100vh。"
           }
         ],
         [
@@ -1160,7 +1170,7 @@
           },
           {
             "type": "text",
-            "value": " 的 font-size，修改一处可整体缩放，适用于间距与字号体系。"
+            "value": " 的 font-size，改一处就能整体缩放，适合间距和字号体系。"
           }
         ],
         [
@@ -1170,7 +1180,7 @@
           },
           {
             "type": "text",
-            "value": "：相对当前元素或父级 font-size，嵌套组件内 padding 会产生层层放大，需谨慎使用。"
+            "value": "：相对当前或父级 font-size，组件里 padding 嵌套会层层放大，尽量少用在多层嵌套上。"
           }
         ],
         [
@@ -1180,7 +1190,7 @@
           },
           {
             "type": "text",
-            "value": "：相对视口宽高，全屏 Hero、移动端 100vh 常见。"
+            "value": "：相对视口宽高，全屏 Hero、移动端 100vh 很常见。"
           }
         ],
         [
@@ -1219,7 +1229,7 @@
       "id": "q-mobile-1px",
       "navLabel": "移动端 1px",
       "question": "高清屏上 1px 边框显得偏粗，有哪些常见处理方式？",
-      "questionNote": "设备像素比（DPR）大于 1 时 CSS 1px 会占多个物理像素；伪元素配合 transform 缩放是经典方案。",
+      "questionNote": "设备像素比（DPR）>1 时，CSS 1px 会占多个物理像素；伪元素 + scale 是经典做法。",
       "answer": [
         [
           {
@@ -1228,7 +1238,7 @@
           },
           {
             "type": "text",
-            "value": "设备像素比（DPR）为 2/3 时，CSS 1px 对应多个物理像素，细线呈现为偏粗边框。"
+            "value": "DPR（设备像素比）为 2/3 时，CSS 1px 对应多个物理像素，细线呈现为偏粗边框。"
           }
         ],
         [
@@ -1258,13 +1268,13 @@
           },
           {
             "type": "text",
-            "value": " 按 DPR 调整。"
+            "value": " 再按 DPR 压细。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、设计允许时直接用 "
+            "value": "2、设计能接受时直接用 "
           },
           {
             "type": "code",
@@ -1278,7 +1288,7 @@
         [
           {
             "type": "text",
-            "value": "3、统一用分隔线组件封装，避免每个业务手写一套。"
+            "value": "3、抽成分隔线组件，别让每个业务手写一套。"
           }
         ],
         [
@@ -1303,7 +1313,7 @@
       "id": "q-safe-area",
       "navLabel": "安全区",
       "question": "刘海屏与底部主屏幕指示器应如何适配？",
-      "questionNote": "配合 env(safe-area-inset-*) 与 viewport-fit=cover 使用。",
+      "questionNote": "viewport-fit=cover 加上 env(safe-area-inset-*)，把内容顶进安全区。",
       "answer": [
         [
           {
@@ -1312,7 +1322,7 @@
           },
           {
             "type": "text",
-            "value": "用 CSS 环境变量把内容顶进系统标定的安全区内。"
+            "value": "用 CSS 环境变量把内容顶进系统标定的安全区。"
           }
         ],
         [
@@ -1334,7 +1344,7 @@
           },
           {
             "type": "text",
-            "value": " 给固定底栏留白。"
+            "value": "，给固定底栏留白。"
           }
         ]
       ]
@@ -1343,7 +1353,7 @@
       "id": "q-css-preprocessor",
       "navLabel": "Sass / Less",
       "question": "Sass、Less 这类预处理器解决了什么问题？与 CSS 变量如何分工？",
-      "questionNote": "预处理器管编译期复用，CSS 变量管运行时主题。",
+      "questionNote": "预处理器管编译期复用；CSS 自定义属性管运行时换主题。",
       "answer": [
         [
           {
@@ -1352,37 +1362,37 @@
           },
           {
             "type": "text",
-            "value": "预处理器补的是编译期能力：嵌套、变量、mixin、函数与模块拆分；运行时换主题要靠原生自定义属性。"
+            "value": "预处理器补的是编译期能力：嵌套、变量、mixin、函数、拆模块；运行时换主题还得靠原生自定义属性。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、复用：颜色、间距、断点收进变量文件，mixin 封装清除浮动、文本截断、媒体查询等重复写法，改一处全站生效。"
+            "value": "1、复用：颜色、间距、断点收进变量文件，mixin 包清浮动、截断、媒体查询等重复写法，改一处全站生效。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、组织：按模块拆文件并用 @use 引入，命名空间避免冲突；@import 会重复产出且已不推荐。"
+            "value": "2、组织：按模块拆文件，用 @use 引入、带命名空间；@import 会重复产出，已不推荐。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、分工：预处理变量编译后就不存在，无法运行时切换；换主题、换品牌色要在根节点用 CSS 自定义属性覆盖。"
+            "value": "3、分工：预处理变量编译完就没了，不能运行时切换；换主题/品牌色要在根上覆盖 CSS 自定义属性。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、取舍：原生嵌套、自定义属性与 :is 等能力已较完善，简单项目可以少引一层编译；复杂主题体系仍靠预处理器组织。"
+            "value": "4、取舍：原生嵌套、自定义属性、:is 已经够用时，简单项目可以少引一层编译；复杂主题体系仍用预处理器组织。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5、调试：开启 source map 映射回源文件；产物侧注意别把整份变量与未用 mixin 打进样式。"
+            "value": "5、调试：打开 source map 映射回源文件；产物别把整份变量和没用到的 mixin 打进去。"
           }
         ]
       ]
@@ -1391,7 +1401,7 @@
       "id": "q-tailwind",
       "navLabel": "Tailwind CSS",
       "question": "Tailwind CSS 原子化的取舍是什么？与组件库、预处理器如何共存？",
-      "questionNote": "原子化把「命名成本」换成「模板长度」，收益是数据一致性与产物体积。",
+      "questionNote": "原子化把「起类名」成本换成「模板更长」；换来刻度一致和更小产物。",
       "answer": [
         [
           {
@@ -1400,37 +1410,37 @@
           },
           {
             "type": "text",
-            "value": "原子类省去「给每个样式起类名」的成本，样式值统一来自配置；代价是模板变长、条件样式可读性下降。"
+            "value": "原子类省掉「每个样式起个类名」的成本，取值都来自配置；代价是模板变长，条件样式更难看。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、一致性：间距、色板、字号、断点定义在配置里，团队只能从既有刻度取值，视觉差异自然收敛。"
+            "value": "1、一致性：间距、色板、字号、断点写在配置里，只能从既有刻度取值，视觉差异自然收窄。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、产物：按需扫描模板生成用到的类，未用样式不进产物；比全量引入组件库样式更小，但要保证模板在扫描范围内。"
+            "value": "2、产物：按需扫描模板生成用到的类，没用的不进包；通常比全量组件库样式小，但模板必须在扫描范围内。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、共存：组件库负责复杂交互与无障碍，原子类负责布局、间距与细节覆盖；两者都会改样式时先约定优先级，避免互相打补丁。"
+            "value": "3、共存：组件库扛复杂交互和无障碍，原子类管布局、间距和细节覆盖；两边都会改样式时先约好优先级，别互相打补丁。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、陷阱：按变量动态拼接类名扫描不到，需改成固定映射表，或把这类类名显式列入白名单。"
+            "value": "4、陷阱：用变量动态拼类名会扫不到，要改成固定映射表，或把这类类名写进白名单。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5、取舍：条件复杂的样式回退到组件类或少量复用类，模板里保留可读结构；团队需要约定书写顺序与命名边界。"
+            "value": "5、取舍：条件很绕的样式退回组件类或少量复用类，模板里留可读结构；团队约定书写顺序和命名边界。"
           }
         ]
       ]

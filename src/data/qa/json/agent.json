@@ -2,13 +2,13 @@
   "slug": "agent",
   "title": "Agent",
   "documentTitle": "Agent",
-  "description": "补全与 Agent 差异、提问与上下文、审代码与防幻觉，以及规则文件、模型上下文协议（MCP）与权限边界。",
-  "lead": "「Agent」泛指编码助手：多步闭环、规则文件与上下文供给、审代码与防幻觉，以及权限与密钥边界。",
+  "description": "补全与 Agent 差异、提问与上下文、审代码与防幻觉，以及规则文件、MCP与权限边界。",
+  "lead": "「Agent」泛指编码助手：多步循环、规则文件与上下文供给、审代码与防幻觉，以及权限与密钥边界。",
   "items": [
     {
       "id": "q-ai-complete-vs-agent",
       "navLabel": "补全 vs Agent",
-      "question": "Tab / 行内补全与 Agent 模式有何区别？",
+      "question": "Tab / 行内补全与 Agent 模式差在哪？",
       "questionNote": "补全只预测下一小段；Agent 按目标改多个文件。",
       "answer": [
         [
@@ -80,7 +80,7 @@
     {
       "id": "q-ai-context",
       "navLabel": "上下文窗口",
-      "question": "在 Cursor / Codex / Claude Code 中，对话变长后为何会「遗忘」上下文？应如何控制上下文？",
+      "question": "在 Cursor / Codex / Claude Code 中，对话变长后为什么会「遗忘」上下文？上下文怎么控？",
       "questionNote": "窗口有上限，满了就截断；拆会话、带摘要、只附必要文件。",
       "answer": [
         [
@@ -326,7 +326,7 @@
     {
       "id": "q-ai-security",
       "navLabel": "安全与合规",
-      "question": "使用编码 Agent 编写公司业务代码时，应注意哪些安全要点？",
+      "question": "用编码 Agent 写公司业务代码时，要注意哪些安全点？",
       "questionNote": "外部内容当不可信；最小权限；高风险动作进沙箱或先确认。",
       "answer": [
         [
@@ -388,7 +388,7 @@
           },
           {
             "type": "text",
-            "value": "模型上下文协议（MCP）用统一接口接外部能力，不只靠训练记忆。三类：工具（tools）给模型调用，资源（resources）提供上下文，提示模板（prompts）给用户选用。"
+            "value": "模型上下文协议（MCP）用统一接口接外部能力，不只靠训练记忆。三类：工具（tools）给模型调用，资源（resources）供上下文，提示模板（prompts）给用户选用。"
           }
         ],
         [
@@ -435,8 +435,8 @@
     },
     {
       "id": "q-agent-loop",
-      "navLabel": "Agent 闭环",
-      "question": "什么是 Agent？与「聊天补全 / 单次 Tool Call」有何区别？",
+      "navLabel": "Agent 循环",
+      "question": "什么是 Agent？和「聊天补全 / 单次 Tool Call」差在哪？",
       "questionNote": "看结果、再决策、再行动，直到完成或停下。",
       "answer": [
         [
@@ -452,7 +452,7 @@
         [
           {
             "type": "text",
-            "value": "1、常见闭环（类 ReAct）：读状态 → 决定下一步 → 调工具或改文件 → 看输出，直到完成或人工停下。"
+            "value": "1、常见多步循环（类 ReAct）：读状态 → 决定下一步 → 调工具或改文件 → 看输出，直到完成或人工停下。"
           }
         ],
         [
@@ -472,7 +472,7 @@
     {
       "id": "q-agent-plan-mode",
       "navLabel": "Plan 再执行",
-      "question": "许多产品提供 Plan / Ask 模式后再切换至 Agent 执行，为何先规划更稳妥？",
+      "question": "许多产品提供 Plan / Ask 模式后再切到 Agent 执行，为什么先规划更稳？",
       "questionNote": "先只读出方案；人工确认后再改文件。",
       "answer": [
         [
@@ -518,7 +518,13 @@
           },
           {
             "type": "text",
-            "value": "设计用 MasterGo 或 Pixso 的 MCP 读画板，原型用 Axure 或墨刀的 MCP 读交互。需求与进度在需求平台，分支在代码仓库，自测在测试系统，构建流水线在云服务平台。约定放在仓库文档和规则里，重复环节写成技能（Skill）。"
+            "value": "设计用 MasterGo 或 Pixso 的 MCP 读画板，原型用 Axure 或墨刀的 MCP 读交互。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "需求与进度在需求平台，分支在代码仓库，自测在测试系统，构建流水线在云服务平台。约定放仓库文档和规则里，重复环节写成技能（Skill）。"
           }
         ],
         [
@@ -530,7 +536,7 @@
         [
           {
             "type": "text",
-            "value": "2、计划：先用 Plan 只读仓库，写出要改的文件、步骤、风险和验收。人工确认后再改代码，这一步不落文件。"
+            "value": "2、计划：先用 Plan 只读仓库，写出要改的文件、步骤、风险和验收。人工确认后再改代码，这一步先不改文件。"
           }
         ],
         [

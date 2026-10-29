@@ -24,7 +24,7 @@
         [
           {
             "type": "text",
-            "value": "1、相对纯 Web：可访问本机能力，但安装包大、内存开销高，轻量工具不宜硬上。"
+            "value": "1、相对纯 Web：可访问本机能力，但安装包大、内存开销高，轻量工具别硬上。"
           }
         ],
         [
@@ -268,7 +268,7 @@
           },
           {
             "type": "text",
-            "value": "创建窗口时的安全配置（多为默认值，不宜改动）。"
+            "value": "创建窗口时的安全配置（多为默认值，不要改动）。"
           }
         ],
         [
@@ -861,7 +861,7 @@
       "id": "q-electron-native-module",
       "navLabel": "原生模块",
       "question": "Electron 里使用 Node 原生模块要注意什么？为何常要 electron-rebuild？",
-      "questionNote": "应用二进制接口（ABI）须与当前 Electron 自带的 Node/Chromium 对齐；打包时记得 asarUnpack。",
+      "questionNote": "应用二进制接口（ABI）要与当前 Electron 自带的 Node/Chromium 对齐；打包时记得 asarUnpack。",
       "answer": [
         [
           {
@@ -878,7 +878,7 @@
           },
           {
             "type": "text",
-            "value": "）按 Node 应用二进制接口（ABI）编译；Electron 的 Node 常与系统 Node 不同，须对应当前 Electron 重编。"
+            "value": "）按 Node 应用二进制接口（ABI）编译；Electron 的 Node 常与系统 Node 不同，要对应当前 Electron 重编。"
           }
         ],
         [

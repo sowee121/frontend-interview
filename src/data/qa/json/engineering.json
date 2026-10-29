@@ -2,7 +2,7 @@
   "slug": "engineering",
   "title": "工程化",
   "documentTitle": "工程化",
-  "description": "模块化与 Vite/Webpack、摇树优化（Tree-shaking）、Monorepo、Git 协作、测试与静态部署，以及 husky、微前端与灰度回滚。",
+  "description": "模块化与 Vite/Webpack、Tree-shaking、Monorepo、Git 协作、测试与静态部署，以及 husky、微前端与灰度回滚。",
   "lead": "工程化三条线：构建与模块化的选型、协作与质量（Git、测试、门禁）、发布与部署（容器化、灰度与回滚）。",
   "items": [
     {
@@ -26,7 +26,7 @@
           },
           {
             "type": "text",
-            "value": "，运行时加载、导出是值的拷贝；ES 模块（ESM）用 "
+            "value": "，运行时加载、导出是值拷贝；ES 模块（ESM）用 "
           },
           {
             "type": "code",
@@ -34,7 +34,7 @@
           },
           {
             "type": "text",
-            "value": "，编译期静态分析，导入是实时绑定（live binding），更利于摇树。"
+            "value": "，静态分析、live binding，更利于摇树。"
           }
         ],
         [
@@ -146,7 +146,7 @@
           },
           {
             "type": "text",
-            "value": " 桥接；循环依赖宜靠拆分模块规避。"
+            "value": " 桥接；循环依赖靠拆分模块规避。"
           }
         ]
       ]
@@ -155,7 +155,7 @@
       "id": "q-vite-webpack",
       "navLabel": "Vite 和 Webpack",
       "question": "Vite 为何在开发模式下比 Webpack 更快？",
-      "questionNote": "开发态 ESM 按需编译 vs 整图打包；生产构建速度不宜绝对化比较。",
+      "questionNote": "开发态 ESM 按需编译 vs 整图打包；生产构建速度不要绝对化比较。",
       "answer": [
         [
           {
@@ -294,7 +294,7 @@
     {
       "id": "q-tree-shaking",
       "navLabel": "Tree-shaking",
-      "question": "什么是摇树优化（Tree-shaking）？",
+      "question": "什么是Tree-shaking？",
       "questionNote": "静态 ESM + 无副作用声明；lodash 整包导入是经典反例。",
       "answer": [
         [
@@ -456,7 +456,7 @@
           },
           {
             "type": "text",
-            "value": "线上栈能映射回源码，但应避免将完整 .map 公开挂载于静态目录。"
+            "value": "线上栈能映射回源码，但不要把完整 .map 公开挂到静态目录。"
           }
         ],
         [
@@ -484,7 +484,7 @@
         [
           {
             "type": "text",
-            "value": "2、浏览器侧应避免暴露生产 map URL；Nginx 对 "
+            "value": "2、浏览器侧避免暴露生产 map URL；Nginx 对 "
           },
           {
             "type": "code",
@@ -700,7 +700,7 @@
         [
           {
             "type": "text",
-            "value": "3、代价：持续集成（CI）须按受影响包增量执行，发布流设计不当易引发全量构建失败。"
+            "value": "3、代价：持续集成（CI）要按受影响包增量执行，发布流设计不当易引发全量构建失败。"
           }
         ]
       ]
@@ -960,13 +960,25 @@
           },
           {
             "type": "text",
-            "value": " 在同一文档内渲染，靠 JS 沙箱 + 样式隔离；Webpack 模块联邦（Module Federation）共享依赖、运行时远程加载。"
+            "value": " 同文档渲染，靠 JS 沙箱 + 样式隔离。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、qiankun：JS 用 Proxy 沙箱拦截 window，样式用 scoped 或 shadow DOM。生态成熟、文档多，但沙箱可被定时器与全局事件逃逸；子应用必须导出 "
+            "value": "Webpack 模块联邦（Module Federation）共享依赖、运行时远程加载。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、qiankun：JS 用 Proxy 沙箱拦截 window，样式用 scoped 或 shadow DOM；生态成熟，但定时器与全局事件仍可能逃逸。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "子应用必须导出 "
           },
           {
             "type": "code",
@@ -980,7 +992,13 @@
         [
           {
             "type": "text",
-            "value": "3、无界（wujie）：WebComponent 套 iframe 做原生隔离——JS 在 iframe 内运行、天然独立 window，DOM 再投影到 shadow DOM。隔离彻底、子应用几乎零改造，代价是多一层调试链路，弹窗挂载与路由同步都要额外适配。"
+            "value": "3、无界（wujie）：WebComponent 套 iframe——JS 在 iframe 内跑、天然独立 window，DOM 再投影到 shadow DOM。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "隔离彻底、子应用几乎零改造；代价是调试链路更长，弹窗挂载与路由同步都要额外适配。"
           }
         ],
         [

@@ -80,6 +80,13 @@ const LEAD_HINT = /(略读|口述|准备|深挖点|为主|转到|见「|即可|�
 /** 备注里的弱指令词：正文中的「X 即可」多为技术表述，只在 questionNote 里视为指引 */
 const NOTE_HINT = /(即可|无需|不必)/
 
+/**
+ * 一线大厂中高级表达：少用书面/公文词（「必须」保留；单独「须」拦截）
+ * 命中则应改成更顺口的说法，见 .cursor/rules/20-qa-json-content.mdc
+ */
+const STIFF_COPY =
+  /(?<![必需无])须(?!说明)|不宜|慎用|方可|收口|横切|落定|在途|亦可|(?<![因])从而|据此/
+
 /** 隐私词：真实公司/机构/业务名一律用通用系统词替代 */
 const PRIVACY_WORDS = ['菜鸟', '医院', '诊所', '医疗寄递', '字节跳动']
 
@@ -130,6 +137,15 @@ function lintFile(filePath) {
         id: '(chapter)',
         kind: 'editorial-hint',
         snippet: `${field} 含复习指引「${leadHit[0]}」，应改为知识主线`,
+      })
+    }
+    const stiffLead = t.match(STIFF_COPY)
+    if (stiffLead) {
+      issues.push({
+        file: base,
+        id: '(chapter)',
+        kind: 'stiff-copy',
+        snippet: `${field} 含书面词「${stiffLead[0]}」`,
       })
     }
   }
@@ -213,6 +229,15 @@ function lintFile(filePath) {
             snippet: `正文含备考口吻「${hint[0]}」，应改为知识陈述`,
           })
         }
+        const stiff = seg.value.match(STIFF_COPY)
+        if (stiff) {
+          issues.push({
+            file: base,
+            id: item.id,
+            kind: 'stiff-copy',
+            snippet: `正文含书面词「${stiff[0]}」，应改为中高级当面能说顺的说法`,
+          })
+        }
       }
     }
     if (item.questionNote) {
@@ -232,6 +257,15 @@ function lintFile(filePath) {
           id: item.id,
           kind: 'editorial-hint',
           snippet: `questionNote 含答题指引「${hint[0]}」，应改为知识陈述或删除`,
+        })
+      }
+      const stiff = item.questionNote.match(STIFF_COPY)
+      if (stiff) {
+        issues.push({
+          file: base,
+          id: item.id,
+          kind: 'stiff-copy',
+          snippet: `questionNote 含书面词「${stiff[0]}」，应改为更顺口的说法`,
         })
       }
     }

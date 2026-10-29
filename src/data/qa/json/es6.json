@@ -12,8 +12,8 @@
     {
       "id": "q-let-const-tdz",
       "navLabel": "let/const 与 TDZ",
-      "question": "var、let、const 有何区别？什么是暂时性死区（TDZ）？",
-      "questionNote": "var 是函数作用域且可重复声明；let/const 是块级作用域，声明前处于暂时性死区。",
+      "question": "var、let、const 差在哪？什么是暂时性死区（TDZ）？",
+      "questionNote": "var 函数作用域可重复声明；let/const 块级作用域，声明前处于暂时性死区（TDZ）。",
       "answer": [
         [
           {
@@ -22,7 +22,7 @@
           },
           {
             "type": "text",
-            "value": "var 函数作用域可重复声明；let/const 块级作用域，声明前处于暂时性死区（TDZ）。"
+            "value": "var 是函数作用域、可重复声明；let/const 是块级作用域，声明前卡在暂时性死区（TDZ）。"
           }
         ],
         [
@@ -155,7 +155,7 @@
       "id": "q-destructuring",
       "navLabel": "解构赋值",
       "question": "解构赋值支持哪些数据结构？剩余参数与展开运算符有何关系？",
-      "questionNote": "解构按模式从数组、对象或参数取值；剩余运算符收集，展开运算符是它的逆操作。",
+      "questionNote": "解构按模式从数组、对象或参数取值；剩余运算符收集，展开运算符是逆操作。",
       "answer": [
         [
           {
@@ -164,7 +164,7 @@
           },
           {
             "type": "text",
-            "value": "解构可从数组、对象、函数参数按模式取值；剩余运算符收集，展开运算符展开，互为逆操作。"
+            "value": "解构按模式从数组、对象、函数参数取值；剩余运算符收集，展开运算符展开，互为逆操作。"
           }
         ],
         [
@@ -220,7 +220,7 @@
         [
           {
             "type": "text",
-            "value": "3、函数参数解构 + 默认值常一起用，便于配置对象。"
+            "value": "3、函数参数解构 + 默认值常一起用，方便配置对象。"
           }
         ],
         [
@@ -254,7 +254,7 @@
     {
       "id": "q-arrow-and-params",
       "navLabel": "箭头函数与默认参数",
-      "question": "箭头函数与普通函数有何区别？默认参数应如何使用？",
+      "question": "箭头函数与普通函数差在哪？默认参数应如何使用？",
       "questionNote": "箭头函数没有自己的 this，也不能当构造函数；默认参数在未传或传入 undefined 时生效。",
       "answer": [
         [
@@ -264,7 +264,7 @@
           },
           {
             "type": "text",
-            "value": "箭头函数无自己的 this，不可作构造器；默认参数在形参列表声明，未传或传 undefined 时生效。"
+            "value": "箭头函数没有自己的 this，也不能当构造器；默认参数写在形参列表，未传或传 undefined 时生效。"
           }
         ],
         [
@@ -378,8 +378,8 @@
     {
       "id": "q-optional-nullish",
       "navLabel": "可选链与 ??（ES2020）",
-      "question": "可选链 ?.、空值合并 ?? 与逻辑或 || 有何区别？",
-      "questionNote": "?. 在 null 或 undefined 时短路；?? 只把这两个当成空值，0 和空字符串会保留。",
+      "question": "可选链 ?.、空值合并 ?? 与逻辑或 || 差在哪？",
+      "questionNote": "?. 在 null/undefined 时短路；?? 只把这两个当空，0 和空字符串会保留。",
       "answer": [
         [
           {
@@ -388,7 +388,7 @@
           },
           {
             "type": "text",
-            "value": "可选链 ?. 在 null/undefined 时短路；?? 仅对 null/undefined 取默认值，保留 0 与空字符串。"
+            "value": "可选链 ?.：遇到 null/undefined 就短路；?? 只对这两个取默认，0 和空字符串会留下。"
           }
         ],
         [
@@ -617,7 +617,7 @@
       "id": "q-symbol",
       "navLabel": "Symbol",
       "question": "Symbol 有什么用？",
-      "questionNote": "Symbol 是唯一的原始类型键，用来避免属性名冲突，并承载 iterator 等元协议。",
+      "questionNote": "Symbol 是唯一的原始类型键，用来避属性名冲突，并承载 iterator 等元协议。",
       "answer": [
         [
           {
@@ -626,7 +626,7 @@
           },
           {
             "type": "text",
-            "value": "Symbol 是唯一的原始类型键，避免对象属性名冲突，并支撑若干元协议。"
+            "value": "Symbol 是唯一的原始类型键：避开属性名冲突，也撑着若干元协议。"
           }
         ],
         [
@@ -654,7 +654,7 @@
         [
           {
             "type": "text",
-            "value": "2、作对象私有/半私有字段、库内部标记，减少被枚举覆盖。"
+            "value": "2、当对象私有/半私有字段、库内部标记，少被枚举覆盖。"
           }
         ],
         [
@@ -684,8 +684,8 @@
     {
       "id": "q-set-map",
       "navLabel": "Set 与 Map",
-      "question": "Set / Map 与数组、普通对象有何区别？分别适用于哪些场景？",
-      "questionNote": "Set 保证值唯一；Map 的键可以是任意类型，频繁增删时比普通对象合适。",
+      "question": "Set / Map 与数组、普通对象差在哪？各适合什么场景？",
+      "questionNote": "Set 值唯一；Map 键可以是任意类型，频繁增删时比普通对象合适。",
       "answer": [
         [
           {
@@ -694,7 +694,7 @@
           },
           {
             "type": "text",
-            "value": "Set 值唯一，适合去重；Map 键可为任意类型，频繁增删键值对时优于普通对象。"
+            "value": "Set 值唯一，适合去重；Map 键可以是任意类型，频繁增删时比普通对象合适。"
           }
         ],
         [
@@ -730,13 +730,13 @@
           },
           {
             "type": "text",
-            "value": "：键可为任意类型（含对象），有 size、可遍历；频繁增删键值对、键非字符串时优于普通对象。"
+            "value": "：键可为任意类型（含对象），有 size、可遍历；频繁增删、键不是字符串时比普通对象合适。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "对象当「哈希表」只有字符串/Symbol 键；Map 保持插入顺序，语义更清晰。"
+            "value": "普通对象当哈希表只有字符串/Symbol 键；Map 保插入顺序，语义更清楚。"
           }
         ]
       ]
@@ -744,8 +744,8 @@
     {
       "id": "q-weakmap",
       "navLabel": "WeakMap / WeakSet",
-      "question": "WeakMap 与 Map 有何区别？有哪些典型用途？",
-      "questionNote": "WeakMap 的键必须是对象且为弱引用，适合存放与该对象同生命周期的私有数据。",
+      "question": "WeakMap 与 Map 差在哪？有哪些典型用途？",
+      "questionNote": "WeakMap 的键必须是对象且为弱引用，适合跟对象同生命周期的私有数据。",
       "answer": [
         [
           {
@@ -754,21 +754,7 @@
           },
           {
             "type": "text",
-            "value": "WeakMap 键须为对象且弱引用，键无其他引用时可被回收；适合绑定对象生命周期的私有元数据。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "ES6 新增 "
-          },
-          {
-            "type": "strong",
-            "value": "Set 和 Map 数据结构"
-          },
-          {
-            "type": "text",
-            "value": "；Weak 系列与之配套。"
+            "value": "WeakMap 键必须是对象、且弱引用：键没别的引用时可被回收；适合跟对象同生命周期的私有元数据。"
           }
         ],
         [
@@ -786,7 +772,7 @@
           },
           {
             "type": "text",
-            "value": "；键被强引用，只要还留在 Map 里，对应对象就不会被垃圾回收。"
+            "value": "；键是强引用，还在 Map 里对象就不会被垃圾回收。"
           }
         ],
         [
@@ -808,17 +794,17 @@
           },
           {
             "type": "strong",
-            "value": "弱引用（Weak Reference）"
+            "value": "弱引用"
           },
           {
             "type": "text",
-            "value": "——键对象无其他引用时可被回收，对应条目自动消失。"
+            "value": "——键没别的引用时可被回收，对应条目自动消失。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "不可枚举，无 "
+            "value": "不可枚举，没有 "
           },
           {
             "type": "code",
@@ -834,7 +820,7 @@
           },
           {
             "type": "text",
-            "value": "，无法得知存活键列表。适合「跟对象生命周期绑定的私有元数据」。"
+            "value": "，看不到存活键列表。适合「跟对象同生共死的私有元数据」。"
           }
         ],
         [
@@ -844,7 +830,7 @@
           },
           {
             "type": "text",
-            "value": "：只能存对象（不能存原始值），同样不可遍历、无 "
+            "value": "：只能存对象，同样不可遍历、无 "
           },
           {
             "type": "code",
@@ -852,7 +838,7 @@
           },
           {
             "type": "text",
-            "value": "，用于标记「某对象是否已处理过」，如避免重复初始化。"
+            "value": "，用来标记「某对象是否已处理过」，避免重复初始化。"
           }
         ],
         [
@@ -874,8 +860,8 @@
     {
       "id": "q-copy",
       "navLabel": "深浅拷贝",
-      "question": "浅拷贝与深拷贝有何区别？有哪些常用实现方式？",
-      "questionNote": "浅拷贝只复制第一层引用，深拷贝才递归整棵结构；状态更新更常做不可变的浅拷贝。",
+      "question": "浅拷贝与深拷贝差在哪？有哪些常用实现方式？",
+      "questionNote": "浅拷贝只复制第一层引用；深拷贝递归整棵；状态更新更常做不可变浅拷贝。",
       "answer": [
         [
           {
@@ -884,7 +870,7 @@
           },
           {
             "type": "text",
-            "value": "浅拷贝仅复制第一层，深拷贝递归或序列化整棵结构；状态更新更常做不可变浅拷贝。"
+            "value": "浅拷贝只复制第一层；深拷贝递归或序列化整棵；状态更新更常做不可变浅拷贝。"
           }
         ],
         [
@@ -1026,8 +1012,8 @@
     {
       "id": "q-for-in-of",
       "navLabel": "for-in 与 for-of",
-      "question": "for...in 与 for...of 有何区别？",
-      "questionNote": "for...in 遍历可枚举的键名，含原型链上的；for...of 遍历可迭代对象的值。",
+      "question": "for...in 与 for...of 差在哪？",
+      "questionNote": "for...in 遍历可枚举键名（含原型链）；for...of 遍历可迭代对象的值。",
       "answer": [
         [
           {
@@ -1036,7 +1022,7 @@
           },
           {
             "type": "text",
-            "value": "for...in 遍历可枚举属性键名，for...of 消费可遍历结构的值；数组遍历优先 for...of。"
+            "value": "for...in 扫可枚举键名；for...of 消费可迭代结构的值；数组优先 for...of。"
           }
         ],
         [
@@ -1189,7 +1175,7 @@
       "id": "q-generator",
       "navLabel": "Generator",
       "question": "Generator 是什么？有哪些使用场景？",
-      "questionNote": "Generator 用 function* 和 yield 把函数暂停成可以逐步取出的迭代器。",
+      "questionNote": "Generator 用 function* 和 yield 把函数暂停成可逐步取出的迭代器。",
       "answer": [
         [
           {
@@ -1220,7 +1206,7 @@
         [
           {
             "type": "text",
-            "value": "1、同步写法表达异步流程曾是主流；现多用 async/await，底层仍与迭代协议相关。"
+            "value": "1、曾用同步写法表达异步；现在多用 async/await，底层仍和迭代协议有关。"
           }
         ],
         [
@@ -1256,8 +1242,8 @@
     {
       "id": "q-promise",
       "navLabel": "Promise 组合方法",
-      "question": "Promise.all / race / allSettled / any 有何区别？分别适用于哪些场景？",
-      "questionNote": "all 要全部成功，race 取最先落定的结果，allSettled 等全部结束，any 取最先成功。",
+      "question": "Promise.all / race / allSettled / any 差在哪？各适合什么场景？",
+      "questionNote": "all 要全成功；race 取最先确定的结果；allSettled 等全部结束；any 取最先成功。",
       "answer": [
         [
           {
@@ -1266,7 +1252,7 @@
           },
           {
             "type": "text",
-            "value": "Promise 状态落定后不变；all / race / allSettled / any 分别对应全成功、竞速、全落定、任一成功。"
+            "value": "Promise 一旦确定下来就不变；all / race / allSettled / any 分别是全成功、竞速、全部结束、任一成功。"
           }
         ],
         [
@@ -1296,7 +1282,7 @@
           },
           {
             "type": "text",
-            "value": "（已失败）；一旦 settled（已落定，成功或失败都算）就不再变。"
+            "value": "（已失败）；一旦 settled（已经确定，成功或失败都算）就不再变。"
           }
         ],
         [
@@ -1306,7 +1292,7 @@
           },
           {
             "type": "text",
-            "value": "：全部 fulfilled 才 resolve，任一项 rejected 立即 reject。适合多接口强依赖、缺一不可的场景，但一个失败整批失败，要有降级或重试策略。"
+            "value": "：全部 fulfilled 才成功，任一项 rejected 立刻失败。适合多接口强依赖；一个挂则整批挂，要有降级或重试。"
           }
         ],
         [
@@ -1392,7 +1378,7 @@
         [
           {
             "type": "code",
-            "value": "const ps = [Promise.resolve(1), Promise.reject('e')]\n\nPromise.all(ps)        // 一项失败则整体失败\nPromise.allSettled(ps) // 等全部落定，带 status\nPromise.race(ps)       // 谁先完成用谁（成功或失败）\nPromise.any(ps)        // 谁先成功用谁；全失败才 AggregateError"
+            "value": "const ps = [Promise.resolve(1), Promise.reject('e')]\n\nPromise.all(ps)        // 一项失败则整体失败\nPromise.allSettled(ps) // 等全部结束，带 status\nPromise.race(ps)       // 谁先完成用谁（成功或失败）\nPromise.any(ps)        // 谁先成功用谁；全失败才 AggregateError"
           }
         ]
       ]
@@ -1401,7 +1387,7 @@
       "id": "q-promise-chain-error",
       "navLabel": "Promise 链式与错误冒泡",
       "question": "Promise.then 为何能链式调用？错误如何沿链传播？",
-      "questionNote": "then 每次都返回新的 Promise，返回值或抛出的错误决定下一环成功还是失败。",
+      "questionNote": "then 每次返回新 Promise；返回值或抛错决定下一环成功还是失败。",
       "answer": [
         [
           {
@@ -1525,7 +1511,7 @@
       "id": "q-async-await",
       "navLabel": "async/await",
       "question": "async/await 与 Promise 有何关系？",
-      "questionNote": "async 函数的返回值一定包成 Promise，await 会暂停到这个 Promise 落定。",
+      "questionNote": "async 函数一定返回 Promise；await 会暂停到这个 Promise 确定下来。",
       "answer": [
         [
           {
@@ -1534,7 +1520,7 @@
           },
           {
             "type": "text",
-            "value": "async 函数一定返回 Promise，await 暂停执行直至 Promise 落定；错误用 try/catch 捕获。"
+            "value": "async 函数一定返回 Promise；await 暂停到 Promise 确定下来；错误用 try/catch 捕。"
           }
         ],
         [
@@ -1544,15 +1530,7 @@
           },
           {
             "type": "text",
-            "value": " 函数本质是 "
-          },
-          {
-            "type": "strong",
-            "value": "Generator 函数的语法糖"
-          },
-          {
-            "type": "text",
-            "value": "。"
+            "value": " 可以看成 Generator + 自动执行器的语法糖。"
           }
         ],
         [
@@ -1596,7 +1574,7 @@
         [
           {
             "type": "strong",
-            "value": "一定返回 Promise 对象"
+            "value": "一定返回 Promise"
           },
           {
             "type": "text",
@@ -1608,7 +1586,7 @@
           },
           {
             "type": "text",
-            "value": " 等价于 "
+            "value": " 等价 "
           },
           {
             "type": "code",
@@ -1616,7 +1594,7 @@
           },
           {
             "type": "text",
-            "value": "（resolve → fulfilled）；"
+            "value": "；"
           },
           {
             "type": "code",
@@ -1624,37 +1602,17 @@
           },
           {
             "type": "text",
-            "value": " 等价于 reject（→ rejected）。"
+            "value": " 等价 reject。"
           }
         ],
         [
-          {
-            "type": "text",
-            "value": "写 "
-          },
-          {
-            "type": "code",
-            "value": "await"
-          },
-          {
-            "type": "text",
-            "value": " 加在 Promise 前（如 "
-          },
           {
             "type": "code",
             "value": "await fetch(url)"
           },
           {
             "type": "text",
-            "value": "）：暂停当前 "
-          },
-          {
-            "type": "code",
-            "value": "async"
-          },
-          {
-            "type": "text",
-            "value": " 函数，后续代码进微任务；等该 Promise settled（fulfilled 得值，rejected 抛错）后再继续——本质是 Promise 语法糖。"
+            "value": "：暂停当前 async，后续进微任务；等 Promise settled（成功取值，失败抛错）再继续——本质是 Promise 语法糖。"
           }
         ],
         [
@@ -1668,7 +1626,7 @@
           },
           {
             "type": "text",
-            "value": " 包住 "
+            "value": " 包 "
           },
           {
             "type": "code",
@@ -1676,7 +1634,7 @@
           },
           {
             "type": "text",
-            "value": "，等价于链式 "
+            "value": "，等价链式 "
           },
           {
             "type": "code",
@@ -1684,19 +1642,15 @@
           },
           {
             "type": "text",
-            "value": " 接 rejected"
-          },
-          {
-            "type": "text",
             "value": "。并行用 "
           },
           {
             "type": "code",
-            "value": "const [a, b] = await Promise.all([p1, p2])"
+            "value": "await Promise.all([p1, p2])"
           },
           {
             "type": "text",
-            "value": "，避免循环里盲目串行 "
+            "value": "，别在循环里盲目串行 "
           },
           {
             "type": "code",
@@ -1704,7 +1658,7 @@
           },
           {
             "type": "text",
-            "value": " 拖慢总耗时（除非业务必须顺序）。"
+            "value": " 拖慢总耗时（除非业务必须按顺序）。"
           }
         ]
       ]
@@ -1713,7 +1667,7 @@
       "id": "q-cancel-promise",
       "navLabel": "中断 Promise",
       "question": "如何「中断」一个 Promise？和 AbortController 什么关系？",
-      "questionNote": "Promise 落定后不能撤销；取消要靠竞态丢掉结果，或把 AbortSignal 传给底层 IO。",
+      "questionNote": "Promise 确定后不能撤销；取消靠竞态丢掉结果，或把 AbortSignal 传给底层 IO。",
       "answer": [
         [
           {
@@ -1722,7 +1676,7 @@
           },
           {
             "type": "text",
-            "value": "Promise 本身不能从外部撤销已发起的工作；用竞态忽略结果，或让底层支持取消。"
+            "value": "Promise 本身不能从外面撤销已发起的工作；用竞态丢掉结果，或让底层支持取消。"
           }
         ],
         [
@@ -1772,7 +1726,7 @@
         [
           {
             "type": "text",
-            "value": "3、已 settled 的 Promise 无法变回 pending；取消的是后续副作用，不是时光机。"
+            "value": "3、已 settled 的 Promise 变不回 pending；取消的是后续副作用，不是时光机。"
           }
         ]
       ]
@@ -1780,8 +1734,8 @@
     {
       "id": "q-class",
       "navLabel": "Class 语法",
-      "question": "ES6 class 与构造函数有何区别？继承应如何编写？",
-      "questionNote": "class 仍基于原型；extends 接上原型链，派生类的构造函数里要先调用 super()。",
+      "question": "ES6 class 与构造函数差在哪？继承应如何编写？",
+      "questionNote": "class 仍基于原型；extends 接上原型链，派生类构造里要先调用 super()。",
       "answer": [
         [
           {
@@ -1790,7 +1744,7 @@
           },
           {
             "type": "text",
-            "value": "class 多为语法糖，底层仍基于原型；extends + super() 实现继承。"
+            "value": "class 多半是语法糖，底层仍是原型；extends + super() 做继承。"
           }
         ],
         [
@@ -1951,7 +1905,7 @@
       "id": "q-proxy-reflect",
       "navLabel": "Proxy 与 Reflect",
       "question": "Proxy 可拦截哪些操作？Reflect 有何用途？",
-      "questionNote": "Proxy 拦截对对象的操作，Reflect 按默认行为把调用转发给原对象并带上正确的 this。",
+      "questionNote": "Proxy 拦截对对象的操作；Reflect 按默认行为转发并带上正确的 this。",
       "answer": [
         [
           {
@@ -1960,7 +1914,7 @@
           },
           {
             "type": "text",
-            "value": "Proxy 在目标对象前架设拦截；Reflect 方法与默认操作一一对应，trap 内转发可保证 this 正确。"
+            "value": "Proxy 在目标前架拦截；Reflect 与默认操作一一对应，trap 里转发能保证 this 正确。"
           }
         ],
         [
@@ -2016,7 +1970,7 @@
         [
           {
             "type": "text",
-            "value": "须操作 "
+            "value": "要操作 "
           },
           {
             "type": "strong",
@@ -2090,7 +2044,7 @@
     {
       "id": "q-dynamic-import",
       "navLabel": "动态 import",
-      "question": "import() 动态导入返回什么？与静态 import 有何区别？",
+      "question": "import() 动态导入返回什么？与静态 import 差在哪？",
       "questionNote": "import() 返回模块命名空间的 Promise，适合按条件拆包；静态 import 更利于摇树。",
       "answer": [
         [
@@ -2100,7 +2054,7 @@
           },
           {
             "type": "text",
-            "value": "import() 返回 Promise，resolve 为模块命名空间；静态 import 利于摇树，动态 import 利于分包懒加载。"
+            "value": "import() 返回 Promise，resolve 成模块命名空间；静态 import 利于摇树，动态 import 利于分包懒加载。"
           }
         ],
         [

@@ -403,11 +403,14 @@ const CHAPTERS = {
   ai: {
     order: [
       'q-ai-chat-e2e',
+      'q-ai-conversation-id',
       'q-ai-stream-why-sse',
       'q-ai-stream-post-sse',
       'q-ai-stream-parse-pitfalls',
       'q-ai-stream-events-state',
+      'q-ai-reasoning-stream',
       'q-ai-stream-stop',
+      'q-ai-regenerate-context',
       'q-ai-stream-render-perf',
       'q-ai-markdown-stream',
       'q-ai-stream-idle',

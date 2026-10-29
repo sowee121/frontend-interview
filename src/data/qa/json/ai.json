@@ -2,8 +2,8 @@
   "slug": "ai",
   "title": "AI",
   "documentTitle": "AI",
-  "description": "从前端视角看流式对话：fetch 读流与常见坑、帧解析与状态、停止与渲染性能、Markdown 兜底与断流。",
-  "lead": "前端流式对话主线：通道选型与 fetch 读流 → 帧与状态 → 停止/性能/Markdown → 断流与兜底。",
+  "description": "前端流式对话：多会话、读流与帧状态、推理与正文分离、停止与重生、渲染性能与 Markdown、断流兜底。",
+  "lead": "前端流式对话主线：多会话隔离 → 读流与帧状态 → 推理/重生与上下文 → 停止/性能/Markdown → 断流与兜底。",
   "items": [
     {
       "id": "q-ai-chat-e2e",
@@ -152,9 +152,189 @@
       ]
     },
     {
+      "id": "q-ai-conversation-id",
+      "navLabel": "多会话与 Id",
+      "question": "产品里常有多个对话会话时，conversationId（会话 Id）前端要怎么用？和单轮 requestId 怎么区分？",
+      "questionNote": "会话列表按 conversationId 隔离消息；切会话 abort 或丢弃旧流；requestId 管单轮竞态，conversationId 管线程归属。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "真实产品几乎都是「会话列表 + 当前会话」；消息、流式累加、历史拉取都挂在 "
+          },
+          {
+            "type": "code",
+            "value": "conversationId"
+          },
+          {
+            "type": "text",
+            "value": " 上。"
+          },
+          {
+            "type": "code",
+            "value": "requestId"
+          },
+          {
+            "type": "text",
+            "value": " 只管「当前这一轮生成」的迟到回调，不能代替会话主键。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "两层 Id："
+          },
+          {
+            "type": "text",
+            "value": "会话层用 "
+          },
+          {
+            "type": "code",
+            "value": "conversationId"
+          },
+          {
+            "type": "text",
+            "value": "（也常叫 "
+          },
+          {
+            "type": "code",
+            "value": "chatId"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "sessionId"
+          },
+          {
+            "type": "text",
+            "value": "）标识一条独立线程；轮次层用 "
+          },
+          {
+            "type": "code",
+            "value": "requestId"
+          },
+          {
+            "type": "text",
+            "value": " 丢掉停止/切走后的旧 "
+          },
+          {
+            "type": "code",
+            "value": "delta"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "列表项只存摘要（标题、更新时间、最后一句），点进某会话再按 Id 拉 "
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "状态隔离："
+          },
+          {
+            "type": "text",
+            "value": "内存按 "
+          },
+          {
+            "type": "code",
+            "value": "conversationId → messages[]"
+          },
+          {
+            "type": "text",
+            "value": " 分桶；流式气泡只写回「开流时记下的那个 Id」。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "切会话先 "
+          },
+          {
+            "type": "code",
+            "value": "abort"
+          },
+          {
+            "type": "text",
+            "value": "（或后台继续生成但回调必须校验 Id），否则旧流会拼进新会话。发给模型的上下文只取当前会话的干净 "
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "新建与首响："
+          },
+          {
+            "type": "text",
+            "value": "点「新对话」可先用本地临时 Id；首条成功后换成服务端正式 "
+          },
+          {
+            "type": "code",
+            "value": "conversationId"
+          },
+          {
+            "type": "text",
+            "value": "，并刷新侧边列表。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "刷新后按 Id 拉历史；未落库的半截流式要么丢弃提示重试，要么本地草稿按 Id 暂存。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "// 开流时同时钉住会话与轮次\nconst conversationId = activeId\nconst myReq = ++requestId\nfunction onChunk(delta) {\n  if (myReq !== requestId) return // 已 stop / 已开新一轮\n  if (conversationId !== activeId) return // 用户已切走，勿写当前屏\n  // 写入 store[conversationId].messages 里对应助手气泡\n}"
+          }
+        ]
+      ]
+    },
+    {
       "id": "q-ai-stream-why-sse",
       "navLabel": "为何用 SSE",
-      "question": "实现 AI 流式对话时，为何常用 SSE 而非一次性 JSON 或 WebSocket？",
+      "question": "做 AI 流式对话时，为什么常用 SSE，而不是一次性 JSON 或 WebSocket？",
       "questionNote": "单向推 token、走 HTTP；注意代理缓冲会「憋流」；对比整包与 WebSocket。",
       "answer": [
         [
@@ -260,7 +440,7 @@
     {
       "id": "q-ai-stream-post-sse",
       "navLabel": "POST SSE",
-      "question": "带对话上下文的流式接口，前端为何通常不用原生 EventSource？应如何发起？",
+      "question": "带对话上下文的流式接口，前端为什么通常不用原生 EventSource？该怎么发？",
       "questionNote": "EventSource 仅 GET、难带自定义头；用 fetch POST（messages + stream: true）读 ReadableStream。",
       "answer": [
         [
@@ -681,7 +861,7 @@
       "id": "q-ai-stream-events-state",
       "navLabel": "流式帧与状态",
       "question": "常见大模型流式 SSE 帧长什么样？前端如何累加并避免双流错乱？",
-      "questionNote": "data 行是增量 JSON；拼 delta.content；用 requestId 丢弃停止/切会话后的旧回调。",
+      "questionNote": "拼 delta.content；requestId 防旧流；工程里常按 event 分发，meta 换正式会话 Id，done/error 收尾禁重连。",
       "answer": [
         [
           {
@@ -698,7 +878,7 @@
           },
           {
             "type": "text",
-            "value": " 后是一段增量 JSON；前端只往本轮助手拼接 "
+            "value": " 后是增量 JSON；本轮只拼 "
           },
           {
             "type": "code",
@@ -706,7 +886,7 @@
           },
           {
             "type": "text",
-            "value": "，停止或切会话后用 "
+            "value": "，用 "
           },
           {
             "type": "code",
@@ -714,7 +894,15 @@
           },
           {
             "type": "text",
-            "value": " 丢掉旧流。"
+            "value": " 丢掉旧流。工程里还常按 "
+          },
+          {
+            "type": "code",
+            "value": "event"
+          },
+          {
+            "type": "text",
+            "value": " 分发收尾。"
           }
         ],
         [
@@ -728,7 +916,7 @@
           },
           {
             "type": "text",
-            "value": "多数行是 "
+            "value": "直连模型时多见 "
           },
           {
             "type": "code",
@@ -736,7 +924,7 @@
           },
           {
             "type": "text",
-            "value": "；结束还有 "
+            "value": " 与 "
           },
           {
             "type": "code",
@@ -744,7 +932,7 @@
           },
           {
             "type": "text",
-            "value": "。JSON 里看 "
+            "value": "，JSON 里看 "
           },
           {
             "type": "code",
@@ -752,81 +940,11 @@
           },
           {
             "type": "text",
-            "value": " 与 "
+            "value": " / "
           },
           {
             "type": "code",
             "value": "finish_reason"
-          },
-          {
-            "type": "text",
-            "value": "（如 "
-          },
-          {
-            "type": "code",
-            "value": "stop"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "length"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "tool_calls"
-          },
-          {
-            "type": "text",
-            "value": "）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "strong",
-            "value": "增量："
-          },
-          {
-            "type": "text",
-            "value": "首包 "
-          },
-          {
-            "type": "code",
-            "value": "delta"
-          },
-          {
-            "type": "text",
-            "value": " 可含 "
-          },
-          {
-            "type": "code",
-            "value": "role: \"assistant\""
-          },
-          {
-            "type": "text",
-            "value": "；之后主要是 "
-          },
-          {
-            "type": "code",
-            "value": "delta.content"
-          },
-          {
-            "type": "text",
-            "value": " 字符串片段，直接 "
-          },
-          {
-            "type": "code",
-            "value": "content += text"
           },
           {
             "type": "text",
@@ -836,23 +954,59 @@
         [
           {
             "type": "text",
+            "value": "经 BFF 时常见 "
+          },
+          {
+            "type": "code",
+            "value": "event: meta|delta|done|error"
+          },
+          {
+            "type": "text",
+            "value": "：按事件名分支，而不是只啃一种 OpenAI 帧。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "增量与会话回填："
+          },
+          {
+            "type": "text",
+            "value": "正文片段拼进当前助手气泡；首包/"
+          },
+          {
+            "type": "code",
+            "value": "meta"
+          },
+          {
+            "type": "text",
+            "value": " 可带回正式 "
+          },
+          {
+            "type": "code",
+            "value": "conversationId"
+          },
+          {
+            "type": "text",
+            "value": "，用来替换本地临时 Id。"
+          }
+        ],
+        [
+          {
+            "type": "text",
             "value": "3、"
           },
           {
             "type": "strong",
-            "value": "状态："
+            "value": "状态与收尾："
           },
           {
             "type": "text",
-            "value": "先占位一条 "
-          },
-          {
-            "type": "code",
-            "value": "role: \"assistant\""
-          },
-          {
-            "type": "text",
-            "value": " 空气泡；收到 "
+            "value": "先占位空助手；见 "
           },
           {
             "type": "code",
@@ -860,15 +1014,37 @@
           },
           {
             "type": "text",
-            "value": " 后清 streaming。下一轮把完整 "
+            "value": " / "
           },
           {
             "type": "code",
-            "value": "messages"
+            "value": "done"
           },
           {
             "type": "text",
-            "value": " 再传回去。"
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "error"
+          },
+          {
+            "type": "text",
+            "value": " 后清 streaming，并主动结束连接，避免库自带断线重连。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "开流前若返回普通 JSON 错误（非 "
+          },
+          {
+            "type": "code",
+            "value": "text/event-stream"
+          },
+          {
+            "type": "text",
+            "value": "），按致命失败提示，不要当半截流去拼。"
           }
         ],
         [
@@ -882,7 +1058,7 @@
           },
           {
             "type": "text",
-            "value": "每次开流记一个递增 "
+            "value": "每次开流记递增 "
           },
           {
             "type": "code",
@@ -898,15 +1074,7 @@
           },
           {
             "type": "text",
-            "value": "，旧回调对不上就 return。用户 abort 时可能收不到 "
-          },
-          {
-            "type": "code",
-            "value": "[DONE]"
-          },
-          {
-            "type": "text",
-            "value": "。"
+            "value": "，旧回调对不上就 return。用户 abort 时可能收不到收尾帧。"
           }
         ],
         [
@@ -922,7 +1090,165 @@
         [
           {
             "type": "code",
-            "value": "// —— 服务端推过来的帧（示意）——\n// 增量：拼 delta.content\ndata: {\"choices\":[{\"delta\":{\"content\":\"你\"},\"finish_reason\":null}]}\n\n// 收尾：finish_reason 有值，content 常为空\ndata: {\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\"}]}\n\n// 流正常结束\ndata: [DONE]\n\n// —— 前端防双流错乱 ——\nlet requestId = 0 // 全局当前轮次\nlet content = '' // 当前助手气泡\nconst myId = ++requestId // 本轮开流时记下\n// 停止或切会话时：requestId++ ，旧轮 myId 全部失效\nfunction onChunk(json) {\n  if (myId !== requestId) return // 已不是本轮，丢弃迟到数据\n  content += json.choices?.[0]?.delta?.content ?? ''\n}"
+            "value": "// —— 直连模型帧（示意）——\ndata: {\"choices\":[{\"delta\":{\"content\":\"你\"},\"finish_reason\":null}]}\ndata: {\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\"}]}\ndata: [DONE]\n\n// —— BFF 归一化事件（示意）——\nevent: meta\ndata: {\"conversationId\":\"c_1\"}\n\nevent: delta\ndata: {\"type\":\"text\",\"content\":\"你\"}\n\nevent: done\ndata: {\"finishReason\":\"stop\"}\n\n// —— 防双流错乱 ——\nlet requestId = 0\nlet content = ''\nconst myId = ++requestId\nfunction onChunk(json) {\n  if (myId !== requestId) return\n  content += json.choices?.[0]?.delta?.content ?? json.content ?? ''\n}"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-ai-reasoning-stream",
+      "navLabel": "推理与正文",
+      "question": "流式对话里推理过程和最终回答一起推时，前端状态和下一轮上下文该怎么处理？",
+      "questionNote": "reasoning 与 text 分字段累加；UI 可折叠展示；回传 messages 只带干净正文。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "推理和正文是两路增量；展示可以并排，但发给模型的 "
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": " 只应带最终正文。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "双通道："
+          },
+          {
+            "type": "text",
+            "value": "常见是 "
+          },
+          {
+            "type": "code",
+            "value": "delta.type: reasoning | text"
+          },
+          {
+            "type": "text",
+            "value": "，或上游 "
+          },
+          {
+            "type": "code",
+            "value": "reasoning_content"
+          },
+          {
+            "type": "text",
+            "value": " 字段；也有模型把思考写进 "
+          },
+          {
+            "type": "code",
+            "value": "<think>"
+          },
+          {
+            "type": "text",
+            "value": " 一类标签。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "前端对当前助手维护 "
+          },
+          {
+            "type": "code",
+            "value": "reasoning"
+          },
+          {
+            "type": "text",
+            "value": " 与 "
+          },
+          {
+            "type": "code",
+            "value": "content"
+          },
+          {
+            "type": "text",
+            "value": " 两个字符串分别 "
+          },
+          {
+            "type": "code",
+            "value": "+="
+          },
+          {
+            "type": "text",
+            "value": "，不要糊成一段再事后拆。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "UI："
+          },
+          {
+            "type": "text",
+            "value": "推理区可折叠；流式中可自动展开，用户手动收起后不要再强行打开。正文区照常做 Markdown。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "回传："
+          },
+          {
+            "type": "text",
+            "value": "下一轮 "
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": " 只带 "
+          },
+          {
+            "type": "code",
+            "value": "role + content"
+          },
+          {
+            "type": "text",
+            "value": " 正文；推理、错误文案、停止占位都不要塞回去，否则费 token 还干扰回答。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "标签可能跨 chunk 半截，解析要留缓冲；字段通道和标签通道不要重复累加同一段思考。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "function onDelta(d) {\n  if (d.type === 'reasoning') reasoning += d.content\n  else content += d.content // text 或缺省当正文\n}\n// 下一轮只传：messages.map(m => ({ role: m.role, content: m.content }))"
           }
         ]
       ]
@@ -930,7 +1256,7 @@
     {
       "id": "q-ai-stream-stop",
       "navLabel": "停止生成",
-      "question": "AI 对话流式输出时，「停止生成」应如何实现？",
+      "question": "AI 对话流式输出时，「停止生成」该怎么做？",
       "questionNote": "前端 abort 断连接；保留半截；requestId 丢弃迟到 delta；卸载也要停。",
       "answer": [
         [
@@ -1028,7 +1354,7 @@
           },
           {
             "type": "text",
-            "value": "）——闭包易读到旧值；用 "
+            "value": "）——闭包容易读到旧值；用 "
           },
           {
             "type": "code",
@@ -1036,7 +1362,7 @@
           },
           {
             "type": "text",
-            "value": " 或 ref。用户取消常得到 "
+            "value": " 或 ref。用户取消常拿到 "
           },
           {
             "type": "code",
@@ -1044,7 +1370,7 @@
           },
           {
             "type": "text",
-            "value": "，与网络失败分开提示。路由离开/组件卸载同样要 abort。"
+            "value": "，和网络失败分开提示。路由离开或组件卸载同样要 abort。"
           }
         ],
         [
@@ -1066,9 +1392,143 @@
       ]
     },
     {
+      "id": "q-ai-regenerate-context",
+      "navLabel": "重生与上下文",
+      "question": "「重新生成」和组装下一轮 messages 时，前端要守哪些边界？和断流保留半截有何不同？",
+      "questionNote": "重生是截断后再开流，不追加 user；error/空失败/占位文案不进下一轮 messages。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "重生改的是历史再生成；断流只是停住展示。发给模型的 "
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": " 必须洗干净，别把报错和空壳助手喂回去。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "重生语义："
+          },
+          {
+            "type": "text",
+            "value": "本地先截断到触发那条 user（含它），丢掉其后的助手与更后消息，再开流；请求里可带 "
+          },
+          {
+            "type": "code",
+            "value": "regenerate"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "keepMessageCount"
+          },
+          {
+            "type": "text",
+            "value": " 与服务端对齐。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "不要再插第二条相同 user，否则上下文重复、气泡成对错乱。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "失败字段分离："
+          },
+          {
+            "type": "text",
+            "value": "业务错误放 "
+          },
+          {
+            "type": "code",
+            "value": "errorMessage"
+          },
+          {
+            "type": "text",
+            "value": "（红条）等独立字段，"
+          },
+          {
+            "type": "strong",
+            "value": "不要"
+          },
+          {
+            "type": "text",
+            "value": "写进 "
+          },
+          {
+            "type": "code",
+            "value": "assistant.content"
+          },
+          {
+            "type": "text",
+            "value": "；停止占位、空失败助手也不进下一轮。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "和断流的区别："
+          },
+          {
+            "type": "text",
+            "value": "断流：保留半截正文，提示用户决定是否重试；重试通常是带更新后的干净 "
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": " 新开一轮，勿在旧气泡上静默续写。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "重生：明确替换某一轮助手输出，历史以截断后的列表为准。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "// 重生：截断到 keepCount，再开流（示意）\nfunction regenerate(keepCount) {\n  messages = messages.slice(0, keepCount) // 含最后一条 user\n  // POST { messages, regenerate: true, keepMessageCount: keepCount, stream: true }\n}\n// 组装上下文：丢掉失败空助手、errorMessage、停止占位\nconst payload = messages\n  .filter((m) => m.role === 'user' || (m.role === 'assistant' && m.content))\n  .map((m) => ({ role: m.role, content: m.content }))"
+          }
+        ]
+      ]
+    },
+    {
       "id": "q-ai-stream-render-perf",
       "navLabel": "流式渲染性能",
-      "question": "AI 流式对话输出时，前端渲染性能与消息区自动滚动应如何处理？",
+      "question": "AI 流式对话输出时，前端渲染性能与消息区自动滚动该怎么处理？",
       "questionNote": "rAF 合并 delta.content；只更新当前气泡；重型 Markdown 延后；贴底才跟随，上滑不追。",
       "answer": [
         [
@@ -1215,7 +1675,7 @@
       "id": "q-ai-markdown-stream",
       "navLabel": "流式 Markdown",
       "question": "助手消息流式渲染 Markdown 时，如何选型？未闭合 fence 闪烁与渲染失败如何兜底？",
-      "questionNote": "增量友好方案；未闭合块先降级；失败纯文本；勿裸插模型 HTML。",
+      "questionNote": "未闭合 fence 先补闭合或末尾降纯文本；也可用 Streamdown；失败纯文本；勿裸插 HTML。",
       "answer": [
         [
           {
@@ -1224,15 +1684,15 @@
           },
           {
             "type": "text",
-            "value": "用支持增量更新的 Markdown 方案处理半截语法；流式期轻量渲染，闭合或 "
+            "value": "流式半截 md 会让解析器反复失败重绘；要么自己处理未闭合态，要么用 "
           },
           {
             "type": "code",
-            "value": "[DONE]"
+            "value": "Streamdown"
           },
           {
             "type": "text",
-            "value": " 后再加重；失败降纯文本。"
+            "value": " 这类增量方案。"
           }
         ],
         [
@@ -1242,11 +1702,11 @@
           },
           {
             "type": "strong",
-            "value": "为何不裸手写："
+            "value": "问题："
           },
           {
             "type": "text",
-            "value": "表格、围栏代码、公式、图语法在流式下常处于「未闭合」中间态，专用增量方案比每次整篇重解析更稳。"
+            "value": "围栏代码、表格、列表流式时常「开了头没收尾」；普通库整篇重解析，样式会闪、层级会乱。"
           }
         ],
         [
@@ -1256,11 +1716,47 @@
           },
           {
             "type": "strong",
-            "value": "闪烁："
+            "value": "自拼原理："
           },
           {
             "type": "text",
-            "value": "代码块/公式迟迟不闭合时，解析器会反复失败重绘。已闭合块先定稿；末尾未闭合段按纯文本或「进行中」区展示，闭合后再替换加重渲染。"
+            "value": "渲染前扫一遍：若 "
+          },
+          {
+            "type": "code",
+            "value": "```"
+          },
+          {
+            "type": "text",
+            "value": " 出现奇数次（或末尾落在 fence 内），临时补一行闭合 fence 再交给解析器，预览才像完整代码块。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "更稳的拆法：已闭合前缀正常 Markdown；末尾未闭合段先当纯文本或「生成中」展示，闭合后再并回加重渲染。列表/引用同理——缺闭合标记就先当纯文本尾。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "注意：补闭合只用于预览，"
+          },
+          {
+            "type": "strong",
+            "value": "不要"
+          },
+          {
+            "type": "text",
+            "value": "写进落库/"
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": " 原文，否则下一轮上下文会被污染。"
           }
         ],
         [
@@ -1270,35 +1766,19 @@
           },
           {
             "type": "strong",
-            "value": "降级："
+            "value": "选型："
           },
           {
             "type": "text",
-            "value": "单块超时或抛错时 Fallback 源码/纯文本，用错误边界兜住。多轮只把干净的 "
+            "value": "不想维护上述半截逻辑时，用 "
           },
           {
             "type": "code",
-            "value": "messages"
+            "value": "Streamdown"
           },
           {
             "type": "text",
-            "value": "（"
-          },
-          {
-            "type": "code",
-            "value": "role"
-          },
-          {
-            "type": "text",
-            "value": " + "
-          },
-          {
-            "type": "code",
-            "value": "content"
-          },
-          {
-            "type": "text",
-            "value": "）回传，去掉错误条与空气泡。"
+            "value": " 等面向流式的渲染扛未闭合预览样式。"
           }
         ],
         [
@@ -1308,11 +1788,11 @@
           },
           {
             "type": "strong",
-            "value": "安全："
+            "value": "降级与安全："
           },
           {
             "type": "text",
-            "value": "优先用组件自带消毒；不要把模型 HTML 直接塞进 DOM（如 React 的 "
+            "value": "单块失败 Fallback 源码/纯文本 + 错误边界。不要把模型 HTML 直接塞进 DOM（如 "
           },
           {
             "type": "code",
@@ -1320,7 +1800,7 @@
           },
           {
             "type": "text",
-            "value": "），防止跨站脚本攻击（XSS）。"
+            "value": "），防跨站脚本攻击（XSS）。"
           }
         ]
       ]
@@ -1328,8 +1808,8 @@
     {
       "id": "q-ai-stream-idle",
       "navLabel": "空闲与断流",
-      "question": "流式对话中空闲超时与断线重试应注意什么？",
-      "questionNote": "对话流不宜默认自动重连；已出字后保留半截；未收到 [DONE] 当断流。",
+      "question": "流式对话中空闲超时与断线重试要注意什么？",
+      "questionNote": "对话流不要默认自动重连；已出字后保留半截；未收到 [DONE] 当断流。",
       "answer": [
         [
           {

@@ -42,7 +42,7 @@
         [
           {
             "type": "text",
-            "value": "4、单页里关键是单向数据流与可测的状态层，不必纠结标签名。"
+            "value": "4、单页里关键是单向数据流与可测的状态层，不必死磕标签名。"
           }
         ]
       ]
@@ -229,7 +229,7 @@
       "id": "q-auth",
       "navLabel": "登录态",
       "question": "前端应如何管理登录态？访问令牌应存放在哪里？",
-      "questionNote": "HttpOnly Cookie 与内存 access + refresh 对比；401 单飞刷新队列用于并发场景。",
+      "questionNote": "HttpOnly Cookie 与「内存 access + refresh」对比；并发 401 用单飞刷新队列。",
       "answer": [
         [
           {
@@ -238,7 +238,7 @@
           },
           {
             "type": "text",
-            "value": "HttpOnly + Secure + SameSite 的 Cookie 由 "
+            "value": "优先用 HttpOnly + Secure + SameSite 的 Cookie（"
           },
           {
             "type": "code",
@@ -246,7 +246,7 @@
           },
           {
             "type": "text",
-            "value": " 种下，JavaScript 无法读取，可防范多数跨站脚本（XSS）窃取会话凭证。"
+            "value": " 种下），JS 读不到，多数 XSS 偷不到会话凭证。"
           }
         ],
         [
@@ -274,7 +274,7 @@
           },
           {
             "type": "text",
-            "value": "，需说明配合内容安全策略（CSP）、转义与依赖治理，并承担 XSS 导致令牌泄露的风险。"
+            "value": "，就要配合内容安全策略（CSP）、转义与依赖治理，并承担 XSS 导致令牌泄露的风险。"
           }
         ],
         [
@@ -355,7 +355,7 @@
       "id": "q-idempotent-submit",
       "navLabel": "防重复提交",
       "question": "表单提交应如何防止用户重复点击导致多次请求？",
-      "questionNote": "前端 disabled + 后端幂等；支付场景不宜仅用防抖以免丢失提交意图。",
+      "questionNote": "前端 disabled + 后端幂等；支付场景不要仅用防抖以免丢失提交意图。",
       "answer": [
         [
           {
@@ -364,7 +364,7 @@
           },
           {
             "type": "text",
-            "value": "前端提交锁配合服务端幂等，支付等场景不宜仅用防抖。"
+            "value": "前端提交锁配合服务端幂等，支付等场景不要仅用防抖。"
           }
         ],
         [
@@ -415,7 +415,7 @@
       "id": "q-upload-big",
       "navLabel": "大文件上传",
       "question": "大文件上传的断点续传应如何实现？",
-      "questionNote": "分片、并发窗口与秒传校验；进度展示与幂等重试。",
+      "questionNote": "分片 + 并发窗口 + 秒传；进度按服务端已确认字节算，失败片要幂等重试。",
       "answer": [
         [
           {
@@ -489,7 +489,7 @@
       "id": "q-fcp",
       "navLabel": "首屏优化",
       "question": "首屏加载偏慢时，应从哪些方面分析与优化？",
-      "questionNote": "资源、请求、体验三块；指标用首次内容绘制（FCP）/ 最大内容绘制（LCP）+ 真实用户监控（RUM）验证。",
+      "questionNote": "资源、请求、体验三块下手；用 FCP/LCP 和线上真实用户数据验收。",
       "answer": [
         [
           {
@@ -498,7 +498,7 @@
           },
           {
             "type": "text",
-            "value": "从资源体积、接口并行与感知体验三方面优化，并以 FCP/LCP 与真实用户监控（RUM）数据验收。"
+            "value": "分别砍资源体积、接口等待和「看起来慢」的感知；用 FCP、LCP 和线上真实数据验收，别只看本地一次刷新。"
           }
         ],
         [
@@ -585,7 +585,7 @@
       "id": "q-ssr-ssg",
       "navLabel": "SSR / SSG / CSR",
       "question": "SSR、SSG 与纯 CSR 分别适用于哪些场景？",
-      "questionNote": "客户端渲染（CSR）/静态站点生成（SSG）/服务端渲染（SSR）各一句场景 + 混合方案。",
+      "questionNote": "CSR / SSG / SSR 各适合什么；混合方案怎么补短板。",
       "answer": [
         [
           {
@@ -594,43 +594,43 @@
           },
           {
             "type": "text",
-            "value": "按首屏需求、搜索引擎优化（SEO）与交互复杂度在 CSR、SSG、SSR 间选型，亦可采用混合方案。"
+            "value": "看首屏、SEO、交互复杂度选渲染策略；很多站点会混合用，而不是三选一。"
           }
         ],
         [
           {
             "type": "strong",
-            "value": "客户端渲染（CSR）："
+            "value": "CSR（客户端渲染）："
           },
           {
             "type": "text",
-            "value": "单页应用（SPA），后台交互强；首屏与 SEO 弱。"
+            "value": "浏览器拉 JS 再画页面，中后台、强交互 SPA 常见；首屏和 SEO 偏弱。"
           }
         ],
         [
           {
             "type": "strong",
-            "value": "静态站点生成（SSG）："
+            "value": "SSG（构建时出 HTML）："
           },
           {
             "type": "text",
-            "value": "构建时出 HTML，文档站、营销页、博客最快。"
+            "value": "文档站、营销页、博客最快，内容相对稳定时很合适。"
           }
         ],
         [
           {
             "type": "strong",
-            "value": "服务端渲染（SSR）："
+            "value": "SSR（请求时拼 HTML）："
           },
           {
             "type": "text",
-            "value": "每请求拼 HTML，个性化首屏、强 SEO；要考虑服务器成本与缓存。"
+            "value": "个性化首屏、要 SEO 时常用；要算服务器成本和缓存策略。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "混合：增量静态再生成（ISR）、流式 SSR 先吐壳再填内容，改善首字节时间（TTFB）感知。"
+            "value": "混合：ISR 增量再生、流式 SSR 先出壳再填数据，都能改善首字节感知（TTFB）。"
           }
         ]
       ]
@@ -639,7 +639,7 @@
       "id": "q-error",
       "navLabel": "错误上报",
       "question": "线上错误应如何采集与上报？",
-      "questionNote": "全局 error/unhandledrejection + 框架钩子；上报体需带字段与安全的 source map。",
+      "questionNote": "全局 error / unhandledrejection + 框架钩子；上报带上下文，source map 鉴权上传。",
       "answer": [
         [
           {
@@ -647,12 +647,16 @@
             "value": "要点："
           },
           {
+            "type": "text",
+            "value": "全局监听 "
+          },
+          {
             "type": "code",
-            "value": "window.addEventListener('error', ...)"
+            "value": "error"
           },
           {
             "type": "text",
-            "value": " 捕获同步错误；"
+            "value": " 捕同步异常，"
           },
           {
             "type": "code",
@@ -660,7 +664,7 @@
           },
           {
             "type": "text",
-            "value": " 捕获未处理的 Promise 拒绝。"
+            "value": " 捕未处理的 Promise 拒绝。"
           }
         ],
         [
@@ -688,15 +692,7 @@
         [
           {
             "type": "text",
-            "value": "2、上报带 message、stack、路由、release/git SHA、脱敏用户 id、UA；source map 上传鉴权服务，避免将完整 "
-          },
-          {
-            "type": "code",
-            "value": ".map"
-          },
-          {
-            "type": "text",
-            "value": " 公开挂静态目录。"
+            "value": "2、上报带 message、stack、路由、release/git SHA、脱敏用户 id、UA；source map 鉴权上传，别把完整 .map 挂到公开静态目录。"
           }
         ],
         [
@@ -728,15 +724,7 @@
           },
           {
             "type": "text",
-            "value": "如只上报 5% 会话，或 "
-          },
-          {
-            "type": "code",
-            "value": "hash(userId) % 100 < 5"
-          },
-          {
-            "type": "text",
-            "value": "；关键转化全量、噪声事件采样。"
+            "value": "采样降量：例如只上报 5% 会话，或 hash(userId) % 100 < 5；关键转化全量，噪声事件采样。"
           }
         ],
         [
@@ -770,7 +758,7 @@
           },
           {
             "type": "text",
-            "value": " 可见比例 + 停留时长再上报，与真实用户监控（RUM）字段分开。"
+            "value": " 可见比例 + 停留时长再上报，与线上真实用户数据字段分开。"
           }
         ]
       ]
@@ -802,7 +790,7 @@
           },
           {
             "type": "text",
-            "value": "；优先 Markdown 渲染，慎用 "
+            "value": "；优先 Markdown 渲染，少用 "
           },
           {
             "type": "code",
@@ -833,7 +821,7 @@
       "id": "q-multi-tab-sync",
       "navLabel": "多标签页同步",
       "question": "同一用户打开多个标签页时，登录态或购物车应如何同步？",
-      "questionNote": "storage 事件或 BroadcastChannel；鉴权仍以服务端为准。",
+      "questionNote": "storage 事件或 BroadcastChannel 同步体验；鉴权结论仍以服务端为准。",
       "answer": [
         [
           {
@@ -1004,39 +992,15 @@
         [
           {
             "type": "text",
-            "value": "大模型对话常选 SSE：单向推 token 即可；但要 "
+            "value": "大模型对话常选 SSE：单向推 token 即可；若要用 POST 带上下文，改用 "
           },
           {
             "type": "code",
-            "value": "POST"
+            "value": "fetch + ReadableStream"
           },
           {
             "type": "text",
-            "value": " 带对话上下文时，用 "
-          },
-          {
-            "type": "code",
-            "value": "fetch"
-          },
-          {
-            "type": "text",
-            "value": " + "
-          },
-          {
-            "type": "code",
-            "value": "ReadableStream"
-          },
-          {
-            "type": "text",
-            "value": " 读流，而不是浏览器原生 "
-          },
-          {
-            "type": "code",
-            "value": "EventSource"
-          },
-          {
-            "type": "text",
-            "value": "。"
+            "value": " 读流，而不是浏览器原生 EventSource。"
           }
         ]
       ]
@@ -1054,7 +1018,7 @@
           },
           {
             "type": "text",
-            "value": "先定工程基线，再定横切能力，最后定可扩展层；先跑通一条业务链路再复制，别一上来就铺全。"
+            "value": "先定工程基线，再定通用能力，最后定可扩展层；先跑通一条业务链路再复制，别一上来就铺全。"
           }
         ],
         [
@@ -1078,7 +1042,7 @@
           },
           {
             "type": "strong",
-            "value": "横切"
+            "value": "通用"
           },
           {
             "type": "text",

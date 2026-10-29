@@ -8,8 +8,8 @@
     {
       "id": "q-dns",
       "navLabel": "DNS 与建连",
-      "question": "前端如何减少域名解析（DNS）与传输层安全（TLS）耗时？",
-      "questionNote": "资源提示（Resource Hints）是前端可直接落地的优化；HTTP/2 下域名分片反效果。",
+      "question": "前端如何减少 DNS 解析和 TLS 建连耗时？",
+      "questionNote": "dns-prefetch / preconnect 提前解析和建连；HTTP/2 下乱分域名往往更慢。",
       "answer": [
         [
           {
@@ -18,7 +18,7 @@
           },
           {
             "type": "text",
-            "value": "用 dns-prefetch 提前解析、preconnect 预建连；静态资源同站部署，避免 HTTP/2 下过度域名分片。"
+            "value": "用 dns-prefetch 提前解析、preconnect 预建连；静态资源尽量同站，避免 HTTP/2 下过度域名分片。"
           }
         ],
         [
@@ -36,7 +36,7 @@
           },
           {
             "type": "text",
-            "value": " 进一步完成 TCP + 传输层安全（TLS）握手。"
+            "value": " 进一步完成 TCP + TLS握手。"
           }
         ],
         [
@@ -48,7 +48,7 @@
         [
           {
             "type": "text",
-            "value": "HTTP/3 基于 QUIC（跑在 UDP 上）首包建连更快，属基础设施选型；页面侧把 "
+            "value": "HTTP/3 基于 QUIC（跑在 UDP 上）首包建连更快，多在网关/CDN 侧开启；页面侧把 "
           },
           {
             "type": "code",
@@ -65,7 +65,7 @@
       "id": "q-get-post",
       "navLabel": "GET 与 POST",
       "question": "GET 与 POST 有何区别？POST 是否一定更安全？",
-      "questionNote": "语义与缓存行为是重点；「POST 更安全」是常见误区。",
+      "questionNote": "语义与缓存行为是重点；HTTPS 下 POST 并不比 GET 更安全。",
       "answer": [
         [
           {
@@ -84,7 +84,7 @@
           },
           {
             "type": "text",
-            "value": "：语义宜幂等、读资源，参数通常在 URL query，可被缓存、书签、服务端日志记录。"
+            "value": "：语义上偏幂等、读资源，参数通常在 URL query，可被缓存、书签、服务端日志记录。"
           }
         ],
         [
@@ -100,7 +100,7 @@
         [
           {
             "type": "text",
-            "value": "HTTPS 下两者都加密传输；「POST 更安全」是误区。"
+            "value": "HTTPS 下两者都加密传输；「POST 更安全」不成立。"
           },
           {
             "type": "code",
@@ -108,13 +108,13 @@
           },
           {
             "type": "text",
-            "value": " 也能带 body 但不推荐，中间件与缓存行为不一致。"
+            "value": " 也能带 body，但中间件与缓存行为不一致，一般别这么用。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "敏感信息勿放 URL，防泄露在日志、Referer 与浏览器历史里。"
+            "value": "敏感信息不要放 URL，避免进日志、Referer 与浏览器历史。"
           }
         ]
       ]
@@ -123,7 +123,7 @@
       "id": "q-http-versions",
       "navLabel": "HTTP/1 和 2",
       "question": "HTTP/1.1 与 HTTP/2 的主要差异有哪些？",
-      "questionNote": "从资源加载角度：为何少做域名分片、雪碧图等历史优化。",
+      "questionNote": "HTTP/2 多路复用后，域名分片、雪碧图这类历史优化收益变小。",
       "answer": [
         [
           {
@@ -146,7 +146,7 @@
           },
           {
             "type": "text",
-            "value": "、合并资源绕瓶颈；文本头部重复传输多。"
+            "value": "、合并资源顶住；文本头部重复传输多。"
           }
         ],
         [
@@ -172,7 +172,7 @@
           },
           {
             "type": "text",
-            "value": "减少重复头；服务端推送（Server Push）自 Chrome 106 起已被移除支持，实践中不再使用。"
+            "value": "减少重复头；服务端推送（Server Push）自 Chrome 106 起已被移除支持，已不再使用。"
           }
         ],
         [
@@ -210,7 +210,7 @@
         [
           {
             "type": "text",
-            "value": "1、HTTP/1.1：同连接上响应须按请求顺序，常用多连接或管线化（坑多）缓解。"
+            "value": "1、HTTP/1.1：同连接上响应要按请求顺序，常用多连接或管线化（坑多）缓解。"
           }
         ],
         [
@@ -258,7 +258,7 @@
         [
           {
             "type": "text",
-            "value": "3、落地看内容分发网络（CDN）/ 网关是否开启；前端仍用 "
+            "value": "3、落地看CDN/ 网关是否开启；前端仍用 "
           },
           {
             "type": "code",
@@ -520,7 +520,7 @@
     {
       "id": "q-cdn",
       "navLabel": "CDN",
-      "question": "内容分发网络（CDN）是什么？静态资源为何常上 CDN？",
+      "question": "CDN是什么？静态资源为何常上 CDN？",
       "questionNote": "CDN 把静态资源放在边缘节点就近返回，内容更新靠更换带哈希的 URL。",
       "answer": [
         [
@@ -530,13 +530,13 @@
           },
           {
             "type": "text",
-            "value": "内容分发网络（CDN）把资源缓存在边缘节点，用户就近获取，降低延迟与源站压力。"
+            "value": "CDN把资源缓存在边缘节点，用户就近获取，降低延迟与源站压力。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、静态 JS/CSS/图、可缓存 API 响应适合；带用户隐私的动态接口慎共用边缘缓存。"
+            "value": "1、静态 JS/CSS/图、可缓存 API 响应适合；带用户隐私的动态接口不要共用边缘缓存。"
           }
         ],
         [
@@ -719,7 +719,7 @@
       "id": "q-preflight",
       "navLabel": "预检请求",
       "question": "哪些请求会触发 CORS 预检？",
-      "questionNote": "「所有 POST 都预检」是误区；看方法、头与 Content-Type 是否属于简单请求。",
+      "questionNote": "不是所有 POST 都会预检；看方法、头与 Content-Type 是否属于简单请求。",
       "answer": [
         [
           {
@@ -742,7 +742,13 @@
           },
           {
             "type": "text",
-            "value": "需要同时满足：方法是 GET/HEAD/POST；头都在安全清单内（不含自定义头）；"
+            "value": "需同时满足：方法是 GET/HEAD/POST；头都在安全清单内（不含自定义头）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "且 "
           },
           {
             "type": "code",
@@ -826,7 +832,7 @@
           },
           {
             "type": "text",
-            "value": " 把结果缓存起来，同时要带 "
+            "value": " 缓存结果，并带上 "
           },
           {
             "type": "code",
@@ -842,7 +848,13 @@
           },
           {
             "type": "text",
-            "value": "；网关对 OPTIONS 快速返回 204；开发期用代理保持同源可直接绕开。"
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "网关对 OPTIONS 快速返回 204；开发期用代理保持同源可直接绕开。"
           }
         ],
         [
@@ -886,11 +898,11 @@
           },
           {
             "type": "strong",
-            "value": "跨站脚本（XSS）："
+            "value": "跨站脚本（XSS）"
           },
           {
             "type": "text",
-            "value": "恶意脚本进入页面上下文，能读 "
+            "value": "：恶意脚本进入页面上下文，能读 "
           },
           {
             "type": "code",
@@ -898,39 +910,13 @@
           },
           {
             "type": "text",
-            "value": "（非 HttpOnly 时）、调接口、改 DOM。按注入方式可分三类："
-          },
-          {
-            "type": "strong",
-            "value": "存储型"
-          },
+            "value": "（非 HttpOnly 时）、调接口、改 DOM。"
+          }
+        ],
+        [
           {
             "type": "text",
-            "value": "（脏数据落库，所有访问者都中招）、"
-          },
-          {
-            "type": "strong",
-            "value": "反射型"
-          },
-          {
-            "type": "text",
-            "value": "（随请求参数回显）、"
-          },
-          {
-            "type": "strong",
-            "value": "DOM 型"
-          },
-          {
-            "type": "text",
-            "value": "（纯前端把不可信数据写进 "
-          },
-          {
-            "type": "code",
-            "value": "innerHTML"
-          },
-          {
-            "type": "text",
-            "value": " 等）。"
+            "value": "按注入方式分三类：存储型（脏数据落库）、反射型（随请求参数回显）、DOM 型（前端把不可信数据写进 innerHTML 等）。"
           }
         ],
         [
@@ -952,7 +938,7 @@
           },
           {
             "type": "text",
-            "value": "、慎用 "
+            "value": "、少用 "
           },
           {
             "type": "code",
@@ -1164,7 +1150,7 @@
         [
           {
             "type": "text",
-            "value": "3、敏感操作加二次确认、关键作校验来源，降低误点后果。"
+            "value": "3、敏感操作加二次确认，关键操作校验来源，降低误点后果。"
           }
         ]
       ]
@@ -1173,7 +1159,7 @@
       "id": "q-jwt-basics",
       "navLabel": "JWT 结构",
       "question": "JWT（JSON Web Token）三段分别是什么？前端使用时有哪些注意点？",
-      "questionNote": "payload 可解码但不可信；验签与吊销在服务端。前端关心存放位置与过期处理。",
+      "questionNote": "payload 可解码但不可信；验签与吊销在服务端。前端管存放位置与过期处理。",
       "answer": [
         [
           {
@@ -1220,7 +1206,7 @@
           },
           {
             "type": "text",
-            "value": "请求带上凭证、处理过期与刷新竞态；勿在前端存密钥，勿把可解码的 payload 当机密。"
+            "value": "请求带上凭证、处理过期与刷新竞态；不要在前端存密钥，也不要把可解码的 payload 当机密。"
           }
         ],
         [
@@ -1252,7 +1238,7 @@
           },
           {
             "type": "text",
-            "value": "拦截器须同时覆盖 HTTP 状态与约定业务码，统一清会话并单飞处理跳转。"
+            "value": "拦截器要同时覆盖 HTTP 状态与约定业务码，统一清会话并单飞处理跳转。"
           }
         ],
         [
@@ -1270,7 +1256,7 @@
         [
           {
             "type": "text",
-            "value": "3、区分「无权限」与「未登录」：前者 403 页，后者回登录，勿一律踢回首页。"
+            "value": "3、区分「无权限」与「未登录」：前者 403 页，后者回登录，不要一律踢回首页。"
           }
         ]
       ]

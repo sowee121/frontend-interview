@@ -8,8 +8,8 @@
     {
       "id": "q-null-undefined",
       "navLabel": "null 和 undefined",
-      "question": "null 与 undefined 有何区别？typeof null 为何返回 object？",
-      "questionNote": "undefined 表示缺省未赋值，null 表示显式置空；typeof null 因历史实现返回 \"object\"。",
+      "question": "null 与 undefined 差在哪？typeof null 为何返回 object？",
+      "questionNote": "undefined 是缺省未赋值；null 是主动置空；typeof null 返回 \"object\" 是历史包袱。",
       "answer": [
         [
           {
@@ -18,7 +18,7 @@
           },
           {
             "type": "text",
-            "value": "undefined 表示缺省未赋值，null 表示开发者主动置空；二者语义不同，判空与比较方式亦不同。"
+            "value": "undefined 表示缺省未赋值，null 表示主动置空；语义不同，判空和比较也别混着用。"
           }
         ],
         [
@@ -28,7 +28,7 @@
           },
           {
             "type": "text",
-            "value": " 出现于声明未初始化、对象缺 key、函数少传参等场景。"
+            "value": " 常见于声明未初始化、对象缺 key、函数少传参。"
           }
         ],
         [
@@ -38,7 +38,7 @@
           },
           {
             "type": "text",
-            "value": " 由开发者显式赋值，常用于释放引用或对接后端空值字段。"
+            "value": " 由开发者显式赋上，用来释放引用或对接后端空字段。"
           },
           {
             "type": "code",
@@ -54,7 +54,7 @@
           },
           {
             "type": "text",
-            "value": " 源于早期实现将空对象标签误用于 null，属历史遗留。"
+            "value": " 源于早期实现将空对象标签误用于 null，是历史遗留。"
           }
         ],
         [
@@ -68,7 +68,7 @@
           },
           {
             "type": "text",
-            "value": "；需同时覆盖 null 与 undefined 时，"
+            "value": "；要同时盖住 null 和 undefined 时，"
           },
           {
             "type": "code",
@@ -76,7 +76,7 @@
           },
           {
             "type": "text",
-            "value": " 是少数可接受的 "
+            "value": " 是少数还能接受的 "
           },
           {
             "type": "code",
@@ -84,7 +84,7 @@
           },
           {
             "type": "text",
-            "value": " 用法，其余比较宜用 "
+            "value": " 用法，其余比较多用 "
           },
           {
             "type": "code",
@@ -100,8 +100,8 @@
     {
       "id": "q-loose-equality",
       "navLabel": "== 与 ===",
-      "question": "== 与 === 有何区别？如何理解抽象相等比较（Abstract Equality Comparison）？",
-      "questionNote": "=== 在类型不同时直接为 false；== 会按抽象相等比较做隐式转换。",
+      "question": "== 与 === 差在哪？如何理解抽象相等比较（Abstract Equality Comparison）？",
+      "questionNote": "=== 类型不同直接 false；== 会走抽象相等比较做隐式转换。",
       "answer": [
         [
           {
@@ -132,7 +132,7 @@
           },
           {
             "type": "text",
-            "value": " 不做隐式转换，业务代码默认使用，可读性最佳。"
+            "value": " 不做隐式转换，业务代码默认用它，最好读。"
           }
         ],
         [
@@ -186,7 +186,7 @@
         [
           {
             "type": "text",
-            "value": "工程实践推荐 "
+            "value": "工程上默认 "
           },
           {
             "type": "code",
@@ -194,7 +194,7 @@
           },
           {
             "type": "text",
-            "value": " 配合显式 "
+            "value": "，需要转换就显式 "
           },
           {
             "type": "code",
@@ -210,7 +210,7 @@
           },
           {
             "type": "text",
-            "value": "，避免隐式转换带来的维护成本。"
+            "value": "，别靠隐式转换。"
           }
         ]
       ]
@@ -219,7 +219,7 @@
       "id": "q-type-detection",
       "navLabel": "类型判断",
       "question": "如何判断数组、null 与日期等类型？typeof 与 instanceof 是否足够？",
-      "questionNote": "typeof 适合原始类型，instanceof 沿原型链判断，对象的精确类型用 Object.prototype.toString。",
+      "questionNote": "原始类型看 typeof；原型链看 instanceof；对象精确类型用 Object.prototype.toString。",
       "answer": [
         [
           {
@@ -240,7 +240,7 @@
           },
           {
             "type": "text",
-            "value": " 依赖原型链；精确判断对象类型宜用 "
+            "value": " 依赖原型链；精确判断对象类型多用 "
           },
           {
             "type": "code",
@@ -258,7 +258,7 @@
           },
           {
             "type": "text",
-            "value": " 是历史 bug，null 需单独用 "
+            "value": " 是历史坑，null 要单独用 "
           },
           {
             "type": "code",
@@ -276,13 +276,13 @@
           },
           {
             "type": "text",
-            "value": " 跨 iframe 或修改 prototype 后可能失效，基本类型无意义。"
+            "value": " 跨 iframe 或改过 prototype 后可能失效，对基本类型没意义。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "更稳妥："
+            "value": "更稳："
           },
           {
             "type": "code",
@@ -298,7 +298,7 @@
           },
           {
             "type": "text",
-            "value": " 等；数组优先 "
+            "value": " 等；数组优先用 "
           },
           {
             "type": "code",
@@ -331,6 +331,7 @@
       "id": "q-float-precision",
       "navLabel": "浮点数精度",
       "question": "为何 0.1 + 0.2 !== 0.3？应如何规避浮点误差？",
+      "questionNote": "IEEE 754 双精度；金额用整数分或 decimal 库；比较用 Number.EPSILON 容差。",
       "answer": [
         [
           {
@@ -339,7 +340,7 @@
           },
           {
             "type": "text",
-            "value": "JavaScript 数字是 IEEE 754 双精度浮点，许多十进制小数无法精确表示，直接比较会出现误差。"
+            "value": "JS 数字是 IEEE 754 双精度浮点，很多十进制小数存不准，直接比会有误差。"
           }
         ],
         [
@@ -394,13 +395,13 @@
             "value": " 自身也会四舍五入，不能当作可靠的比较手段。"
           }
         ]
-      ],
-      "questionNote": "IEEE 754 双精度；金额用整数分或 decimal 库；比较用 Number.EPSILON 误差范围。"
+      ]
     },
     {
       "id": "q-hoisting",
       "navLabel": "变量与函数提升",
       "question": "var 与 function 声明的提升规则是怎样的？",
+      "questionNote": "var 提声明并初始化为 undefined；函数声明整体提升；暂时性死区（TDZ）是 let/const 的事。",
       "answer": [
         [
           {
@@ -439,7 +440,7 @@
           },
           {
             "type": "text",
-            "value": " 在编译阶段提升声明并初始化为 "
+            "value": " 编译期提声明并初始化成 "
           },
           {
             "type": "code",
@@ -447,13 +448,13 @@
           },
           {
             "type": "text",
-            "value": "，同作用域可重复声明。"
+            "value": "，同作用域还能重复声明。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "函数声明整体提升，可先于声明调用；函数表达式仅提升变量名，赋值为 "
+            "value": "函数声明整体提升，可以写在声明前面调用；函数表达式只提升变量名，赋成值之前还是 "
           },
           {
             "type": "code",
@@ -461,13 +462,13 @@
           },
           {
             "type": "text",
-            "value": " 直至赋值完成。"
+            "value": "。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "工程建议：新代码用 "
+            "value": "新代码用 "
           },
           {
             "type": "code",
@@ -483,7 +484,7 @@
           },
           {
             "type": "text",
-            "value": " 与函数声明，少用 "
+            "value": " 和函数声明，少碰 "
           },
           {
             "type": "code",
@@ -491,17 +492,16 @@
           },
           {
             "type": "text",
-            "value": "，避免提升带来的隐式行为。"
+            "value": "，少踩提升的隐式行为。"
           }
         ]
-      ],
-      "questionNote": "提升只看声明形式：var 提声明并初始化为 undefined，函数声明整体提升；TDZ 属 let/const。"
+      ]
     },
     {
       "id": "q-execution-context",
       "navLabel": "执行上下文与作用域链",
       "question": "执行上下文、作用域链与原型链分别承担什么职责？",
-      "questionNote": "执行上下文管理运行环境，作用域链解析标识符，原型链解析对象属性。",
+      "questionNote": "执行上下文管运行环境；作用域链解析标识符；原型链解析对象属性。",
       "answer": [
         [
           {
@@ -510,7 +510,7 @@
           },
           {
             "type": "text",
-            "value": "执行上下文管理运行环境，作用域链解析标识符，原型链解析对象属性；三者职责不同，不宜混用。"
+            "value": "执行上下文管运行环境，作用域链找标识符，原型链找对象属性；三件事别混。"
           }
         ],
         [
@@ -573,7 +573,7 @@
       "id": "q-closure",
       "navLabel": "闭包",
       "question": "什么是闭包？有哪些典型应用场景？",
-      "questionNote": "内层函数持有外层词法环境；外层执行完后，只要内层还被引用，那些变量就不会被回收。",
+      "questionNote": "内层函数握着外层词法环境；外层跑完后，只要内层还在，那些变量就不会被回收。",
       "answer": [
         [
           {
@@ -582,7 +582,7 @@
           },
           {
             "type": "text",
-            "value": "内层函数引用外层词法环境中的变量；外层执行完毕后，内层仍被持有时该环境不会被回收。"
+            "value": "内层函数引用外层词法环境里的变量；外层跑完了，只要内层还被握着，那块环境就不会被回收。"
           }
         ],
         [
@@ -598,13 +598,13 @@
         [
           {
             "type": "text",
-            "value": "代价是延长引用链：大对象、DOM 节点、接口数据若一直被闭包引用，会推迟垃圾回收。"
+            "value": "代价是拉长引用链：大对象、DOM、接口数据一直被闭包握着，会推迟垃圾回收。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "组件卸载时清定时器、解绑监听、置空引用，是单页应用（SPA）防内存泄漏的基本操作。"
+            "value": "组件卸载时清定时器、解绑监听、置空引用，是SPA防内存泄漏的基本操作。"
           }
         ]
       ]
@@ -613,7 +613,7 @@
       "id": "q-new",
       "navLabel": "new 做了什么",
       "question": "使用 new 调用构造函数时，运行时依次执行哪些步骤？",
-      "questionNote": "new 先创建对象并连上 prototype，再以它为 this 执行构造函数；若返回对象则用该对象作结果。",
+      "questionNote": "先建对象并挂上 prototype，再以它为 this 跑构造；若返回对象则用该返回值。",
       "answer": [
         [
           {
@@ -622,7 +622,7 @@
           },
           {
             "type": "text",
-            "value": "new 依次创建对象、绑定 this 执行构造体、按返回值规则决定实例；class 构造器须用 new 调用。"
+            "value": "new 先建对象、绑 this 跑构造体，再按返回值决定实例；class 构造器必须用 new。"
           }
         ],
         [
@@ -650,7 +650,7 @@
         [
           {
             "type": "text",
-            "value": "2、以该对象为 "
+            "value": "2、以这个对象为 "
           },
           {
             "type": "code",
@@ -664,7 +664,7 @@
         [
           {
             "type": "text",
-            "value": "3、若构造函数返回对象类型，则用它作为结果；否则返回步骤 1 的实例。"
+            "value": "3、构造函数若返回对象，就用它；否则返回步骤 1 的实例。"
           }
         ],
         [
@@ -698,8 +698,8 @@
     {
       "id": "q-proto",
       "navLabel": "原型链",
-      "question": "请说明 JavaScript 中的原型链查找机制。",
-      "questionNote": "读属性时先查自身，没有就沿 [[Prototype]] 向上，直到 null。",
+      "question": "JavaScript 原型链查找机制是怎样的？",
+      "questionNote": "读属性先看自身，没有就沿 [[Prototype]] 往上，直到 null。",
       "answer": [
         [
           {
@@ -768,7 +768,7 @@
         [
           {
             "type": "text",
-            "value": "生产代码避免运行时改原型（会拖慢属性访问）：创建时就指定，用 "
+            "value": "生产里别运行时改原型（拖慢属性访问）：创建时用 "
           },
           {
             "type": "code",
@@ -798,7 +798,7 @@
         [
           {
             "type": "text",
-            "value": "不宜与作用域链混淆：作用域链解析标识符，原型链解析对象属性。"
+            "value": "别跟作用域链混：作用域链找标识符，原型链找对象属性。"
           }
         ]
       ]
@@ -806,8 +806,8 @@
     {
       "id": "q-call-bind",
       "navLabel": "call/apply/bind",
-      "question": "call、apply、bind 有何区别？各自适用于哪些场景？",
-      "questionNote": "call 和 apply 会立刻调用，bind 返回一个已经绑定 this 的新函数。",
+      "question": "call、apply、bind 差在哪？各适合什么场景？",
+      "questionNote": "call/apply 立刻调用；bind 返回已绑好 this 的新函数。",
       "answer": [
         [
           {
@@ -816,7 +816,7 @@
           },
           {
             "type": "text",
-            "value": "三者均用于显式指定函数 this；call/apply 立即执行，bind 返回绑定后的新函数。"
+            "value": "三者都是显式指定 this；call/apply 立刻执行，bind 返回绑好的新函数。"
           }
         ],
         [
@@ -826,7 +826,7 @@
           },
           {
             "type": "text",
-            "value": "：立即执行，参数逐个传入。"
+            "value": "：立刻执行，参数一个个传。"
           }
         ],
         [
@@ -925,7 +925,7 @@
       "id": "q-this",
       "navLabel": "this 指向",
       "question": "函数中的 this 由什么因素决定？",
-      "questionNote": "普通函数的 this 由调用方式决定，箭头函数使用的是定义处外层的 this。",
+      "questionNote": "普通函数 this 看怎么调用；箭头函数用定义处外层的 this。",
       "answer": [
         [
           {
@@ -934,7 +934,7 @@
           },
           {
             "type": "text",
-            "value": "普通函数 this 由调用方式决定；箭头函数继承定义时所在词法作用域的 this，不可被 call/apply/bind 修改。"
+            "value": "普通函数 this 看怎么调；箭头函数拿定义处外层的 this，call/apply/bind 改不了。"
           }
         ],
         [
@@ -1075,7 +1075,7 @@
       "id": "q-eventloop",
       "navLabel": "事件循环",
       "question": "宏任务与微任务的执行顺序是怎样的？",
-      "questionNote": "每一轮先执行当前宏任务里的同步代码，再清空微任务队列，然后才取下一个宏任务。",
+      "questionNote": "每轮先跑当前宏任务里的同步代码，再清空微任务，然后取下一个宏任务。",
       "answer": [
         [
           {
@@ -1084,7 +1084,7 @@
           },
           {
             "type": "text",
-            "value": "每轮事件循环先执行当前宏任务同步代码，再清空微任务队列，然后取下一个宏任务。"
+            "value": "每轮事件循环：先跑当前宏任务里的同步代码，再清空微任务队列，然后取下一个宏任务。"
           }
         ],
         [
@@ -1152,7 +1152,7 @@
           },
           {
             "type": "text",
-            "value": " 等，故 "
+            "value": " 等，所以 "
           },
           {
             "type": "code",
@@ -1207,7 +1207,7 @@
       "id": "q-async-try-catch",
       "navLabel": "异步错误捕获",
       "question": "try/catch 能否捕获异步错误？正确做法是什么？",
-      "questionNote": "同步 try/catch 抓不到已离开当前调用栈的异步错误，要在 await 或 Promise 链上捕获。",
+      "questionNote": "同步 try/catch 抓不住已离开当前调用栈的异步错误；要在 await 或 Promise 链上捕。",
       "answer": [
         [
           {
@@ -1216,7 +1216,7 @@
           },
           {
             "type": "text",
-            "value": "同步 try/catch 抓不到已离开当前调用栈的异步错误；要在 Promise 链或 async 函数内捕获。"
+            "value": "同步 try/catch 抓不住已经离开当前调用栈的异步错误；要在 Promise 链或 async 里捕。"
           }
         ],
         [
@@ -1274,7 +1274,7 @@
         [
           {
             "type": "text",
-            "value": "3、事件回调里的抛错需在回调内处理，或统一包一层错误边界/上报。"
+            "value": "3、事件回调里的抛错要在回调内处理，或统一包错误边界/上报。"
           }
         ]
       ]
@@ -1282,8 +1282,8 @@
     {
       "id": "q-debounce",
       "navLabel": "防抖与节流",
-      "question": "防抖与节流有何区别？分别适用于哪些场景？",
-      "questionNote": "防抖在触发停顿之后执行一次，节流则保证一个时间窗里最多执行一次。",
+      "question": "防抖与节流差在哪？各适合什么场景？",
+      "questionNote": "防抖：停顿后再执行一次；节流：时间窗内最多执行一次。",
       "answer": [
         [
           {
@@ -1292,7 +1292,7 @@
           },
           {
             "type": "text",
-            "value": "防抖在停顿后执行，节流在固定窗口内最多执行一次；前者减请求，后者保频率。"
+            "value": "防抖是停顿后再跑；节流是固定窗口里最多跑一次。前者少请求，后者保频率。"
           }
         ],
         [
@@ -1373,7 +1373,7 @@
       "id": "q-event-delegation",
       "navLabel": "事件委托",
       "question": "什么是事件委托？适用于哪些场景？",
-      "questionNote": "监听放在父节点上，靠冒泡和 event.target 处理子节点，后插入的子元素不用重新绑定。",
+      "questionNote": "监听挂在父节点，靠冒泡和 event.target 处理子节点；后插入的子元素不用重绑。",
       "answer": [
         [
           {
@@ -1382,7 +1382,7 @@
           },
           {
             "type": "text",
-            "value": "将监听绑在父节点，利用冒泡统一处理子节点事件，减少监听器数量并支持动态子元素。"
+            "value": "监听绑在父节点，靠冒泡统一处理子节点事件：监听更少，动态子元素也能覆盖。"
           }
         ],
         [
@@ -1420,8 +1420,8 @@
     {
       "id": "q-target-current",
       "navLabel": "target 与 currentTarget",
-      "question": "事件对象里 target 和 currentTarget 有何区别？",
-      "questionNote": "target 是实际触发事件的节点，currentTarget 是当前正在执行的监听所在的节点。",
+      "question": "事件对象里 target 和 currentTarget 差在哪？",
+      "questionNote": "target 是真正触发的节点；currentTarget 是当前正在跑的监听所在节点。",
       "answer": [
         [
           {
@@ -1430,7 +1430,7 @@
           },
           {
             "type": "text",
-            "value": "target 是触发事件的源头节点；currentTarget 是当前正在处理监听的节点（绑定处）。"
+            "value": "target 是事件源头；currentTarget 是当前正在执行的监听所在节点（绑定处）。"
           }
         ],
         [
@@ -1458,7 +1458,7 @@
         [
           {
             "type": "text",
-            "value": "2、回调里若异步再读事件对象，部分浏览器会清空字段，需先取出需要的引用。"
+            "value": "2、回调里如果异步再读事件对象，有的浏览器会清空字段，要先把需要的引用取出来。"
           }
         ]
       ]
@@ -1467,7 +1467,7 @@
       "id": "q-memory-leak",
       "navLabel": "常见内存泄漏",
       "question": "前端开发中有哪些常见的内存泄漏来源？",
-      "questionNote": "常见泄漏是定时器、事件监听和闭包一直握着 DOM 或大对象，离开页面时没有解开。",
+      "questionNote": "常见泄漏：定时器、监听、闭包一直握着 DOM 或大对象，离开页面没解开。",
       "answer": [
         [
           {
@@ -1476,7 +1476,7 @@
           },
           {
             "type": "text",
-            "value": "泄漏多因未清理的定时器、未解绑的监听、闭包长期引用大对象或已移除的 DOM 节点。"
+            "value": "泄漏多半是：定时器没清、监听没解绑、闭包长期握着大对象或已卸掉的 DOM。"
           }
         ],
         [
@@ -1500,7 +1500,7 @@
         [
           {
             "type": "text",
-            "value": "闭包长期引用 DOM、接口大数据；第三方图表/编辑器实例未销毁亦常见。"
+            "value": "闭包长期引用 DOM、接口大数据；第三方图表/编辑器实例没销毁也很常见。"
           }
         ],
         [
@@ -1526,8 +1526,8 @@
     {
       "id": "q-observer-pubsub",
       "navLabel": "观察者与发布订阅",
-      "question": "观察者模式和发布订阅模式有何区别？前端常见落点是什么？",
-      "questionNote": "观察者由主题直接通知对方；发布订阅多一层事件总线，双方互不持有对方。",
+      "question": "观察者模式和发布订阅模式差在哪？前端常见落点是什么？",
+      "questionNote": "观察者：主题直接通知对方；发布订阅：中间多一层事件总线，双方互不持有。",
       "answer": [
         [
           {
@@ -1536,19 +1536,19 @@
           },
           {
             "type": "text",
-            "value": "观察者是主题直接通知观察者；发布订阅多一层调度中心，发布者与订阅者互不持有对方引用。"
+            "value": "观察者：主题直接通知观察者；发布订阅多一层调度中心，发布方和订阅方互不持有对方。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、观察者：被观察对象维护观察者列表，状态变化时同步调用；耦合在「认识彼此」这一层。"
+            "value": "1、观察者：被观察对象自己维护列表，状态变了同步调用；耦合点是「双方认识彼此」。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、发布订阅：双方只跟事件总线打交道，按事件名注册与派发，更易跨模块解耦。"
+            "value": "2、发布订阅：双方只跟事件总线打交道，按事件名注册和派发，跨模块更容易解耦。"
           }
         ],
         [
@@ -1571,7 +1571,7 @@
       "id": "q-singleton",
       "navLabel": "单例模式",
       "question": "什么是单例模式？前端哪些场景会用到？",
-      "questionNote": "单例保证某一类全局只有一个实例，并提供统一入口，适合真正全局的配置或请求实例。",
+      "questionNote": "全局只保留一个实例，并提供统一入口；适合真正全局的配置或请求实例。",
       "answer": [
         [
           {
@@ -1580,25 +1580,25 @@
           },
           {
             "type": "text",
-            "value": "保证某类全局只有一个实例，并提供统一访问入口。"
+            "value": "保证某一类全局只有一个实例，并给统一入口。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、常见写法：模块顶级导出一份实例；或惰性创建（首次调用再 new）。"
+            "value": "1、常见写法：模块顶层直接导出一份实例；或惰性创建（第一次调用再 new）。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、场景：全局弹层/Toast 管理、请求层 axios 实例、少量真正的全局配置。"
+            "value": "2、场景：全局弹层/Toast、请求层 axios 实例、少量真正的全局配置。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、边界：状态会随用户变化的对象慎用单例，易造成串数据；测试时注意重置。"
+            "value": "3、边界：会随用户变的状态少用单例，容易串数据；测试时记得重置。"
           }
         ]
       ]
@@ -1607,7 +1607,7 @@
       "id": "q-solid",
       "navLabel": "SOLID 原则",
       "question": "SOLID 五原则分别指什么？前端落地时怎么理解？",
-      "questionNote": "五原则约束职责、扩展方式、子类型替换、接口粒度和依赖方向，前端多落在模块与组件边界。",
+      "questionNote": "五原则约束职责、扩展、替换、接口粒度和依赖方向；前端多落在模块与组件边界。",
       "answer": [
         [
           {
@@ -1616,37 +1616,37 @@
           },
           {
             "type": "text",
-            "value": "五条面向对象设计原则，前端多落在模块边界、组件职责与依赖方向，而不是机械套类图。"
+            "value": "五条面向对象设计原则；前端多落在模块边界、组件职责和依赖方向，别机械套类图。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、单一职责：一个模块只改一类原因，页面容器与纯展示拆开。"
+            "value": "1、单一职责：一个模块只因一类原因改动，页面容器和纯展示拆开。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、开闭：优先扩展（策略、插件）而非改已有分支堆 if。"
+            "value": "2、开闭：优先扩展（策略、插件），少在已有分支上堆 if。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、里氏替换：子类型可替换父类型而不破坏约定，Hooks/组合优于脆弱继承树。"
+            "value": "3、里氏替换：子类型能替换父类型且不破坏约定；Hooks/组合优于脆弱继承树。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、接口隔离：组件 props / 服务 API 按场景拆细，避免上帝接口。"
+            "value": "4、接口隔离：组件 props / 服务 API 按场景拆细，别做上帝接口。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5、依赖倒置：业务依赖抽象（接口、注入），细节（请求实现、存储）可替换。"
+            "value": "5、依赖倒置：业务依赖抽象（接口、注入），请求实现、存储这类细节可替换。"
           }
         ]
       ]

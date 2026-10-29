@@ -9,7 +9,7 @@
       "id": "q-vdom-diff",
       "navLabel": "虚拟 DOM / Diff",
       "question": "React 虚拟 DOM 与 Diff 大致如何工作？有哪些策略假设？",
-      "questionNote": "虚拟 DOM 算最小变更；Diff 三大假设：同层比、类型不同整树换、列表靠 key。",
+      "questionNote": "虚拟 DOM 先算出最小变更再碰真实 DOM；Diff 三大假设：同层比、类型不同整树换、列表靠 key。",
       "answer": [
         [
           {
@@ -18,7 +18,7 @@
           },
           {
             "type": "text",
-            "value": "用 JS 对象描述 UI（虚拟 DOM），状态变更后先 Diff 出差异，再尽量少地改真实 DOM。"
+            "value": "用 JS 对象描述 UI（虚拟 DOM）。状态一变，先在内存里 Diff 出差异，再尽量少地改真实 DOM。"
           }
         ],
         [
@@ -32,7 +32,7 @@
           },
           {
             "type": "text",
-            "value": "频繁直改真实 DOM 代价高；虚拟树可在内存算变更，并支撑跨平台渲染思路。"
+            "value": "频繁直改真实 DOM 代价高；先在内存算变更更稳，也方便同一套思路接多端渲染。"
           }
         ],
         [
@@ -46,7 +46,7 @@
           },
           {
             "type": "text",
-            "value": "只做同层比较（不跨层移动节点）；元素类型不同则拆掉整棵子树重建；同层多节点用 key 判断是复用、移动还是新建。"
+            "value": "只做同层比较（不跨层挪节点）；类型不同就拆掉整棵子树重建；同层多节点靠 key 判断复用、移动还是新建。"
           }
         ],
         [
@@ -60,13 +60,13 @@
           },
           {
             "type": "text",
-            "value": "协调（Reconciliation）在 Fiber 树上算候选更新，可中断；真正改 DOM 在提交（Commit）阶段。"
+            "value": "协调阶段在 Fiber 树上算候选更新，可中断；真正改 DOM 放在提交阶段，通常一口气做完。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、虚拟 DOM 不是银弹；节点极多或更新极热时，仍要减少重渲染、虚拟列表等。"
+            "value": "4、虚拟 DOM 不是银弹。节点极多或更新极热时，仍要少重渲染、上虚拟列表等。"
           }
         ]
       ]
@@ -75,7 +75,7 @@
       "id": "q-key",
       "navLabel": "列表 key",
       "question": "列表为什么需要 key？用 index 可以吗？",
-      "questionNote": "key 帮助 Diff 认身份；会增删排序时不宜用 index；random key 更差。",
+      "questionNote": "key 帮 Diff 认「是不是同一个」；会增删排序时别用 index；每次 random 更糟。",
       "answer": [
         [
           {
@@ -88,7 +88,7 @@
           },
           {
             "type": "strong",
-            "value": "不宜使用 index 作为 key"
+            "value": "不要用 index 当 key"
           },
           {
             "type": "text",
@@ -98,7 +98,7 @@
         [
           {
             "type": "text",
-            "value": "同一 index 在 diff 中可能对应不同实体，子组件 "
+            "value": "同一 index 在 Diff 里可能对上不同实体，子组件 "
           },
           {
             "type": "code",
@@ -106,13 +106,13 @@
           },
           {
             "type": "text",
-            "value": " 会复用错误节点，出现输入框内容错乱、动画错位。"
+            "value": " 会挂错节点：输入框内容串台、动画错位都常见。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "优先使用稳定主键：数据库 "
+            "value": "优先用稳定主键：数据库 "
           },
           {
             "type": "code",
@@ -128,7 +128,7 @@
           },
           {
             "type": "text",
-            "value": " 等。"
+            "value": " 等。纯展示、顺序永远不变的静态列表，用 index 问题不大。"
           }
         ],
         [
@@ -138,7 +138,7 @@
           },
           {
             "type": "text",
-            "value": " 每次渲染都变，等于禁用复用，性能更差，比 index 更不可取。"
+            "value": " 每次渲染都变，等于禁用复用，比 index 更差。"
           }
         ],
         [
@@ -163,7 +163,7 @@
       "id": "q-fiber",
       "navLabel": "Fiber 架构",
       "question": "如何理解 React Fiber 架构？解决了什么问题？",
-      "questionNote": "Stack Reconciler 不可中断；Fiber 把更新拆成可暂停的工作单元，并支持优先级。",
+      "questionNote": "老架构更新很难中途停下；Fiber 把更新拆成小段，可暂停、接着做或丢掉过期计算。",
       "answer": [
         [
           {
@@ -172,7 +172,7 @@
           },
           {
             "type": "text",
-            "value": "React 16 起用 Fiber 替代不可中断的栈协调：长更新可暂停、恢复或丢弃，避免长时间占住主线程。"
+            "value": "老架构一次更新很难中途停下，主线程一占住，输入就卡。Fiber 把更新拆成小段，可暂停、接着做，或丢掉过期计算。"
           }
         ],
         [
@@ -182,11 +182,11 @@
           },
           {
             "type": "strong",
-            "value": "数据结构："
+            "value": "树怎么串："
           },
           {
             "type": "text",
-            "value": "每个组件对应 Fiber 节点，用 child / sibling / return 串成树；alternate 指向另一棵树，形成双缓冲（current ↔ workInProgress）。"
+            "value": "每个组件对应一个 Fiber 节点，用父子、兄弟指针串成树，更新可以按节点一段段走，而不是整棵递归一口气算完。"
           }
         ],
         [
@@ -196,11 +196,11 @@
           },
           {
             "type": "strong",
-            "value": "两阶段："
+            "value": "双缓冲："
           },
           {
             "type": "text",
-            "value": "render/协调阶段可中断，算出副作用标记；commit 阶段同步改 DOM 并执行 effect，通常不可中断。"
+            "value": "显示中的树和计算中的树成对切换：一边给用户看，一边在内存算下一帧；算完再提交到 DOM，避免半成品上屏。"
           }
         ],
         [
@@ -214,7 +214,7 @@
           },
           {
             "type": "text",
-            "value": "更新带 lanes；用户输入等高优可插队。上层 API 如 "
+            "value": "输入等高优先做。列表过滤这类可延迟更新，用 "
           },
           {
             "type": "code",
@@ -222,21 +222,13 @@
           },
           {
             "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "useDeferredValue"
-          },
-          {
-            "type": "text",
-            "value": " 把更新标成可延迟。"
+            "value": " 标成过渡更新，免得拖住输入。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、Fiber 解决的是「可调度的渲染」，并不自动让业务列表变快；大列表仍要虚拟滚动等。"
+            "value": "4、Fiber 解决的是「渲染可调度」。大列表本身不会因此变快，仍要虚拟滚动、少重渲染等业务侧手段。"
           }
         ]
       ]
@@ -245,7 +237,7 @@
       "id": "q-rerender",
       "navLabel": "何时重渲染",
       "question": "React 组件何时会重渲染？render 与 commit 有何差别？",
-      "questionNote": "state / props / context 变化或父组件渲染都会触发；render 算树，commit 才改 DOM。",
+      "questionNote": "state / props / context 变了，或父组件渲染，子组件默认跟着渲；render 算树，commit 才改 DOM。",
       "answer": [
         [
           {
@@ -262,7 +254,7 @@
           },
           {
             "type": "text",
-            "value": " 得到新值、收到新 props、订阅的 Context 变化，以及父组件重渲染导致子组件默认跟着渲染。"
+            "value": " 得到新值、收到新 props、订阅的 Context 变了，以及父组件重渲染时子组件默认跟着渲。"
           }
         ],
         [
@@ -284,7 +276,7 @@
           },
           {
             "type": "text",
-            "value": " 比较新旧值，相同则跳过；对象/数组须换新引用才会被视为变化。"
+            "value": " 比新旧值，相同就跳过；对象/数组要换新引用才算变了。"
           }
         ],
         [
@@ -294,11 +286,11 @@
           },
           {
             "type": "strong",
-            "value": "render（协调）阶段："
+            "value": "render（协调）："
           },
           {
             "type": "text",
-            "value": "调用函数组件，算出新的虚拟树与副作用标记；并发模式下可暂停或丢弃。"
+            "value": "跑函数组件，算出新虚拟树和副作用标记；并发模式下可暂停或丢掉过期结果。"
           }
         ],
         [
@@ -308,17 +300,17 @@
           },
           {
             "type": "strong",
-            "value": "commit（提交）阶段："
+            "value": "commit（提交）："
           },
           {
             "type": "text",
-            "value": "同步把变更应用到 DOM，再跑 layout effect、被动 effect；此阶段通常不可中断。"
+            "value": "同步把变更落到 DOM，再跑 layout effect、被动 effect；这一段通常不能中断。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、减少无效渲染：拆组件、"
+            "value": "4、少无效渲染：拆组件、"
           },
           {
             "type": "code",
@@ -326,7 +318,7 @@
           },
           {
             "type": "text",
-            "value": "、稳定 props 引用、细粒度状态订阅；改 "
+            "value": "、稳住 props 引用、细粒度订阅。乱改 "
           },
           {
             "type": "code",
@@ -334,7 +326,7 @@
           },
           {
             "type": "text",
-            "value": " 会卸载重建整棵子树，慎用。"
+            "value": " 会卸载重建整棵子树，别当常规手段。"
           }
         ]
       ]
@@ -343,7 +335,7 @@
       "id": "q-controlled",
       "navLabel": "受控与非受控",
       "question": "受控组件和非受控组件区别？",
-      "questionNote": "受控值在 React state 里，便于校验联动；非受控交 DOM 管，适合简单表单和文件输入。",
+      "questionNote": "受控值在 React state，好做校验联动；非受控交给 DOM，适合简单表单和文件输入。",
       "answer": [
         [
           {
@@ -352,7 +344,7 @@
           },
           {
             "type": "text",
-            "value": "表单值存在 React state，用 "
+            "value": "受控：表单值放在 React state，用 "
           },
           {
             "type": "code",
@@ -360,19 +352,19 @@
           },
           {
             "type": "text",
-            "value": " 驱动，每次输入都经 React 更新。"
+            "value": " 驱动，每次输入都走一遍 React 更新。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "优点：便于校验、禁用、字段联动；代价是高频输入要优化（防抖、本地 state 再提交）。"
+            "value": "好处是校验、禁用、字段联动好写；代价是高频输入可能卡，常见做法是本地 state 再提交，或给昂贵联动加防抖。"
           }
         ],
         [
           {
             "type": "strong",
-            "value": "非受控组件："
+            "value": "非受控："
           },
           {
             "type": "text",
@@ -384,7 +376,7 @@
           },
           {
             "type": "text",
-            "value": " 或原生 "
+            "value": " 或 "
           },
           {
             "type": "code",
@@ -392,7 +384,7 @@
           },
           {
             "type": "text",
-            "value": "，DOM 自己管值，提交时再读。适合简单表单、"
+            "value": "，值由 DOM 自己管，提交时再读。适合简单表单、"
           },
           {
             "type": "code",
@@ -425,7 +417,7 @@
       "id": "q-setstate-batch",
       "navLabel": "setState 同步异步",
       "question": "setState / useState 的更新是同步还是异步？批处理怎么理解？",
-      "questionNote": "调用后立刻读 state 仍是旧值；React 18 起多数场景自动批处理，只渲染一次。",
+      "questionNote": "调用后立刻读 state 仍是旧值；React 18 起多数场景自动批处理，多次更新往往只渲一次。",
       "answer": [
         [
           {
@@ -434,7 +426,15 @@
           },
           {
             "type": "text",
-            "value": "更新是「异步调度」的：调用 setState 后同一次执行里立刻读 state，仍是旧快照；真正渲染在之后统一提交。"
+            "value": "更新是「异步调度」的：刚 "
+          },
+          {
+            "type": "code",
+            "value": "setState"
+          },
+          {
+            "type": "text",
+            "value": " 完立刻读，仍是这次渲染的旧快照；真正渲染会排到后面统一做。"
           }
         ],
         [
@@ -448,7 +448,7 @@
           },
           {
             "type": "text",
-            "value": "为合并多次更新、保持 props/state 一致，并为并发渲染留空间；不是浏览器里的 Promise 异步。"
+            "value": "好合并多次更新、让 props/state 成套一致，也为并发渲染留空间。它不是 Promise 那种微任务异步。"
           }
         ],
         [
@@ -478,13 +478,13 @@
           },
           {
             "type": "text",
-            "value": " 默认合并为一次渲染（React 17 在超时回调里常各渲一次）。"
+            "value": " 默认合成一次渲染（17 里超时回调常各渲一次）。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、需要立刻刷 DOM（量尺寸、对接非受控第三方）用 "
+            "value": "3、真要立刻刷 DOM（量尺寸、对接非受控第三方）用 "
           },
           {
             "type": "code",
@@ -492,13 +492,13 @@
           },
           {
             "type": "text",
-            "value": "；滥用会损害性能。"
+            "value": "；到处用会拖慢交互。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、要基于最新值连续改：用函数式 "
+            "value": "4、基于最新值连续改，用函数式 "
           },
           {
             "type": "code",
@@ -514,7 +514,7 @@
           },
           {
             "type": "text",
-            "value": "，不要假定 setState 返回后 state 已变。"
+            "value": "，别假定 set 完 state 已经变了。"
           }
         ],
         [
@@ -539,7 +539,7 @@
       "id": "q-setstate-immutable",
       "navLabel": "不可变更新",
       "question": "为何不能直接修改 state？函数式 setState 何时必要？",
-      "questionNote": "React 靠引用变化发现更新；基于旧值连续更新时用函数式 setState。",
+      "questionNote": "React 靠引用变化发现更新；基于旧值连续改、或闭包里拿不到最新值时，用函数式 setState。",
       "answer": [
         [
           {
@@ -548,7 +548,7 @@
           },
           {
             "type": "text",
-            "value": "state 视为不可变快照；直接改对象字段再 "
+            "value": "把 state 当不可变快照。直接改对象字段再 "
           },
           {
             "type": "code",
@@ -564,7 +564,7 @@
           },
           {
             "type": "text",
-            "value": " 认为没变，界面可能不更新。"
+            "value": " 认为没变，界面可能不动。"
           }
         ],
         [
@@ -586,7 +586,7 @@
           },
           {
             "type": "text",
-            "value": "；嵌套更新可分层展开或使用不可变工具。"
+            "value": "；嵌套深就分层展开，或用不可变工具。"
           }
         ],
         [
@@ -604,13 +604,13 @@
           },
           {
             "type": "text",
-            "value": " 基于队列中的上一次结果计算；同一事件里连续加、或闭包里拿不到最新 state 时使用。"
+            "value": " 基于队列里上一次结果算。同事件连续加、或闭包里拿不到最新 state 时用它。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、错误示范："
+            "value": "3、常见坑："
           },
           {
             "type": "code",
@@ -618,7 +618,7 @@
           },
           {
             "type": "text",
-            "value": "，以及 "
+            "value": "；以及 "
           },
           {
             "type": "code",
@@ -659,7 +659,7 @@
       "id": "q-synthetic-event",
       "navLabel": "合成事件",
       "question": "React 合成事件与原生事件有何不同？事件委托挂在哪？",
-      "questionNote": "React 17+ 委托在根容器；stopPropagation 停的是 React 树，未必停原生。",
+      "questionNote": "React 17+ 委托在根容器；stopPropagation 停的是 React 树，原生监听未必停。",
       "answer": [
         [
           {
@@ -668,7 +668,7 @@
           },
           {
             "type": "text",
-            "value": "回调拿到的是合成事件包装，跨浏览器更一致；底层在根上做事件委托再分发。"
+            "value": "回调拿到的是合成事件包装，跨浏览器行为更齐；底层在根容器做委托，再分发到组件。"
           }
         ],
         [
@@ -682,7 +682,7 @@
           },
           {
             "type": "text",
-            "value": "React 17 起挂在应用根容器（不再是 document），便于多 React 根共存。"
+            "value": "React 17 起挂在应用根容器（不再是 document），多个 React 根共存更干净。"
           }
         ],
         [
@@ -696,7 +696,7 @@
           },
           {
             "type": "text",
-            "value": " 停的是 React 树冒泡；原生 "
+            "value": " 只停 React 树冒泡；原生 "
           },
           {
             "type": "code",
@@ -704,7 +704,7 @@
           },
           {
             "type": "text",
-            "value": " 仍可能继续收到，混用时看 "
+            "value": " 仍可能收到。混用时看 "
           },
           {
             "type": "code",
@@ -712,13 +712,13 @@
           },
           {
             "type": "text",
-            "value": " 与注册顺序。"
+            "value": " 和注册顺序。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、现代版本不再依赖事件池；异步回调里用事件字段一般更安全，仍建议先取出需要的值。"
+            "value": "3、现代版本不再依赖事件池；异步回调里读事件字段一般更安全，仍建议先取出要用的值再异步。"
           }
         ],
         [
@@ -743,7 +743,7 @@
       "id": "q-hooks",
       "navLabel": "Hooks 规则",
       "question": "为何不能在条件或循环里调用 Hooks？底层如何对应状态？",
-      "questionNote": "每次渲染按调用顺序匹配 hook 链表槽位；条件调用会错位。",
+      "questionNote": "每次渲染按调用顺序对上 hook 槽位；条件调用会错位，state 像「串台」。",
       "answer": [
         [
           {
@@ -752,13 +752,13 @@
           },
           {
             "type": "text",
-            "value": "组件每次渲染按固定顺序调用 Hooks；React 用调用次序把状态挂到对应槽位（可理解为一条 hook 链表），不能少调、多调或换序。"
+            "value": "组件每次渲染按固定顺序调 Hooks；React 用这次次序把状态对到对应槽位（可想成一条 hook 链表），不能少调、多调或换序。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、只在组件或自定义 Hook 顶层调用，不要放进 "
+            "value": "1、只在组件或自定义 Hook 顶层调用，别塞进 "
           },
           {
             "type": "code",
@@ -788,7 +788,7 @@
           },
           {
             "type": "text",
-            "value": " 回调内部的 "
+            "value": " 回调里的 "
           },
           {
             "type": "code",
@@ -796,7 +796,7 @@
           },
           {
             "type": "text",
-            "value": "，而不是包裹 Hook 调用本身。"
+            "value": "，不要用条件去包住 Hook 调用本身。"
           }
         ],
         [
@@ -810,7 +810,7 @@
           },
           {
             "type": "text",
-            "value": " 会静态检查；违反时常见表现是 state「串台」或报 Hook 顺序变化。"
+            "value": " 会静态检查；违了常见表现是 state「串台」，或直接报 Hook 顺序变了。"
           }
         ],
         [
@@ -835,7 +835,7 @@
       "id": "q-effect",
       "navLabel": "useEffect 依赖",
       "question": "useEffect 依赖数组怎么填？清理函数与请求竞态怎么处理？",
-      "questionNote": "[] 挂载一次；依赖变先清理再重跑；切 id 请求要用 abort 或忽略过期响应。",
+      "questionNote": "[] 挂载跑一次；依赖变了先清理再重跑；切 id 发请求要用 abort 或丢掉过期响应。",
       "answer": [
         [
           {
@@ -844,7 +844,7 @@
           },
           {
             "type": "text",
-            "value": "依赖数组决定 effect 重跑时机；漏依赖会读到闭包陈旧值；清理负责解绑与取消。"
+            "value": "依赖数组决定 effect 何时重跑。漏依赖会读到闭包旧值；清理负责解绑、取消，避免泄漏和竞态。"
           }
         ],
         [
@@ -872,7 +872,7 @@
           },
           {
             "type": "text",
-            "value": "：任一依赖变了先跑上一次清理，再跑新 effect。eslint-plugin-react-hooks 会提示漏依赖。"
+            "value": "：任一依赖变了，先跑上一次清理，再跑新 effect。eslint 规则会提示漏依赖。"
           }
         ],
         [
@@ -882,7 +882,7 @@
           },
           {
             "type": "text",
-            "value": "：每次渲染后都执行，易 "
+            "value": "：每次渲染后都执行，容易 "
           },
           {
             "type": "strong",
@@ -890,13 +890,13 @@
           },
           {
             "type": "text",
-            "value": " 或多余请求，现在基本避免。"
+            "value": " 或多余请求，现在基本别这么写。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "清理必须可重复执行：解绑监听、清定时器、"
+            "value": "清理要能重复跑：解绑监听、清定时器、"
           },
           {
             "type": "code",
@@ -904,7 +904,7 @@
           },
           {
             "type": "text",
-            "value": "；不要假设清理只跑一次。"
+            "value": "；别假设清理只执行一次。"
           }
         ],
         [
@@ -918,13 +918,13 @@
           },
           {
             "type": "text",
-            "value": " 快速切换时，后发先至会写错数据。新请求前 abort 旧请求，或用 requestId / cancelled 标志丢弃过期响应。"
+            "value": " 切得快时，后发先至会写错数据。新请求前 abort 旧的，或用 requestId / cancelled 丢掉过期响应。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "开发环境 StrictMode 会故意挂载→卸载→再挂载，用来暴露缺少清理的 effect；生产不会双跑。effect 与清理须按可重复执行来写。"
+            "value": "开发环境 StrictMode 会故意挂载→卸载→再挂载，用来暴露缺清理的 effect；生产不会双跑。effect 与清理按可重复执行来写。"
           }
         ],
         [
@@ -940,7 +940,7 @@
         [
           {
             "type": "code",
-            "value": "useEffect(() => {\n  const ctrl = new AbortController()\n  fetch(`/api/user/${id}`, { signal: ctrl.signal })\n    .then(r => r.json())\n    .then(setUser)\n    .catch(e => { if (e.name !== \"AbortError\") throw e }) // 忽略主动取消\n  return () => ctrl.abort() // id 变或卸载：取消在途请求\n}, [id])"
+            "value": "useEffect(() => {\n  const ctrl = new AbortController()\n  fetch(`/api/user/${id}`, { signal: ctrl.signal })\n    .then(r => r.json())\n    .then(setUser)\n    .catch(e => { if (e.name !== \"AbortError\") throw e }) // 忽略主动取消\n  return () => ctrl.abort() // id 变或卸载：取消未完成的请求\n}, [id])"
           }
         ]
       ]
@@ -949,7 +949,7 @@
       "id": "q-hooks-stale-closure",
       "navLabel": "Hooks 闭包陷阱",
       "question": "什么是 Hooks 闭包陷阱？如何避免？",
-      "questionNote": "effect 或回调捕获的是某一次渲染时的 state，之后再读到的仍是那一次的值。",
+      "questionNote": "effect 或回调捕获的是某一次渲染的 props/state，之后再读仍是那一拍的值。",
       "answer": [
         [
           {
@@ -958,19 +958,19 @@
           },
           {
             "type": "text",
-            "value": "effect/回调捕获了过期的 props/state，读到陈旧值或漏掉更新。"
+            "value": "effect/回调闭上了过期的 props/state，读到陈旧值，或依赖漏了导致该重跑时没重跑。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、依赖数组列全会触发的值；用 eslint 规则辅助。"
+            "value": "1、依赖数组把会触发的值列全；用 eslint-plugin-react-hooks 辅助，别手改乱删。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、定时器/订阅里需要最新值时用 ref 存当前值，或函数式 "
+            "value": "2、定时器/订阅里要最新值时，用 ref 存当前值，或走函数式 "
           },
           {
             "type": "code",
@@ -978,13 +978,13 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "，别死抓闭包里的旧变量。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、不必把所有函数塞进依赖；稳定回调用 "
+            "value": "3、不是每个函数都要塞进依赖。用 "
           },
           {
             "type": "code",
@@ -992,7 +992,7 @@
           },
           {
             "type": "text",
-            "value": " 时同样要列对其闭包值。"
+            "value": " 稳住引用时，它自己闭包到的值同样要进依赖。"
           }
         ],
         [
@@ -1034,13 +1034,13 @@
           },
           {
             "type": "text",
-            "value": "，赋值不触发重渲染；useState 变更会排队更新并重渲染。"
+            "value": "，赋值不触发重渲染；useState 一变就会排队更新并重渲染。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、绑定 DOM："
+            "value": "1、绑 DOM："
           },
           {
             "type": "code",
@@ -1048,7 +1048,7 @@
           },
           {
             "type": "text",
-            "value": "，在 effect 或事件里调用 "
+            "value": "，在 effect 或事件里调 "
           },
           {
             "type": "code",
@@ -1062,13 +1062,13 @@
         [
           {
             "type": "text",
-            "value": "2、跨渲染保存可变值：定时器 id、上一次 props、最新回调，避免闭包读到陈旧值却又不想因更新而重渲染。"
+            "value": "2、跨渲染存可变值：定时器 id、上一拍 props、最新回调。既躲开闭包旧值，又不会因为改它而重渲。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、不要用 ref 驱动界面展示；界面数据仍放 state。渲染期间读/写 "
+            "value": "3、别拿 ref 驱动界面展示，界面数据仍放 state。渲染阶段读写 "
           },
           {
             "type": "code",
@@ -1076,7 +1076,7 @@
           },
           {
             "type": "text",
-            "value": " 要克制，副作用逻辑放进 effect 或事件。"
+            "value": " 要克制，副作用放进 effect 或事件。"
           }
         ],
         [
@@ -1091,7 +1091,7 @@
       "id": "q-use-layout-effect",
       "navLabel": "useLayoutEffect",
       "question": "useLayoutEffect 与 useEffect 的执行时机有何差异？",
-      "questionNote": "useLayoutEffect 在绘制前同步执行，适合量 DOM 防闪烁；SSR 环境会告警。",
+      "questionNote": "useLayoutEffect 在绘制前同步跑，适合量 DOM 防闪烁；SSR 环境会告警。",
       "answer": [
         [
           {
@@ -1100,7 +1100,7 @@
           },
           {
             "type": "text",
-            "value": "useEffect 在绘制后异步执行；useLayoutEffect 在绘制前同步执行，适合量 DOM 防闪烁。"
+            "value": "useEffect 在绘制后异步跑；useLayoutEffect 在绘制前同步跑，适合量 DOM、改完再让用户看见，避免闪一下。"
           }
         ],
         [
@@ -1118,7 +1118,7 @@
           },
           {
             "type": "text",
-            "value": "异步执行，不阻塞首帧。适合请求、订阅、非 DOM 敏感逻辑。"
+            "value": "异步执行，不挡首帧。适合请求、订阅、不敏感 DOM 的逻辑。"
           }
         ],
         [
@@ -1136,13 +1136,13 @@
           },
           {
             "type": "text",
-            "value": "同步执行。可量 DOM 再改 state，避免 tooltip 位置闪烁。"
+            "value": "同步执行。可量 DOM 再 setState，避免 tooltip 位置闪烁。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "会阻塞浏览器绘制，不宜写入重逻辑；非 DOM 测量类副作用优先用 "
+            "value": "会挡住浏览器绘制，别塞重活；跟布局无关的副作用优先 "
           },
           {
             "type": "code",
@@ -1197,7 +1197,7 @@
       "id": "q-custom-hook",
       "navLabel": "自定义 Hook",
       "question": "什么是自定义 Hook？和普通函数有何区别？",
-      "questionNote": "复用「带状态的逻辑」；每次调用状态独立；名字必须以 use 开头。",
+      "questionNote": "复用「带状态的逻辑」；每次调用状态各自一份；名字必须以 use 开头。",
       "answer": [
         [
           {
@@ -1206,7 +1206,7 @@
           },
           {
             "type": "text",
-            "value": "自定义 Hook 是以 use 开头、内部可调用其他 Hook 的函数，用来抽离可复用的状态与副作用逻辑。"
+            "value": "自定义 Hook 是以 use 开头、内部可调其他 Hook 的函数，用来抽可复用的状态与副作用逻辑。"
           }
         ],
         [
@@ -1220,13 +1220,13 @@
           },
           {
             "type": "text",
-            "value": "，各自有独立状态。"
+            "value": "，各自独立。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、与普通函数区别：普通函数里不能调 "
+            "value": "2、和普通函数的差别：普通函数里不能调 "
           },
           {
             "type": "code",
@@ -1248,7 +1248,7 @@
         [
           {
             "type": "text",
-            "value": "3、适合抽出：订阅、请求封装、表单字段、媒体查询等。组件之间要共享同一份数据，应状态提升或上 Context/状态库，而不是指望 Hook「单例」。"
+            "value": "3、适合抽出订阅、请求封装、表单字段、媒体查询等。要共享同一份数据，应状态提升或上 Context/状态库，别指望 Hook「单例」。"
           }
         ],
         [
@@ -1263,7 +1263,7 @@
       "id": "q-logic-reuse",
       "navLabel": "逻辑复用",
       "question": "高阶组件（HOC）、render props 与自定义 Hook 如何选择？",
-      "questionNote": "新代码优先自定义 Hook；HOC/render props 多见于老库或需要包裹 UI 结构时。",
+      "questionNote": "新代码优先自定义 Hook；HOC/render props 多见于老库，或需要包一层 UI 槽位时。",
       "answer": [
         [
           {
@@ -1272,7 +1272,7 @@
           },
           {
             "type": "text",
-            "value": "三者都能复用逻辑；Hooks 出来后，多数「状态逻辑复用」用自定义 Hook 更直接。"
+            "value": "三者都能复用逻辑。Hooks 普及后，多数「状态逻辑复用」用自定义 Hook 更直接。"
           }
         ],
         [
@@ -1286,7 +1286,7 @@
           },
           {
             "type": "text",
-            "value": "接收组件返回新组件。优点是无侵入包装；缺点是 props 易重名覆盖、一层层嵌套成「包装地狱」、静态类型与调试更绕。"
+            "value": "接收组件返回新组件。无侵入包装是优点；props 易重名覆盖、层层嵌套成「包装地狱」、类型与调试更绕。"
           }
         ],
         [
@@ -1300,7 +1300,7 @@
           },
           {
             "type": "text",
-            "value": "把渲染函数当 prop（或 children 函数）注入数据。灵活，但 JSX 嵌套深，阅读成本高。"
+            "value": "把渲染函数当 prop（或 children 函数）注入数据。灵活，但 JSX 嵌套深，读起来累。"
           }
         ],
         [
@@ -1314,7 +1314,7 @@
           },
           {
             "type": "text",
-            "value": "在函数组件内直接复用状态逻辑，无额外节点、组合清晰；今日默认首选。"
+            "value": "在函数组件里直接复用状态逻辑，无额外节点、组合清晰；今天默认首选。"
           }
         ],
         [
@@ -1345,7 +1345,7 @@
       "id": "q-concurrent",
       "navLabel": "并发更新",
       "question": "useTransition 与 useDeferredValue 应如何选择？",
-      "questionNote": "都能降低非紧急更新的优先级；区别在于你是否自己发起那次 setState。",
+      "questionNote": "都能把非紧急更新降优；差别在你能不能自己包住那次 setState。",
       "answer": [
         [
           {
@@ -1354,7 +1354,7 @@
           },
           {
             "type": "text",
-            "value": "把「输入框立刻跟上」和「重列表稍后重算」拆开，避免一次大更新卡住交互。"
+            "value": "把「输入立刻跟上」和「重列表稍后重算」拆开，避免一次大更新卡死交互。"
           }
         ],
         [
@@ -1406,13 +1406,13 @@
           },
           {
             "type": "text",
-            "value": "：值来自 props 或上游，你无法包住对方的 setState 时，对接收到的值做延迟。"
+            "value": "：值来自 props 或上游，你包不住对方的 setState 时，对接到的值做延迟。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、受控输入本身应立即 "
+            "value": "3、受控输入本身应立刻 "
           },
           {
             "type": "code",
@@ -1420,13 +1420,13 @@
           },
           {
             "type": "text",
-            "value": "；只有筛选结果、大表格等放进 Transition 或基于 deferred 值计算。"
+            "value": "；筛选结果、大表格等才放进 Transition，或基于 deferred 值去算。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、边界：不会把同步重计算挪到 Web Worker；DOM 节点过多时仍要配合虚拟列表。过渡更新可被更高优更新打断并重做。"
+            "value": "4、边界：不会把同步重算挪到 Worker；DOM 太多仍要虚拟列表。过渡更新可被更高优打断并重做。"
           }
         ],
         [
@@ -1441,7 +1441,7 @@
       "id": "q-memo",
       "navLabel": "memo / useMemo / useCallback",
       "question": "React.memo、useMemo、useCallback 区别？",
-      "questionNote": "memo 包组件、useMemo 缓存值、useCallback 缓存函数引用；先 Profiler 找慢点再优化。",
+      "questionNote": "memo 包组件、useMemo 缓存值、useCallback 缓存函数引用；先 Profiler 找慢点再包。",
       "answer": [
         [
           {
@@ -1450,7 +1450,7 @@
           },
           {
             "type": "text",
-            "value": "memo 跳过 props 未变的子树渲染；useMemo 缓存值，useCallback 缓存函数引用。"
+            "value": "memo 跳过 props 未变的子树；useMemo 缓存计算结果；useCallback 缓存函数引用。"
           }
         ],
         [
@@ -1460,7 +1460,7 @@
           },
           {
             "type": "text",
-            "value": "：高阶组件，默认浅比较 props，没变则跳过该子树渲染。"
+            "value": "：高阶组件，默认浅比较 props，没变就跳过该子树渲染。"
           }
         ],
         [
@@ -1478,7 +1478,7 @@
           },
           {
             "type": "text",
-            "value": "，依赖不变不重复算。"
+            "value": "，依赖不变不重算。"
           }
         ],
         [
@@ -1504,29 +1504,13 @@
           },
           {
             "type": "text",
-            "value": "，避免父组件每次渲染新建函数导致子组件 memo 失效。"
+            "value": "，避免父组件每次新建函数把子组件 memo 打穿。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "何时用：先用 React DevTools Profiler 找真正慢的子树再包；依赖真会变才包 "
-          },
-          {
-            "type": "code",
-            "value": "useMemo"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "useCallback"
-          },
-          {
-            "type": "text",
-            "value": "，依赖遗漏或每次新建对象都无效；子组件未 "
+            "value": "取舍：先用 Profiler 找真正慢的子树再包。依赖常变、每次新建对象，包了也白包；子组件没 "
           },
           {
             "type": "code",
@@ -1534,7 +1518,7 @@
           },
           {
             "type": "text",
-            "value": " 时父级 "
+            "value": " 时，父级 "
           },
           {
             "type": "code",
@@ -1542,7 +1526,7 @@
           },
           {
             "type": "text",
-            "value": " 收益有限。到处包反而增加依赖心智负担。"
+            "value": " 收益有限。到处包只会加重依赖心智负担。"
           }
         ],
         [
@@ -1567,7 +1551,7 @@
       "id": "q-react-perf",
       "navLabel": "React 性能优化",
       "question": "React 应用常见的性能优化手段有哪些？",
-      "questionNote": "先 Profiler 定位，再谈减少渲染、减小工作量与拆包；避免无脑包 memo。",
+      "questionNote": "先 Profiler 定位，再谈少渲染、减工作量与拆包；别无脑全站 memo。",
       "answer": [
         [
           {
@@ -1576,7 +1560,7 @@
           },
           {
             "type": "text",
-            "value": "先量再改：用 React DevTools Profiler 找到慢的提交，再对症减少渲染次数或单次渲染成本。"
+            "value": "先量再改：用 React DevTools Profiler 找到慢的提交，再对症少渲染次数，或压低单次渲染成本。"
           }
         ],
         [
@@ -1590,7 +1574,7 @@
           },
           {
             "type": "text",
-            "value": "状态就近存放、拆组件、"
+            "value": "状态就近放、拆组件、"
           },
           {
             "type": "code",
@@ -1598,7 +1582,7 @@
           },
           {
             "type": "text",
-            "value": "、稳定 props（"
+            "value": "、稳住 props（"
           },
           {
             "type": "code",
@@ -1628,7 +1612,7 @@
           },
           {
             "type": "text",
-            "value": "列表虚拟滚动、图片懒加载、重计算下沉或缓存；输入等高优与列表低优用并发 API 拆开。"
+            "value": "列表虚拟滚动、图片懒加载、重计算缓存或下沉；输入等高优与列表低优用并发 API 拆开。"
           }
         ],
         [
@@ -1654,13 +1638,13 @@
           },
           {
             "type": "text",
-            "value": " 做路由/模块拆包；生产构建开启压缩、Tree-shaking、合理缓存。"
+            "value": " 做路由/模块拆包；生产构建开压缩、Tree-shaking、合理缓存。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、边界：到处 "
+            "value": "4、坑：到处 "
           },
           {
             "type": "code",
@@ -1668,7 +1652,7 @@
           },
           {
             "type": "text",
-            "value": " 收益有限；依赖每次新建的对象/函数会让 memo 失效。先定位热点再包缓存，避免无脑全站 memo。"
+            "value": " 收益有限；依赖每次新建的对象/函数会让 memo 失效。先定位热点再包，别全站铺开。"
           }
         ]
       ]
@@ -1686,7 +1670,7 @@
           },
           {
             "type": "text",
-            "value": "单向数据流：数据向下、事件向上；按「层级远近 + 变更频率」选型，避免一上来全局 store。"
+            "value": "单向数据流：数据向下、事件向上。按「层级远近 + 变更频率」选型，别一上来就全局 store。"
           }
         ],
         [
@@ -1700,7 +1684,7 @@
           },
           {
             "type": "text",
-            "value": "props 下传，回调 / 事件上抛；最常用，依赖关系最清晰。"
+            "value": "props 下传，回调 / 事件上抛；最常用，依赖也最清晰。"
           }
         ],
         [
@@ -1714,7 +1698,7 @@
           },
           {
             "type": "text",
-            "value": "兄弟共享同一份数据时，把 state 放到最近共同祖先，再经 props 分发。"
+            "value": "兄弟要同一份数据时，把 state 放到最近共同祖先，再经 props 分发。"
           }
         ],
         [
@@ -1728,7 +1712,7 @@
           },
           {
             "type": "text",
-            "value": "Context 适合主题、语言、当前用户等低频配置；高频业务状态慎用，易大面积重渲染。"
+            "value": "Context 适合主题、语言、当前用户等低频配置；高频业务状态别硬塞，容易大面积重渲。"
           }
         ],
         [
@@ -1768,7 +1752,7 @@
           },
           {
             "type": "text",
-            "value": " 让父组件调用子方法（focus、打开弹层）；事件总线耦合重，中大型项目少用。"
+            "value": " 让父调子方法（focus、开弹层）。事件总线耦合重，中大型项目少用。"
           }
         ],
         [
@@ -1793,7 +1777,7 @@
       "id": "q-context",
       "navLabel": "Context",
       "question": "Context 适用于哪些场景？如何避免不必要的 re-render？",
-      "questionNote": "Context 适合低频变更的全局配置；value 引用一变，下面 consumer 默认全部重渲染。",
+      "questionNote": "适合低频变更的全局配置；value 引用一变，下面 consumer 默认全重渲。",
       "answer": [
         [
           {
@@ -1802,7 +1786,7 @@
           },
           {
             "type": "text",
-            "value": "跨层级传递"
+            "value": "跨层级传"
           },
           {
             "type": "strong",
@@ -1810,13 +1794,13 @@
           },
           {
             "type": "text",
-            "value": " 等「许多叶子节点都要读、很少变更」的配置，避免 props 逐层透传。"
+            "value": " 等「许多叶子都要读、很少变」的配置，避免 props 一层层透传。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "不适合高频变更的全局业务 state；Provider 的 "
+            "value": "别拿它扛高频业务 state。Provider 的 "
           },
           {
             "type": "code",
@@ -1824,13 +1808,13 @@
           },
           {
             "type": "text",
-            "value": " 每次渲染若引用改变，下面所有 consumer 默认都会重渲染。"
+            "value": " 每次渲染若换了引用，下面所有 consumer 默认都会重渲。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、将 value 拆成多个 Context，读写分离。"
+            "value": "1、把 value 拆成多个 Context，读写分开，缩小影响面。"
           }
         ],
         [
@@ -1844,7 +1828,7 @@
           },
           {
             "type": "text",
-            "value": " 稳定对象引用；读侧用 use-context-selector 或 Zustand/Jotai 做细粒度订阅。"
+            "value": " 稳住对象引用；读侧用 use-context-selector，或 Zustand/Jotai 做细粒度订阅。"
           }
         ],
         [
@@ -1869,7 +1853,7 @@
       "id": "q-use-reducer",
       "navLabel": "useReducer",
       "question": "useReducer 与 useState 应如何选择？",
-      "questionNote": "简单标量用 useState；下一状态依赖 action 类型和多字段时用 useReducer。",
+      "questionNote": "简单标量用 useState；下一状态依赖动作类型和多字段时用 useReducer。",
       "answer": [
         [
           {
@@ -1878,7 +1862,7 @@
           },
           {
             "type": "text",
-            "value": "简单标量用 useState；下一状态依赖「动作类型 + 多字段」时用 useReducer。"
+            "value": "简单标量用 useState；下一状态依赖「动作类型 + 多字段」时用 useReducer，分支更集中。"
           }
         ],
         [
@@ -1914,7 +1898,7 @@
           },
           {
             "type": "text",
-            "value": "：下一状态依赖「动作类型 + 多字段」，与 "
+            "value": "：下一状态依赖「动作类型 + 多字段」，配合 "
           },
           {
             "type": "code",
@@ -1922,13 +1906,13 @@
           },
           {
             "type": "text",
-            "value": " 一起便于测试与追踪。"
+            "value": " 好测、好追。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、复杂表单、多步向导、状态机式 UI 用它可减少 effect 里的大量 "
+            "value": "3、复杂表单、多步向导、状态机式 UI，用它能少在 effect 里堆 "
           },
           {
             "type": "code",
@@ -1942,7 +1926,7 @@
         [
           {
             "type": "text",
-            "value": "4、规模更大时选 Zustand / Redux；不宜为用而用 reducer。"
+            "value": "4、规模再大选 Zustand / Redux；别为用而用 reducer。"
           }
         ],
         [
@@ -1967,7 +1951,7 @@
       "id": "q-redux",
       "navLabel": "Redux",
       "question": "Redux 的核心流程是什么？与 useReducer 有何关系？",
-      "questionNote": "现代默认写法可说 Redux Toolkit（RTK）。",
+      "questionNote": "现代默认写法可说 Redux Toolkit（RTK）：createSlice 少样板，Immer 可「看起来」直接改。",
       "answer": [
         [
           {
@@ -1976,7 +1960,7 @@
           },
           {
             "type": "text",
-            "value": "单一 store、state 只读、用纯函数 reducer 描述变化。"
+            "value": "单一 store、state 只读、用纯函数 reducer 描述怎么变。"
           }
         ],
         [
@@ -2004,7 +1988,7 @@
         [
           {
             "type": "text",
-            "value": "useReducer 是组件内的 mini-redux；全局、可预测、中间件（异步、日志）场景用 Redux / RTK。RTK 的 "
+            "value": "useReducer 是组件内的 mini-redux。全局、可预测、要中间件（异步、日志）时上 Redux / RTK。"
           },
           {
             "type": "code",
@@ -2012,7 +1996,7 @@
           },
           {
             "type": "text",
-            "value": " 减少样板代码。"
+            "value": " 能少写很多样板。"
           }
         ],
         [
@@ -2037,7 +2021,7 @@
       "id": "q-zustand",
       "navLabel": "Zustand",
       "question": "Zustand 与 Redux 应如何选择？",
-      "questionNote": "Jotai/Recoil 偏原子化。",
+      "questionNote": "Zustand 轻、按 selector 订切片；大团队强规范、中间件与时间旅行仍常见 Redux/RTK。",
       "answer": [
         [
           {
@@ -2046,7 +2030,7 @@
           },
           {
             "type": "text",
-            "value": "轻量、基于 hooks，"
+            "value": "Zustand 轻量、基于 hooks，"
           },
           {
             "type": "code",
@@ -2054,13 +2038,13 @@
           },
           {
             "type": "text",
-            "value": "；可按 selector 订阅切片，少 Provider 嵌套。"
+            "value": "；可按 selector 订切片，少 Provider 嵌套。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、中小项目、需快速接入全局状态：Zustand 接入成本低。"
+            "value": "1、中小项目、想快速挂全局状态：Zustand 接入成本低。"
           }
         ],
         [
@@ -2072,7 +2056,7 @@
         [
           {
             "type": "text",
-            "value": "3、低频配置用 Context；组件内简单状态用 useState/useReducer。"
+            "value": "3、低频配置用 Context；组件内简单状态用 useState/useReducer。原子化需求可看 Jotai 等。"
           }
         ],
         [
@@ -2097,7 +2081,7 @@
       "id": "q-forward-ref",
       "navLabel": "forwardRef",
       "question": "forwardRef 解决什么问题？",
-      "questionNote": "函数组件默认拿不到 ref；forwardRef 把父组件 ref 转给内部 DOM 或 imperative API。",
+      "questionNote": "函数组件默认拿不到 ref；forwardRef 把父组件 ref 转到内部 DOM 或有限命令式 API。",
       "answer": [
         [
           {
@@ -2138,13 +2122,13 @@
           },
           {
             "type": "text",
-            "value": " 可只暴露 focus、scroll 等有限方法，而非整个 DOM 节点。"
+            "value": " 可只暴露 focus、scroll 等有限方法，而不是整个 DOM 节点。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "较新版本里 ref 也可作为普通 prop 传入函数组件，forwardRef 使用场景在收窄；存量代码与组件库仍常见。"
+            "value": "较新版本里 "
           },
           {
             "type": "code",
@@ -2152,7 +2136,7 @@
           },
           {
             "type": "text",
-            "value": " 可作为普通 prop 传入，forwardRef 使用场景在收窄。"
+            "value": " 也可当普通 prop 传入函数组件，forwardRef 场景在变少；存量代码与组件库仍常见。"
           }
         ],
         [
@@ -2177,7 +2161,7 @@
       "id": "q-portal",
       "navLabel": "createPortal",
       "question": "ReactDOM.createPortal 用于解决什么问题？",
-      "questionNote": "DOM 挂载到 body 等元素，事件仍按 React 树冒泡；与 Vue Teleport 同类。",
+      "questionNote": "DOM 挂到 body 等容器，事件仍按 React 树冒泡；和 Vue Teleport 同类。",
       "answer": [
         [
           {
@@ -2186,7 +2170,7 @@
           },
           {
             "type": "text",
-            "value": "将子树渲染到"
+            "value": "把子树渲到"
           },
           {
             "type": "strong",
@@ -2202,7 +2186,7 @@
           },
           {
             "type": "text",
-            "value": "），跳出父级 "
+            "value": "），躲开父级 "
           },
           {
             "type": "code",
@@ -2216,13 +2200,21 @@
         [
           {
             "type": "text",
-            "value": "Modal、Dropdown、Tooltip 常用；事件仍按 React 组件树冒泡，而非按 DOM 父子关系。"
+            "value": "Modal、Dropdown、Tooltip 常用。事件仍按 React 组件树冒泡，不是按 DOM 父子关系。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "服务端渲染（SSR）时目标容器需在服务端存在，或在客户端 mount 后再 createPortal。"
+            "value": "服务端渲染（SSR）时目标容器要在服务端存在，或客户端 mount 后再 "
+          },
+          {
+            "type": "code",
+            "value": "createPortal"
+          },
+          {
+            "type": "text",
+            "value": "。"
           }
         ],
         [
@@ -2247,7 +2239,7 @@
       "id": "q-error-boundary",
       "navLabel": "错误边界",
       "question": "React 错误边界能捕获什么？怎么用？",
-      "questionNote": "错误边界只接住子树在渲染和生命周期里抛出的错误，事件处理和异步回调要自己捕获。",
+      "questionNote": "只接住子树渲染和生命周期里抛的错；事件处理和异步回调要自己 try/catch。",
       "answer": [
         [
           {
@@ -2256,7 +2248,7 @@
           },
           {
             "type": "text",
-            "value": "错误边界是类组件，捕获子树渲染/生命周期/构造中的错误，展示降级 UI。"
+            "value": "错误边界是类组件，捕获子树渲染/生命周期/构造里的错误，切到降级 UI。"
           }
         ],
         [
@@ -2278,7 +2270,7 @@
           },
           {
             "type": "text",
-            "value": "；函数组件本身不能做边界。"
+            "value": "；函数组件本身做不了边界。"
           }
         ],
         [
@@ -2290,7 +2282,7 @@
         [
           {
             "type": "text",
-            "value": "3、按路由或模块包裹，避免整树白屏；日志送监控。"
+            "value": "3、按路由或模块包一层，避免整树白屏；日志送监控。"
           }
         ],
         [
@@ -2315,7 +2307,7 @@
       "id": "q-suspense-lazy",
       "navLabel": "Suspense 与 lazy",
       "question": "React.lazy 与 Suspense 如何配合使用？",
-      "questionNote": "lazy 做代码分割，Suspense 显示 loading；加载失败要另包 ErrorBoundary。",
+      "questionNote": "lazy 做代码分割，Suspense 显示 loading；加载失败要外层再包 ErrorBoundary。",
       "answer": [
         [
           {
@@ -2324,7 +2316,15 @@
           },
           {
             "type": "text",
-            "value": "lazy 做代码分割，Suspense 显示 loading；加载失败需外层 ErrorBoundary。"
+            "value": "lazy 做代码分割，Suspense 显示 loading；加载失败要外层 "
+          },
+          {
+            "type": "code",
+            "value": "ErrorBoundary"
+          },
+          {
+            "type": "text",
+            "value": "。"
           }
         ],
         [
@@ -2334,7 +2334,7 @@
           },
           {
             "type": "text",
-            "value": " 动态 import 做路由级代码分割。"
+            "value": " 动态 import，做路由级代码分割。"
           }
         ],
         [
@@ -2350,7 +2350,7 @@
         [
           {
             "type": "text",
-            "value": "Suspense 不捕获加载失败，需外层包 "
+            "value": "Suspense 不接加载失败，外层再包 "
           },
           {
             "type": "code",
@@ -2364,7 +2364,7 @@
         [
           {
             "type": "text",
-            "value": "React 18 起 Suspense 也用于数据获取（配合框架如 Next.js）；具体模式以所用框架文档为准。"
+            "value": "React 18 起 Suspense 也用于数据获取（常配合 Next.js 等框架）；具体模式跟所用框架文档走。"
           }
         ],
         [
