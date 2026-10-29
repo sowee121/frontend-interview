@@ -1674,8 +1674,8 @@
     {
       "id": "q-ai-markdown-stream",
       "navLabel": "流式 Markdown",
-      "question": "助手消息流式渲染 Markdown 时，如何选型？未闭合 fence 闪烁与渲染失败如何兜底？",
-      "questionNote": "未闭合 fence 先补闭合或末尾降纯文本；也可用 Streamdown；失败纯文本；勿裸插 HTML。",
+      "question": "流式渲染 Markdown 时，未闭合语法导致样式乱跳，前端该怎么补全？手写和现成方案怎么选？",
+      "questionNote": "补全只作用于渲染副本；代码围栏优先；简单场景手写，复杂用 remend 或 Streamdown。",
       "answer": [
         [
           {
@@ -1684,15 +1684,7 @@
           },
           {
             "type": "text",
-            "value": "流式半截 md 会让解析器反复失败重绘；要么自己处理未闭合态，要么用 "
-          },
-          {
-            "type": "code",
-            "value": "Streamdown"
-          },
-          {
-            "type": "text",
-            "value": " 这类增量方案。"
+            "value": "原始全文只追加、不改写；渲染前对副本临时补闭合标记。后续分片到来后，再用原始全文重渲，盖掉临时补丁。"
           }
         ],
         [
@@ -1702,11 +1694,41 @@
           },
           {
             "type": "strong",
-            "value": "问题："
+            "value": "机制："
           },
           {
             "type": "text",
-            "value": "围栏代码、表格、列表流式时常「开了头没收尾」；普通库整篇重解析，样式会闪、层级会乱。"
+            "value": "缓冲区里的 "
+          },
+          {
+            "type": "code",
+            "value": "fullText"
+          },
+          {
+            "type": "text",
+            "value": " 始终是真实流内容；"
+          },
+          {
+            "type": "code",
+            "value": "patch(fullText)"
+          },
+          {
+            "type": "text",
+            "value": " 的结果只给 Markdown 渲染层。落库与下一轮 "
+          },
+          {
+            "type": "code",
+            "value": "messages"
+          },
+          {
+            "type": "text",
+            "value": " 仍用原文。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "用户停止生成后，对最终半截再补一次再展示，否则末尾可能一直开着围栏。"
           }
         ],
         [
@@ -1716,11 +1738,11 @@
           },
           {
             "type": "strong",
-            "value": "自拼原理："
+            "value": "补全顺序："
           },
           {
             "type": "text",
-            "value": "渲染前扫一遍：若 "
+            "value": "先处理代码围栏 "
           },
           {
             "type": "code",
@@ -1728,35 +1750,13 @@
           },
           {
             "type": "text",
-            "value": " 出现奇数次（或末尾落在 fence 内），临时补一行闭合 fence 再交给解析器，预览才像完整代码块。"
+            "value": "：出现奇数次就临时补一行闭合，并且不再动块内的行内标记。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "更稳的拆法：已闭合前缀正常 Markdown；末尾未闭合段先当纯文本或「生成中」展示，闭合后再并回加重渲染。列表/引用同理——缺闭合标记就先当纯文本尾。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "注意：补闭合只用于预览，"
-          },
-          {
-            "type": "strong",
-            "value": "不要"
-          },
-          {
-            "type": "text",
-            "value": "写进落库/"
-          },
-          {
-            "type": "code",
-            "value": "messages"
-          },
-          {
-            "type": "text",
-            "value": " 原文，否则下一轮上下文会被污染。"
+            "value": "不在代码块内时，再按行内代码、删除线、加粗、斜体检查是否成对，缺闭合就临时补上。列表和标题半截抖动小，一般不补；残缺链接不要乱补地址。"
           }
         ],
         [
@@ -1770,7 +1770,15 @@
           },
           {
             "type": "text",
-            "value": "不想维护上述半截逻辑时，用 "
+            "value": "小项目可用正则数奇数标记；嵌套、转义、链接场景容易误补。生产优先 "
+          },
+          {
+            "type": "code",
+            "value": "remend"
+          },
+          {
+            "type": "text",
+            "value": "，或直接用自带未闭合处理的 "
           },
           {
             "type": "code",
@@ -1778,7 +1786,7 @@
           },
           {
             "type": "text",
-            "value": " 等面向流式的渲染扛未闭合预览样式。"
+            "value": "。"
           }
         ],
         [
@@ -1788,19 +1796,17 @@
           },
           {
             "type": "strong",
-            "value": "降级与安全："
+            "value": "边界："
           },
           {
             "type": "text",
-            "value": "单块失败 Fallback 源码/纯文本 + 错误边界。不要把模型 HTML 直接塞进 DOM（如 "
-          },
+            "value": "单块渲染失败时降级为源码或纯文本，并用错误边界兜住。不要把模型输出的 HTML 直接塞进 DOM，防止跨站脚本攻击（XSS）。"
+          }
+        ],
+        [
           {
             "type": "code",
-            "value": "dangerouslySetInnerHTML"
-          },
-          {
-            "type": "text",
-            "value": "），防跨站脚本攻击（XSS）。"
+            "value": "// fullText 只追加；渲染用补丁副本\nfullText += chunk\nsetView(patchPartialMd(fullText))\n\nfunction patchPartialMd(raw: string) {\n  let text = raw\n  const fences = text.match(/```/g) || []\n  if (fences.length % 2 === 1) return text + '\\n```' // 已进代码块，不再补行内\n  if ((text.match(/`/g) || []).length % 2 === 1) text += '`'\n  if ((text.match(/~~/g) || []).length % 2 === 1) text += '~~'\n  if ((text.match(/\\*\\*/g) || []).length % 2 === 1) text += '**'\n  // 斜体嵌套易翻车；复杂场景改 remend(fullText)\n  return text\n}"
           }
         ]
       ]
