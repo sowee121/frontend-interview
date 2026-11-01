@@ -2,8 +2,8 @@
   "slug": "html-css",
   "title": "HTML/CSS",
   "documentTitle": "HTML/CSS",
-  "description": "语义化、盒模型、Flex/Grid、BFC 与层叠，移动端适配，以及预处理器与原子化 CSS 的取舍。",
-  "lead": "布局与视觉：语义化与盒模型、Flex/Grid 与 BFC、层叠与定位；移动端看 viewport、1px 与 rem/em，样式工程看 Sass/Less 与 Tailwind。",
+  "description": "语义化、Flex/Grid、BFC 与层叠，移动端适配，以及容器查询、:has()、@layer 与原子化 CSS。",
+  "lead": "布局与视觉：语义化、Flex/Grid 与 BFC、层叠与定位；移动端看 viewport、1px 与 rem/em；现代 CSS 看容器查询与 @layer。",
   "items": [
     {
       "id": "q-semantic",
@@ -35,8 +35,16 @@
             "value": " 等标签表达结构："
           },
           {
-            "type": "strong",
-            "value": "读屏可按键地标（landmark）跳转；"
+            "type": "text",
+            "value": "读屏可按键地标（"
+          },
+          {
+            "type": "code",
+            "value": "landmark"
+          },
+          {
+            "type": "text",
+            "value": "）跳转；"
           },
           {
             "type": "strong",
@@ -72,82 +80,6 @@
       ]
     },
     {
-      "id": "q-box",
-      "navLabel": "盒模型",
-      "question": "标准盒模型与 IE 盒模型差在哪？box-sizing 取值含义是什么？",
-      "questionNote": "差别在 width 算不算上 padding/border；项目里多半全局 border-box。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "标准盒模型的 width 不含 padding/border；border-box 把三者算进 width，定宽布局更省心。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "box-sizing: content-box"
-          },
-          {
-            "type": "text",
-            "value": "（默认）："
-          },
-          {
-            "type": "code",
-            "value": "width"
-          },
-          {
-            "type": "text",
-            "value": " 只含内容区，"
-          },
-          {
-            "type": "code",
-            "value": "padding/border"
-          },
-          {
-            "type": "text",
-            "value": " 往外扩，总占位 = width + padding + border。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "box-sizing: border-box"
-          },
-          {
-            "type": "text",
-            "value": "："
-          },
-          {
-            "type": "code",
-            "value": "width"
-          },
-          {
-            "type": "text",
-            "value": " 含内容 + padding + border，加 padding 不容易把整行撑破，栅格更好算。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "很多项目一上来全局写 "
-          },
-          {
-            "type": "code",
-            "value": "*, *::before, *::after { box-sizing: border-box }"
-          },
-          {
-            "type": "text",
-            "value": "，省得每个组件各自算宽度。"
-          }
-        ]
-      ]
-    },
-    {
       "id": "q-flex",
       "navLabel": "Flex 居中",
       "question": "如何实现元素的水平垂直居中？",
@@ -174,29 +106,21 @@
           },
           {
             "type": "text",
-            "value": "："
-          },
-          {
-            "type": "code",
-            "value": "display: flex; justify-content: center; align-items: center;"
-          },
-          {
-            "type": "text",
-            "value": "。"
+            "value": " 时，Flex 三行（display:flex + justify-content:center + align-items:center）即可。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "二维对齐："
+            "value": "二维对齐：Grid 的 "
           },
           {
             "type": "code",
-            "value": "display: grid; place-items: center;"
+            "value": "place-items: center"
           },
           {
             "type": "text",
-            "value": "，行列同时居中。"
+            "value": " 一行搞定行列同时居中。"
           }
         ],
         [
@@ -215,78 +139,24 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
             "type": "text",
-            "value": "水平垂直居中。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": ".box {\n  display: flex;\n  justify-content: center; /* 主轴居中 */\n  align-items: center; /* 交叉轴居中 */\n}"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-vertical-center",
-      "navLabel": "垂直居中",
-      "question": "CSS 垂直居中有哪些常用写法？",
-      "questionNote": "是否已知宽高、单行还是块，决定 Flex、Grid、绝对定位还是行高。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "先看知不知道宽高、是不是单行，再在 Flex / Grid / 定位 / 行高里选。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、Flex：容器 "
+            "value": "取舍：看场景选——单行/单块居中用 Flex 三行（"
           },
           {
             "type": "code",
-            "value": "align-items:center"
+            "value": "justify-content + align-items"
           },
           {
             "type": "text",
-            "value": "（主轴横向时）或双轴都 center。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、Grid："
+            "value": "）最直接；行列同时要对齐的二维场景用 Grid 的 "
           },
           {
             "type": "code",
-            "value": "place-items:center"
+            "value": "place-items"
           },
           {
             "type": "text",
-            "value": " 一行搞定行列居中。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、绝对定位 + "
-          },
-          {
-            "type": "code",
-            "value": "translate(-50%,-50%)"
-          },
-          {
-            "type": "text",
-            "value": "；单行文本也能用上下相等 padding 或 line-height。"
+            "value": "；只有要兼容极老浏览器才退回绝对定位方案。别再背 line-height 居中了，多行就破。"
           }
         ]
       ]
@@ -374,7 +244,15 @@
         [
           {
             "type": "text",
-            "value": "1、两栏：容器 "
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "两栏："
+          },
+          {
+            "type": "text",
+            "value": "容器 "
           },
           {
             "type": "code",
@@ -404,7 +282,15 @@
         [
           {
             "type": "text",
-            "value": "2、三栏：左右定宽、中间 "
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "三栏："
+          },
+          {
+            "type": "text",
+            "value": "左右定宽、中间 "
           },
           {
             "type": "code",
@@ -418,7 +304,15 @@
         [
           {
             "type": "text",
-            "value": "3、旧式 float + BFC 也能做，但维护更贵，新项目优先 Flex/Grid。"
+            "value": "3、旧式 float + BFC 也能做，但维护更贵，新项目优先 Flex/Grid。取舍：看场景选——侧栏定宽用 Flex 的 "
+          },
+          {
+            "type": "code",
+            "value": "flex:1"
+          },
+          {
+            "type": "text",
+            "value": " 最快；多栏比例复杂（圣杯、仪表盘）直接 Grid 声明列宽，改需求时只动一行模板。"
           }
         ]
       ]
@@ -521,18 +415,24 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
+            "type": "text",
+            "value": "「子绝父相」是最常用的搭配：父级 "
+          },
+          {
+            "type": "code",
+            "value": "relative"
           },
           {
             "type": "text",
-            "value": "父相子绝。"
-          }
-        ],
-        [
+            "value": " 不挪位置只当参照物，子级 "
+          },
           {
             "type": "code",
-            "value": ".parent { position: relative; } /* 给绝对定位子元素当参照 */\n.child {\n  position: absolute;\n  right: 0;\n  top: 0; /* 贴父级右上角 */\n}"
+            "value": "absolute"
+          },
+          {
+            "type": "text",
+            "value": " 贴着它定位。弹层定位跑偏时，先查中间有没有祖先开了 transform。"
           }
         ]
       ]
@@ -864,6 +764,12 @@
             "type": "text",
             "value": " / 高 z-index 遮罩做无障碍「视觉隐藏」时，要按场景选，别混用。"
           }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "取舍：看场景选——条件渲染占位变化大就用 display:none 或框架的 v-if；要保留布局只暂时不可见（如幻灯片）用 visibility；做淡入淡出动画用 opacity，但记得叠 pointer-events，否则「看不见的点得到」是真实出过的线上 bug。"
+          }
         ]
       ]
     },
@@ -880,13 +786,17 @@
           },
           {
             "type": "text",
-            "value": "单行用 nowrap + ellipsis；多行用 -webkit-line-clamp 裁行，或定高溢出。"
+            "value": "单行用 nowrap + ellipsis；多行用 -webkit-line-clamp 裁行，或定高溢出。两个前提：容器必须有限宽，且块本身要允许收缩。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、单行："
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "单行："
           },
           {
             "type": "code",
@@ -894,13 +804,17 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "，三件套缺一不可。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、多行："
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "多行："
           },
           {
             "type": "code",
@@ -908,21 +822,21 @@
           },
           {
             "type": "text",
-            "value": "，并 "
-          },
-          {
-            "type": "code",
-            "value": "overflow:hidden"
-          },
-          {
-            "type": "text",
-            "value": "。"
+            "value": " 加 overflow:hidden；名字带 -webkit 但主流浏览器都支持，可放心用。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、容器要有限宽；当 flex 子项时往往还要 "
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "文本块是 flex 子项时默认 min-width:auto，内容再长也不收缩，省略号死活出不来——补 "
           },
           {
             "type": "code",
@@ -930,7 +844,7 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": " 就好，这是最高频的「写了 ellipsis 不生效」原因。"
           }
         ]
       ]
@@ -962,7 +876,7 @@
           },
           {
             "type": "text",
-            "value": "：位移/缩放/旋转，常走上合成层，对性能更友好。"
+            "value": "：位移/缩放/旋转，常走上合成层，对性能更友好——所以做动效优先 transform 而不是改 top/left，后者每帧都触发重排。"
           }
         ],
         [
@@ -976,7 +890,7 @@
           },
           {
             "type": "text",
-            "value": "：适合 hover、状态切换这种「起点到终点」。"
+            "value": "：适合 hover、状态切换这种「起点到终点」，声明在初始态上，别只声明在 hover 态，否则移出时没过渡。"
           }
         ],
         [
@@ -999,6 +913,12 @@
           {
             "type": "text",
             "value": "：循环、多关键帧、进场动效；也能和 transition 叠着用。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "取舍：看场景选——两态过渡用 transition 足够；多段、循环、自动播放的用 animation；别用 JS setInterval 驱动样式，帧率和主线程占用都不可控。"
           }
         ]
       ]
@@ -1071,18 +991,16 @@
         ],
         [
           {
+            "type": "text",
+            "value": "4、"
+          },
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "坑："
           },
           {
             "type": "text",
-            "value": "跟随系统深色。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": ":root { color-scheme: light dark; }\n@media (prefers-color-scheme: dark) {\n  :root { --bg: #111; --fg: #eee; }\n}\nbody { background: var(--bg); color: var(--fg); }"
+            "value": "手动切换的状态要持久化（localStorage），且首屏渲染前就读出来挂上 class，否则页面先亮后暗闪一下；SSR 场景这段判断要内联在 HTML 头部同步执行。"
           }
         ]
       ]
@@ -1134,7 +1052,7 @@
         [
           {
             "type": "text",
-            "value": "3、可点区域尽量 ≥ 44px。"
+            "value": "3、可点区域尽量 ≥ 44px；iOS 输入框字号小于 16px 聚焦时会自动放大页面，把输入框字号定到 16px 起，这是移动端表单的经典坑。"
           }
         ]
       ]
@@ -1228,8 +1146,8 @@
     {
       "id": "q-mobile-1px",
       "navLabel": "移动端 1px",
-      "question": "高清屏上 1px 边框显得偏粗，有哪些常见处理方式？",
-      "questionNote": "设备像素比（DPR）>1 时，CSS 1px 会占多个物理像素；伪元素 + scale 是经典做法。",
+      "question": "移动端如何画 1px 边框？",
+      "questionNote": "先讲 DPR 导致 CSS 1px 偏粗；方案按热度：伪元素 + scale、viewport + rem、0.5px。",
       "answer": [
         [
           {
@@ -1238,7 +1156,15 @@
           },
           {
             "type": "text",
-            "value": "DPR（设备像素比）为 2/3 时，CSS 1px 对应多个物理像素，细线呈现为偏粗边框。"
+            "value": "CSS 的 1px 是逻辑像素。设备像素比（DPR）为 2/3 时，1 个 CSS 像素对应 2/3 个物理像素，"
+          },
+          {
+            "type": "code",
+            "value": "border: 1px"
+          },
+          {
+            "type": "text",
+            "value": " 看起来就会偏粗。目标是画出接近 1 物理像素的细线。"
           }
         ],
         [
@@ -1248,11 +1174,19 @@
           },
           {
             "type": "strong",
-            "value": "伪元素 + transform 缩放"
+            "value": "伪元素 + transform（最常用）："
           },
           {
             "type": "text",
-            "value": "："
+            "value": "去掉原边框，父级 "
+          },
+          {
+            "type": "code",
+            "value": "position: relative"
+          },
+          {
+            "type": "text",
+            "value": "；"
           },
           {
             "type": "code",
@@ -1260,21 +1194,75 @@
           },
           {
             "type": "text",
-            "value": " 画 1px 高，"
+            "value": " 绝对定位画 1px，再 "
           },
           {
             "type": "code",
-            "value": "scaleY(0.5)"
+            "value": "transform: scaleY(0.5)"
           },
           {
             "type": "text",
-            "value": " 再按 DPR 压细。"
+            "value": "（DPR=3 用 0.33）。四边可把伪元素宽高设成 200%，"
+          },
+          {
+            "type": "code",
+            "value": "scale(0.5)"
+          },
+          {
+            "type": "text",
+            "value": "，原点左上。老项目补丁优先这招。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、设计能接受时直接用 "
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "viewport + rem："
+          },
+          {
+            "type": "text",
+            "value": "按 DPR 把 "
+          },
+          {
+            "type": "code",
+            "value": "initial-scale"
+          },
+          {
+            "type": "text",
+            "value": " 设成 "
+          },
+          {
+            "type": "code",
+            "value": "1/dpr"
+          },
+          {
+            "type": "text",
+            "value": "（DPR=2 为 0.5，DPR=3 为 0.333），并同步调 rem 基准。之后照常写 "
+          },
+          {
+            "type": "code",
+            "value": "1px"
+          },
+          {
+            "type": "text",
+            "value": " 就是物理细线。适合整站 rem 的新项目，老项目改造成本高。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "0.5px："
+          },
+          {
+            "type": "text",
+            "value": "直接 "
           },
           {
             "type": "code",
@@ -1282,29 +1270,17 @@
           },
           {
             "type": "text",
-            "value": "（老设备不支持），或 hairline 类名配合 PostCSS 插件。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、抽成分隔线组件，别让每个业务手写一套。"
+            "value": "，写法最短；部分老 Android 会当成 0 或仍显示 1px，通常要先检测再加 class。"
           }
         ],
         [
           {
             "type": "strong",
-            "value": "示例："
+            "value": "取舍："
           },
           {
             "type": "text",
-            "value": "高清屏 1px 细线（示意）。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": ".hairline::after {\n  content: '';\n  position: absolute;\n  left: 0; right: 0; bottom: 0;\n  border-bottom: 1px solid #ccc; /* 先画 1 物理像素线 */\n  transform: scaleY(0.5); /* 再压成约 0.5px 视觉细线 */\n  transform-origin: 0 100%;\n}"
+            "value": "局部修补用伪元素 + scale；整站 rem 新项目可用 viewport 方案；现代机且能接受降级再上 0.5px。"
           }
         ]
       ]
@@ -1336,7 +1312,7 @@
           },
           {
             "type": "text",
-            "value": " + "
+            "value": " 让页面铺满全屏，再 "
           },
           {
             "type": "code",
@@ -1344,7 +1320,29 @@
           },
           {
             "type": "text",
-            "value": "，给固定底栏留白。"
+            "value": " 给固定底栏留白；顶部刘海同理用 "
+          },
+          {
+            "type": "code",
+            "value": "safe-area-inset-top"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "env() 要和 constant() 做过渡兼容（老 iOS），且只有 viewport-fit=cover 后这些值才非 0；底栏是 fixed 定位时 padding 要加在底栏自己身上，加在 body 上挡不住横条遮挡。"
           }
         ]
       ]
@@ -1368,31 +1366,71 @@
         [
           {
             "type": "text",
-            "value": "1、复用：颜色、间距、断点收进变量文件，mixin 包清浮动、截断、媒体查询等重复写法，改一处全站生效。"
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "复用："
+          },
+          {
+            "type": "text",
+            "value": "颜色、间距、断点收进变量文件，mixin 包清浮动、截断、媒体查询等重复写法，改一处全站生效。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、组织：按模块拆文件，用 @use 引入、带命名空间；@import 会重复产出，已不推荐。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "组织："
+          },
+          {
+            "type": "text",
+            "value": "按模块拆文件，用 @use 引入、带命名空间；@import 会重复产出，已不推荐。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、分工：预处理变量编译完就没了，不能运行时切换；换主题/品牌色要在根上覆盖 CSS 自定义属性。"
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "分工："
+          },
+          {
+            "type": "text",
+            "value": "预处理变量编译完就没了，不能运行时切换；换主题/品牌色要在根上覆盖 CSS 自定义属性。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、取舍：原生嵌套、自定义属性、:is 已经够用时，简单项目可以少引一层编译；复杂主题体系仍用预处理器组织。"
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "原生嵌套、自定义属性、:is 已经够用时，简单项目可以少引一层编译；复杂主题体系仍用预处理器组织。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5、调试：打开 source map 映射回源文件；产物别把整份变量和没用到的 mixin 打进去。"
+            "value": "5、"
+          },
+          {
+            "type": "strong",
+            "value": "调试："
+          },
+          {
+            "type": "text",
+            "value": "打开 source map 映射回源文件；产物别把整份变量和没用到的 mixin 打进去。"
           }
         ]
       ]
@@ -1416,31 +1454,159 @@
         [
           {
             "type": "text",
-            "value": "1、一致性：间距、色板、字号、断点写在配置里，只能从既有刻度取值，视觉差异自然收窄。"
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "一致性："
+          },
+          {
+            "type": "text",
+            "value": "间距、色板、字号、断点写在配置里，只能从既有刻度取值，视觉差异自然收窄。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、产物：按需扫描模板生成用到的类，没用的不进包；通常比全量组件库样式小，但模板必须在扫描范围内。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "产物："
+          },
+          {
+            "type": "text",
+            "value": "按需扫描模板生成用到的类，没用的不进包；通常比全量组件库样式小，但模板必须在扫描范围内。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、共存：组件库扛复杂交互和无障碍，原子类管布局、间距和细节覆盖；两边都会改样式时先约好优先级，别互相打补丁。"
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "共存："
+          },
+          {
+            "type": "text",
+            "value": "组件库扛复杂交互和无障碍，原子类管布局、间距和细节覆盖；两边都会改样式时先约好优先级，别互相打补丁。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、陷阱：用变量动态拼类名会扫不到，要改成固定映射表，或把这类类名写进白名单。"
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "陷阱："
+          },
+          {
+            "type": "text",
+            "value": "用变量动态拼类名会扫不到，要改成固定映射表，或把这类类名写进白名单。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "5、取舍：条件很绕的样式退回组件类或少量复用类，模板里留可读结构；团队约定书写顺序和命名边界。"
+            "value": "5、"
+          },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "条件很绕的样式退回组件类或少量复用类，模板里留可读结构；团队约定书写顺序和命名边界。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-css-modern",
+      "navLabel": "容器查询与 @layer",
+      "question": "容器查询、:has()、@layer 和 CSS Nesting 各自解决什么？怎么选？",
+      "questionNote": "容器查询按组件宽度变布局；:has() 按子元素选父；@layer 管层叠顺序；Nesting 减选择器重复。看组件规模选。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "这四样解决的是「组件自己适应、少写选择器、层叠可控」，不是新的居中技巧。看组件规模选，别为了新语法改完整个样式表。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "text",
+            "value": "容器查询与 "
+          },
+          {
+            "type": "code",
+            "value": ":has()"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "容器查询按最近容器宽度变卡片，不再只听视口。"
+          },
+          {
+            "type": "code",
+            "value": ":has()"
+          },
+          {
+            "type": "text",
+            "value": " 能按「里面有没有某子元素」选中父级，适合带图标的按钮、有错误态的表单项。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "code",
+            "value": "@layer"
+          },
+          {
+            "type": "text",
+            "value": " 与 "
+          },
+          {
+            "type": "code",
+            "value": "Nesting"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "@layer 把重置、组件、工具分成层，后写的工具类也能按层让路。Nesting 少重复选择器，编译器不是必须。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "设计系统、多主题适合 @layer；卡片流式布局适合容器查询。代价是旧浏览器和心智成本，团队规范没跟上就先别全盘替换。"
           }
         ]
       ]

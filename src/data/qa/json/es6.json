@@ -66,15 +66,7 @@
           },
           {
             "type": "text",
-            "value": "。存在声明提升，但处于"
-          },
-          {
-            "type": "strong",
-            "value": "暂时性死区（temporal dead zone，简称 TDZ）"
-          },
-          {
-            "type": "text",
-            "value": "——在声明语句之前访问会抛 "
+            "value": "。存在声明提升，但处于暂时性死区（TDZ）——在声明语句之前访问会抛 "
           },
           {
             "type": "code",
@@ -184,7 +176,11 @@
         [
           {
             "type": "text",
-            "value": "1、数组："
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "数组："
           },
           {
             "type": "code",
@@ -206,7 +202,11 @@
         [
           {
             "type": "text",
-            "value": "2、对象："
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "对象："
           },
           {
             "type": "code",
@@ -225,7 +225,7 @@
         ],
         [
           {
-            "type": "strong",
+            "type": "text",
             "value": "剩余 vs 展开："
           },
           {
@@ -370,7 +370,7 @@
         [
           {
             "type": "code",
-            "value": "const obj = {\n  n: 1,\n  // 不推荐：箭头拿不到 obj 当 this\n  bad: () => this.n,\n  // 推荐：普通方法\n  ok() { return this.n },\n  // 默认参数\n  add(x, y = 1) { return x + y },\n}"
+            "value": "const obj = {\n  n: 1,\n  bad: () => this.n,\n  ok() { return this.n },\n}"
           }
         ]
       ]
@@ -608,7 +608,7 @@
         [
           {
             "type": "code",
-            "value": "const user = { profile: null }\nuser.profile?.name      // undefined，不抛错\nuser.profile.name       // 抛错\n\n0 || 42   // 42（0 会被 || 当成假）\n0 ?? 42   // 0（只有 null/undefined 才用右侧）"
+            "value": "0 || 42  // 42\n0 ?? 42  // 0"
           }
         ]
       ]
@@ -640,7 +640,7 @@
           },
           {
             "type": "text",
-            "value": " 每次不同；"
+            "value": " 每次不同，因为每次都是新的唯一值；"
           },
           {
             "type": "code",
@@ -654,13 +654,17 @@
         [
           {
             "type": "text",
-            "value": "2、当对象私有/半私有字段、库内部标记，少被枚举覆盖。"
+            "value": "2、当对象私有/半私有字段、库内部标记，少被枚举覆盖，否则普通字符串键容易撞名。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、协议："
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "协议："
           },
           {
             "type": "code",
@@ -1004,7 +1008,7 @@
         [
           {
             "type": "code",
-            "value": "const a = { n: 1, o: { x: 2 } }\nconst shallow = { ...a }       // o 仍共享引用\nconst deep = structuredClone(a) // 现代环境深拷贝\n// JSON.parse(JSON.stringify(a))：Date 变字符串、Map 变空对象"
+            "value": "const a = { n: 1, o: { x: 2 } }\nconst shallow = { ...a }\nconst deep = structuredClone(a)"
           }
         ]
       ]
@@ -1107,8 +1111,12 @@
             "value": "）：走"
           },
           {
-            "type": "strong",
-            "value": "Iterator（遍历器）接口"
+            "type": "code",
+            "value": "Iterator"
+          },
+          {
+            "type": "text",
+            "value": "（遍历器）接口"
           },
           {
             "type": "text",
@@ -1212,7 +1220,31 @@
         [
           {
             "type": "text",
-            "value": "2、场景：自定义可迭代对象、惰性序列、可中断的任务步进。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "场景："
+          },
+          {
+            "type": "text",
+            "value": "自定义可迭代对象、惰性序列、可中断的任务步进；一次 "
+          },
+          {
+            "type": "code",
+            "value": "next"
+          },
+          {
+            "type": "text",
+            "value": " 只推进到下一个 "
+          },
+          {
+            "type": "code",
+            "value": "yield"
+          },
+          {
+            "type": "text",
+            "value": "。"
           }
         ],
         [
@@ -1305,8 +1337,12 @@
             "value": "："
           },
           {
-            "type": "strong",
-            "value": "谁先 settled"
+            "type": "text",
+            "value": "谁先 "
+          },
+          {
+            "type": "code",
+            "value": "settled"
           },
           {
             "type": "text",
@@ -1349,8 +1385,16 @@
             "value": "："
           },
           {
-            "type": "strong",
-            "value": "第一个 fulfilled 即成功"
+            "type": "text",
+            "value": "第一个 "
+          },
+          {
+            "type": "code",
+            "value": "fulfilled"
+          },
+          {
+            "type": "text",
+            "value": " 即成功"
           },
           {
             "type": "text",
@@ -1378,7 +1422,7 @@
         [
           {
             "type": "code",
-            "value": "const ps = [Promise.resolve(1), Promise.reject('e')]\n\nPromise.all(ps)        // 一项失败则整体失败\nPromise.allSettled(ps) // 等全部结束，带 status\nPromise.race(ps)       // 谁先完成用谁（成功或失败）\nPromise.any(ps)        // 谁先成功用谁；全失败才 AggregateError"
+            "value": "Promise.all(ps)\nPromise.allSettled(ps)\nPromise.race(ps)\nPromise.any(ps)"
           }
         ]
       ]
@@ -1403,8 +1447,16 @@
             "value": " 始终返回"
           },
           {
-            "type": "strong",
-            "value": "新的 Promise 实例"
+            "type": "text",
+            "value": "新的 "
+          },
+          {
+            "type": "code",
+            "value": "Promise"
+          },
+          {
+            "type": "text",
+            "value": " 实例"
           },
           {
             "type": "text",
@@ -1573,8 +1625,12 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "一定返回 Promise"
+            "type": "text",
+            "value": "一定返回 "
+          },
+          {
+            "type": "code",
+            "value": "Promise"
           },
           {
             "type": "text",
@@ -1682,7 +1738,15 @@
         [
           {
             "type": "text",
-            "value": "1、包装：新 Promise 在 abort 时 "
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "包装："
+          },
+          {
+            "type": "text",
+            "value": "新 Promise 在 abort 时 "
           },
           {
             "type": "code",
@@ -1753,7 +1817,7 @@
             "value": "ES6 "
           },
           {
-            "type": "strong",
+            "type": "code",
             "value": "class"
           },
           {
@@ -1842,7 +1906,15 @@
           },
           {
             "type": "text",
-            "value": " 调父类原型方法。"
+            "value": " 调父类原型方法。坑：派生类构造里必须先 "
+          },
+          {
+            "type": "code",
+            "value": "super()"
+          },
+          {
+            "type": "text",
+            "value": "，否则拿不到 this。"
           }
         ],
         [
@@ -1860,7 +1932,7 @@
           },
           {
             "type": "code",
-            "value": "typeof Class === \"function\""
+            "value": "function"
           },
           {
             "type": "text",
@@ -1869,8 +1941,16 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "对比 ES5："
+            "type": "text",
+            "value": "对比 "
+          },
+          {
+            "type": "code",
+            "value": "ES5"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",
@@ -1886,7 +1966,7 @@
           },
           {
             "type": "code",
-            "value": "Child.prototype = Object.create(Parent.prototype)"
+            "value": "Object.create"
           },
           {
             "type": "text",
@@ -1896,7 +1976,7 @@
         [
           {
             "type": "code",
-            "value": "class Animal {\n  constructor(name) { this.name = name }\n  speak() { return this.name } // 实例方法在原型上\n}\nclass Dog extends Animal {\n  constructor(name, age) {\n    super(name) // 必须先调父类构造\n    this.age = age\n  }\n}"
+            "value": "class Dog extends Animal {\n  constructor(name) { super(name) }\n}"
           }
         ]
       ]
@@ -1943,7 +2023,7 @@
             "value": "，在目标对象前架设拦截；"
           },
           {
-            "type": "strong",
+            "type": "code",
             "value": "handler"
           },
           {
@@ -1973,8 +2053,12 @@
             "value": "要操作 "
           },
           {
-            "type": "strong",
-            "value": "Proxy 实例"
+            "type": "code",
+            "value": "Proxy"
+          },
+          {
+            "type": "text",
+            "value": " 实例"
           },
           {
             "type": "text",
@@ -1991,8 +2075,12 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "Reflect 对象"
+            "type": "code",
+            "value": "Reflect"
+          },
+          {
+            "type": "text",
+            "value": " 对象"
           },
           {
             "type": "text",
@@ -2036,7 +2124,7 @@
         [
           {
             "type": "code",
-            "value": "const obj = { a: 1 }\nconst p = new Proxy(obj, {\n  get(target, key, receiver) {\n    console.log('get', key) // 拦截读取\n    // Reflect 保持 this/原型链语义与直接访问一致\n    return Reflect.get(target, key, receiver)\n  },\n})\np.a // 打印 get a，再返回 1"
+            "value": "const p = new Proxy(obj, {\n  get(t, k, r) { return Reflect.get(t, k, r) },\n})"
           }
         ]
       ]
@@ -2067,7 +2155,7 @@
             "value": " 返回"
           },
           {
-            "type": "strong",
+            "type": "code",
             "value": "Promise"
           },
           {

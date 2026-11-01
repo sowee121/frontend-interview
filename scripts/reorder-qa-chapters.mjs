@@ -15,12 +15,9 @@ const jsonDir = join(__dirname, '../src/data/qa/json')
 const CHAPTERS = {
   'html-css': {
     order: [
-      // 文档与盒模型
+      // 文档与布局
       'q-semantic',
-      'q-box',
-      // 布局：易 → 难
       'q-flex',
-      'q-vertical-center',
       'q-grid',
       'q-two-three-column',
       'q-position',
@@ -40,14 +37,11 @@ const CHAPTERS = {
       // 工程化 CSS
       'q-css-preprocessor',
       'q-tailwind',
+      'q-css-modern',
     ],
   },
   javascript: {
     order: [
-      // 类型与比较
-      'q-null-undefined',
-      'q-loose-equality',
-      'q-type-detection',
       'q-float-precision',
       // 作用域与闭包
       'q-hoisting',
@@ -67,8 +61,6 @@ const CHAPTERS = {
       'q-memory-leak',
       // 设计模式（稍难）
       'q-observer-pubsub',
-      'q-singleton',
-      'q-solid',
     ],
   },
   es6: {
@@ -95,7 +87,6 @@ const CHAPTERS = {
   typescript: {
     order: [
       'q-why',
-      'q-basic-types',
       'q-optional-union',
       'q-type-interface',
       'q-enum',
@@ -105,6 +96,9 @@ const CHAPTERS = {
       'q-type-assertion',
       'q-generics',
       'q-utility',
+      'q-satisfies',
+      'q-conditional-infer',
+      'q-template-literal-types',
       'q-strict-config',
       'q-module-declare',
     ],
@@ -113,8 +107,6 @@ const CHAPTERS = {
     order: [
       // Vue2 响应式与生命周期
       'q-vue2-reactivity-core',
-      'q-vue2-set-delete',
-      'q-vue2-array-reactive',
       'q-reactivity-track',
       'q-vue2-lifecycle',
       'q-vue2-nexttick',
@@ -134,6 +126,8 @@ const CHAPTERS = {
       'q-composition',
       'q-lifecycle-composition',
       'q-script-setup-define-props',
+      'q-define-model',
+      'q-shallow-ref',
       'q-teleport',
       'q-pinia',
     ],
@@ -172,6 +166,7 @@ const CHAPTERS = {
       'q-portal',
       'q-error-boundary',
       'q-suspense-lazy',
+      'q-rsc-server-actions',
     ],
   },
   miniprogram: {
@@ -204,7 +199,13 @@ const CHAPTERS = {
       'q-electron-ipc',
       'q-electron-pack',
       'q-electron-update',
+      'q-electron-sign',
+      'q-electron-utility-process',
       'q-electron-kiosk',
+      'q-electron-single-instance',
+      'q-electron-paths',
+      'q-electron-native-module',
+      'q-electron-crash',
     ],
   },
   browser: {
@@ -252,6 +253,8 @@ const CHAPTERS = {
   performance: {
     order: [
       'q-perf-overview',
+      'q-cwv-core',
+      'q-bfcache-hydrate',
       'q-white-screen',
       'q-longtask',
       'q-gpu-composite',
@@ -290,13 +293,11 @@ const CHAPTERS = {
   scenario: {
     order: [
       'q-mvc-mvp-mvvm',
-      'q-debounce-search',
       'q-infinite',
       'q-auth',
       'q-route-guard',
       'q-idempotent-submit',
       'q-upload-big',
-      'q-fcp',
       'q-ssr-ssg',
       'q-error',
       'q-telemetry',
@@ -327,7 +328,6 @@ const CHAPTERS = {
       'q-proj-order-state',
       'q-proj-order-sync',
       'q-proj-exam-state',
-      'q-proj-ws-push',
       'q-proj-cs-realtime',
       'q-proj-sse-assistant',
       // UI / 配置化
@@ -379,14 +379,8 @@ const CHAPTERS = {
       'q-node-bff',
       'q-node-env',
       'q-node-security',
-      'q-be-node-vs-python',
-      'q-be-mysql-sqlite',
-      'q-be-sql-basics',
       'q-be-pool-tx',
       'q-be-index',
-      'q-be-acid',
-      'q-be-db-lock',
-      'q-be-sharding',
       'q-be-redis',
       'q-be-cache-problems',
       'q-be-cache-consistency',
@@ -408,6 +402,8 @@ const CHAPTERS = {
       'q-ai-stream-post-sse',
       'q-ai-stream-parse-pitfalls',
       'q-ai-stream-events-state',
+      'q-ai-tool-call-ui',
+      'q-ai-quota-guard',
       'q-ai-reasoning-stream',
       'q-ai-stream-stop',
       'q-ai-regenerate-context',
@@ -425,6 +421,8 @@ const CHAPTERS = {
       'q-ai-review-code',
       'q-ai-hallucination',
       'q-ai-security',
+      'q-agent-permissions',
+      'q-agent-bad-diff',
       'q-ai-mcp',
       'q-agent-loop',
       'q-agent-plan-mode',

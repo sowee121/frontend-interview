@@ -27,8 +27,12 @@
             "value": "1、"
           },
           {
-            "type": "strong",
-            "value": "DNS："
+            "type": "code",
+            "value": "DNS"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",
@@ -69,8 +73,12 @@
             "value": "4、"
           },
           {
-            "type": "strong",
-            "value": "HTML 解析"
+            "type": "code",
+            "value": "HTML"
+          },
+          {
+            "type": "text",
+            "value": " 解析"
           },
           {
             "type": "text",
@@ -85,7 +93,7 @@
             "value": " 并行加载样式表，生成 "
           },
           {
-            "type": "strong",
+            "type": "code",
             "value": "CSSOM"
           },
           {
@@ -159,8 +167,24 @@
             "value": " 会阻塞 HTML 解析；字体未就绪可能触发"
           },
           {
-            "type": "strong",
-            "value": "字体阻塞显示（FOIT）/ 字体闪烁（FOUT）"
+            "type": "text",
+            "value": "字体阻塞显示（"
+          },
+          {
+            "type": "code",
+            "value": "FOIT"
+          },
+          {
+            "type": "text",
+            "value": "）/ 字体闪烁（"
+          },
+          {
+            "type": "code",
+            "value": "FOUT"
+          },
+          {
+            "type": "text",
+            "value": "）"
           },
           {
             "type": "text",
@@ -170,7 +194,15 @@
         [
           {
             "type": "text",
-            "value": "7、阻塞关系：CSS 不阻塞 DOM 解析，但会阻塞首次渲染（没有 CSSOM 就无法构建渲染树）；无 "
+            "value": "7、"
+          },
+          {
+            "type": "strong",
+            "value": "阻塞关系："
+          },
+          {
+            "type": "text",
+            "value": "CSS 不阻塞 DOM 解析，但会阻塞首次渲染（没有 CSSOM 就无法构建渲染树）；无 "
           },
           {
             "type": "code",
@@ -192,7 +224,11 @@
         [
           {
             "type": "text",
-            "value": "8、两个常用时机："
+            "value": "8、"
+          },
+          {
+            "type": "strong",
+            "value": "两个常用时机："
           },
           {
             "type": "code",
@@ -279,8 +315,16 @@
             "value": "：同样并行下载，但"
           },
           {
-            "type": "strong",
-            "value": "等 HTML 解析完"
+            "type": "text",
+            "value": "等 "
+          },
+          {
+            "type": "code",
+            "value": "HTML"
+          },
+          {
+            "type": "text",
+            "value": " 解析完"
           },
           {
             "type": "text",
@@ -314,7 +358,7 @@
         [
           {
             "type": "code",
-            "value": "<script src=\"a.js\"></script>          <!-- 阻塞解析 -->\n<script src=\"b.js\" defer></script>   <!-- 并行下载，DOMContentLoaded 前按序执行 -->\n<script src=\"c.js\" async></script>   <!-- 并行下载，完成即执行，顺序不定 -->"
+            "value": "<script src=\"a.js\"></script>\n<script src=\"b.js\" defer></script>\n<script src=\"c.js\" async></script>"
           }
         ]
       ]
@@ -426,11 +470,11 @@
         [
           {
             "type": "code",
-            "value": "addEventListener('click', fn, true)"
+            "value": "addEventListener"
           },
           {
             "type": "text",
-            "value": " 第三个参数 "
+            "value": " 第三个参数为 "
           },
           {
             "type": "code",
@@ -492,7 +536,7 @@
           },
           {
             "type": "text",
-            "value": " 只是回调执行一次后自动移除监听，与滚动无关。"
+            "value": " 只是回调执行一次后自动移除监听，与滚动无关。坑：捕获阶段拦下后，目标与冒泡都不会再到；委托写在冒泡阶段才接得住子节点。"
           }
         ],
         [
@@ -508,7 +552,7 @@
         [
           {
             "type": "code",
-            "value": "parent.addEventListener('click', fn, true)  // 捕获\nchild.addEventListener('click', (e) => {\n  e.stopPropagation() // 阻止继续传播\n})"
+            "value": "parent.addEventListener('click', fn, true)\nchild.addEventListener('click', (e) => e.stopPropagation())"
           }
         ]
       ]
@@ -531,7 +575,7 @@
         ],
         [
           {
-            "type": "strong",
+            "type": "code",
             "value": "Cookie"
           },
           {
@@ -539,8 +583,24 @@
             "value": "：单条约 4KB，"
           },
           {
-            "type": "strong",
-            "value": "按 domain / path 匹配自动携带"
+            "type": "text",
+            "value": "按 "
+          },
+          {
+            "type": "code",
+            "value": "domain"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "path"
+          },
+          {
+            "type": "text",
+            "value": " 匹配自动携带"
           },
           {
             "type": "text",
@@ -579,7 +639,7 @@
         ],
         [
           {
-            "type": "strong",
+            "type": "code",
             "value": "localStorage"
           },
           {
@@ -597,7 +657,7 @@
         ],
         [
           {
-            "type": "strong",
+            "type": "code",
             "value": "sessionStorage"
           },
           {
@@ -637,8 +697,12 @@
             "value": "1、"
           },
           {
-            "type": "strong",
-            "value": "localStorage："
+            "type": "code",
+            "value": "localStorage"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",
@@ -651,8 +715,12 @@
             "value": "2、"
           },
           {
-            "type": "strong",
-            "value": "IndexedDB："
+            "type": "code",
+            "value": "IndexedDB"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",
@@ -702,7 +770,7 @@
           },
           {
             "type": "text",
-            "value": "Strict 最严，仅同站请求带 Cookie；Lax 允许顶级 GET 跨站导航；None 不限制跨站，但必须配合 Secure。"
+            "value": "Strict 最严，仅同站请求带 Cookie；Lax 适合多数会话、允许顶级 GET 跨站导航；None 不限制跨站，但必须配合 Secure。"
           }
         ],
         [
@@ -796,7 +864,7 @@
         [
           {
             "type": "text",
-            "value": "1、会话标识应设 HttpOnly，降低 XSS 偷 Cookie 的成功率（不能防 CSRF）。"
+            "value": "1、会话标识应设 HttpOnly，降低 XSS 偷 Cookie 的成功率；它挡不住脚本改页面或发请求，也不能防 CSRF。"
           }
         ],
         [
@@ -860,7 +928,15 @@
         [
           {
             "type": "text",
-            "value": "3、选型看 CSRF 面、多端与过期刷新；不要混用两套又互不同步。"
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "看场景选："
+          },
+          {
+            "type": "text",
+            "value": "Cookie 会话适合同站 Web，Token 头适合多端；不要混用两套又互不同步。"
           }
         ]
       ]
@@ -912,7 +988,15 @@
         [
           {
             "type": "text",
-            "value": "3、跨源窗口通信也受限：嵌 iframe 时父读子 "
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "跨源窗口通信也受限："
+          },
+          {
+            "type": "text",
+            "value": "嵌 iframe 时父读子 "
           },
           {
             "type": "code",
@@ -1008,7 +1092,7 @@
           },
           {
             "type": "text",
-            "value": "，不信任意来源。"
+            "value": "，不信任意来源，否则恶意页能冒充指令。"
           }
         ],
         [
@@ -1058,7 +1142,7 @@
           },
           {
             "type": "code",
-            "value": "BroadcastChannel(\"foo\")"
+            "value": "BroadcastChannel"
           },
           {
             "type": "text",
@@ -1080,7 +1164,7 @@
           },
           {
             "type": "code",
-            "value": "localStorage.setItem"
+            "value": "localStorage"
           },
           {
             "type": "text",
@@ -1092,15 +1176,7 @@
           },
           {
             "type": "text",
-            "value": " 事件；监听 "
-          },
-          {
-            "type": "code",
-            "value": "window.addEventListener(\"storage\", ...)"
-          },
-          {
-            "type": "text",
-            "value": "，写入页自己不会收到。"
+            "value": " 事件；写入页自己不会收到，登出广播别只依赖本页监听。"
           }
         ],
         [
@@ -1110,7 +1186,7 @@
           },
           {
             "type": "code",
-            "value": "postMessage(data, targetOrigin)"
+            "value": "postMessage"
           },
           {
             "type": "text",
@@ -1148,7 +1224,7 @@
         [
           {
             "type": "code",
-            "value": "const bc = new BroadcastChannel('auth') // 同名频道跨标签页互通\nbc.postMessage({ type: 'logout' })\nbc.onmessage = (e) => {\n  if (e.data.type === 'logout') clearToken() // 收到后清本地登录态\n}"
+            "value": "bc.postMessage({ type: 'logout' })\nbc.onmessage = (e) => clearToken()"
           }
         ]
       ]
@@ -1293,8 +1369,12 @@
             "value": "适合重计算：大 CSV 解析、加解密、图像处理；"
           },
           {
-            "type": "strong",
-            "value": "不能操作 DOM"
+            "type": "text",
+            "value": "不能操作 "
+          },
+          {
+            "type": "code",
+            "value": "DOM"
           },
           {
             "type": "text",
@@ -1332,7 +1412,7 @@
         [
           {
             "type": "code",
-            "value": "// main\nconst w = new Worker('heavy.js')\nw.postMessage({ n: 1e7 })\nw.onmessage = (e) => console.log(e.data)\n\n// heavy.js\nonmessage = (e) => {\n  const result = heavyCompute(e.data.n)\n  postMessage(result)\n}"
+            "value": "const w = new Worker('heavy.js')\nw.postMessage({ n: 1e7 })\nw.onmessage = (e) => setResult(e.data)"
           }
         ]
       ]
@@ -1422,7 +1502,15 @@
         [
           {
             "type": "text",
-            "value": "2、策略：缓存优先 / 网络优先 / stale-while-revalidate，按资源类型选。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "策略："
+          },
+          {
+            "type": "text",
+            "value": "缓存优先 / 网络优先 / stale-while-revalidate，按资源类型选。"
           }
         ],
         [

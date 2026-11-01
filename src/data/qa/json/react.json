@@ -55,8 +55,16 @@
             "value": "3、"
           },
           {
-            "type": "strong",
-            "value": "与 Fiber："
+            "type": "text",
+            "value": "与 "
+          },
+          {
+            "type": "code",
+            "value": "Fiber"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",
@@ -87,8 +95,20 @@
             "value": "列表会插入、删除或排序时，"
           },
           {
-            "type": "strong",
-            "value": "不要用 index 当 key"
+            "type": "text",
+            "value": "不要用 "
+          },
+          {
+            "type": "code",
+            "value": "index"
+          },
+          {
+            "type": "text",
+            "value": " 当 "
+          },
+          {
+            "type": "code",
+            "value": "key"
           },
           {
             "type": "text",
@@ -285,12 +305,12 @@
             "value": "2、"
           },
           {
-            "type": "strong",
-            "value": "render（协调）："
+            "type": "code",
+            "value": "render"
           },
           {
             "type": "text",
-            "value": "跑函数组件，算出新虚拟树和副作用标记；并发模式下可暂停或丢掉过期结果。"
+            "value": "（协调）：跑函数组件，算出新虚拟树和副作用标记；并发模式下可暂停或丢掉过期结果。"
           }
         ],
         [
@@ -299,18 +319,26 @@
             "value": "3、"
           },
           {
-            "type": "strong",
-            "value": "commit（提交）："
+            "type": "code",
+            "value": "commit"
           },
           {
             "type": "text",
-            "value": "同步把变更落到 DOM，再跑 layout effect、被动 effect；这一段通常不能中断。"
+            "value": "（提交）：同步把变更落到 DOM，再跑 layout effect、被动 effect；这一段通常不能中断。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、少无效渲染：拆组件、"
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "少无效渲染："
+          },
+          {
+            "type": "text",
+            "value": "拆组件、"
           },
           {
             "type": "code",
@@ -398,17 +426,11 @@
         [
           {
             "type": "strong",
-            "value": "示例："
+            "value": "取舍："
           },
           {
             "type": "text",
-            "value": "受控 vs 非受控。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "// 受控\n<input value={v} onChange={(e) => setV(e.target.value)} />\n// 非受控\n<input defaultValue=\"hi\" ref={ref} />"
+            "value": "看场景选：需要即时校验、联动、禁用逻辑的用受控；只是提交时读一次值（搜索框、文件上传）用非受控，少跑一堆渲染。"
           }
         ]
       ]
@@ -457,8 +479,12 @@
             "value": "2、"
           },
           {
-            "type": "strong",
-            "value": "React 18 自动批处理："
+            "type": "code",
+            "value": "React"
+          },
+          {
+            "type": "text",
+            "value": " 18 自动批处理："
           },
           {
             "type": "text",
@@ -570,7 +596,11 @@
         [
           {
             "type": "text",
-            "value": "1、对象/数组应返回新引用："
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "对象/数组应返回新引用："
           },
           {
             "type": "code",
@@ -610,7 +640,11 @@
         [
           {
             "type": "text",
-            "value": "3、常见坑："
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "常见坑："
           },
           {
             "type": "code",
@@ -639,18 +673,16 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
+            "type": "text",
+            "value": "4、嵌套深时别一层层手写展开了，用 immer（"
+          },
+          {
+            "type": "code",
+            "value": "produce"
           },
           {
             "type": "text",
-            "value": "换新引用；连续累加用函数式更新。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "// 错：同一引用\nstate.items.push(x)\nsetState(state)\n\n// 对\nsetState({ ...state, items: [...state.items, x] })\nsetN((n) => n + 1)\nsetN((n) => n + 1) // 结果 +2"
+            "value": "）写可变语法产出新引用，可读性和正确性都好；代价是包体积加几 KB，看项目取舍。"
           }
         ]
       ]
@@ -723,18 +755,40 @@
         ],
         [
           {
+            "type": "text",
+            "value": "4、"
+          },
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "混用坑："
           },
           {
             "type": "text",
-            "value": "stopPropagation 作用在 React 树；与原生监听混用要对齐。"
-          }
-        ],
-        [
+            "value": "组件内 "
+          },
           {
             "type": "code",
-            "value": "function Box() {\n  useEffect(() => {\n    const onDoc = () => console.log('native doc')\n    document.addEventListener('click', onDoc) // 原生委托在 document\n    return () => document.removeEventListener('click', onDoc)\n  }, [])\n\n  return (\n    <div onClick={() => console.log('react')}>\n      {/* stopPropagation 只停 React 树，原生监听仍可能收到 */}\n      <button onClick={(e) => e.stopPropagation()}>只停 React 冒泡</button>\n    </div>\n  )\n}"
+            "value": "stopPropagation"
+          },
+          {
+            "type": "text",
+            "value": " 后，document 上的原生监听照样触发——很多「点击空白处关闭弹层」的 bug 就出在这。要么原生侧判断 "
+          },
+          {
+            "type": "code",
+            "value": "e.target"
+          },
+          {
+            "type": "text",
+            "value": " 是否在弹层内，要么统一走 React 的 "
+          },
+          {
+            "type": "code",
+            "value": "onClick"
+          },
+          {
+            "type": "text",
+            "value": " 体系，别两套混着写。"
           }
         ]
       ]
@@ -877,20 +931,16 @@
         ],
         [
           {
+            "type": "text",
+            "value": "不传第二参数：每次渲染后都执行，容易 "
+          },
+          {
             "type": "code",
-            "value": "不传第二参数"
+            "value": "setState"
           },
           {
             "type": "text",
-            "value": "：每次渲染后都执行，容易 "
-          },
-          {
-            "type": "strong",
-            "value": "setState 死循环"
-          },
-          {
-            "type": "text",
-            "value": " 或多余请求，现在基本别这么写。"
+            "value": " 死循环或多余请求，现在基本别这么写。"
           }
         ],
         [
@@ -940,7 +990,7 @@
         [
           {
             "type": "code",
-            "value": "useEffect(() => {\n  const ctrl = new AbortController()\n  fetch(`/api/user/${id}`, { signal: ctrl.signal })\n    .then(r => r.json())\n    .then(setUser)\n    .catch(e => { if (e.name !== \"AbortError\") throw e }) // 忽略主动取消\n  return () => ctrl.abort() // id 变或卸载：取消未完成的请求\n}, [id])"
+            "value": "useEffect(() => {\n  const ctrl = new AbortController()\n  fetch(`/api/user/${id}`, { signal: ctrl.signal })\n    .then(r => r.json()).then(setUser)\n  return () => ctrl.abort() // id 变或卸载时取消\n}, [id])"
           }
         ]
       ]
@@ -997,18 +1047,24 @@
         ],
         [
           {
+            "type": "text",
+            "value": "4、"
+          },
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "典型场景："
           },
           {
             "type": "text",
-            "value": "漏依赖时定时器读到陈旧 count。"
-          }
-        ],
-        [
+            "value": "定时器回调里打印 state，依赖写 "
+          },
           {
             "type": "code",
-            "value": "// 错：[] 里的 count 永远是初始值\nuseEffect(() => {\n  const id = setInterval(() => console.log(count), 1000)\n  return () => clearInterval(id)\n}, [])\n\n// 对：列入依赖，或用 ref 存最新值\nuseEffect(() => {\n  const id = setInterval(() => console.log(count), 1000)\n  return () => clearInterval(id)\n}, [count])"
+            "value": "[]"
+          },
+          {
+            "type": "text",
+            "value": " 就永远是初始值；要么把 state 列进依赖（每次变化重建定时器），要么用 ref 存最新值（定时器不重建），看你要哪种语义。"
           }
         ]
       ]
@@ -1040,7 +1096,11 @@
         [
           {
             "type": "text",
-            "value": "1、绑 DOM："
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "绑 DOM："
           },
           {
             "type": "code",
@@ -1062,7 +1122,15 @@
         [
           {
             "type": "text",
-            "value": "2、跨渲染存可变值：定时器 id、上一拍 props、最新回调。既躲开闭包旧值，又不会因为改它而重渲。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "跨渲染存可变值："
+          },
+          {
+            "type": "text",
+            "value": "定时器 id、上一拍 props、最新回调。既躲开闭包旧值，又不会因为改它而重渲。"
           }
         ],
         [
@@ -1081,8 +1149,16 @@
         ],
         [
           {
-            "type": "code",
-            "value": "const [n, setN] = useState(0)\nconst nRef = useRef(0)\nuseEffect(() => { nRef.current = n }, [n])\n// 定时器里读 nRef.current，始终是最新值"
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "看场景选：界面要反映的值放 state，不适合驱动渲染的值（定时器 id、最新回调、上一拍快照）放 ref；拿 ref 当 state 用是最常见的误用，界面不更新还以为是 bug。"
           }
         ]
       ]
@@ -1212,7 +1288,15 @@
         [
           {
             "type": "text",
-            "value": "1、共享的是逻辑，不是同一份 state：两个组件各调一次 "
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "共享的是逻辑，不是同一份 state："
+          },
+          {
+            "type": "text",
+            "value": "两个组件各调一次 "
           },
           {
             "type": "code",
@@ -1226,7 +1310,15 @@
         [
           {
             "type": "text",
-            "value": "2、和普通函数的差别：普通函数里不能调 "
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "和普通函数的差别："
+          },
+          {
+            "type": "text",
+            "value": "普通函数里不能调 "
           },
           {
             "type": "code",
@@ -1253,8 +1345,16 @@
         ],
         [
           {
-            "type": "code",
-            "value": "function useOnlineStatus() {\n  const [online, setOnline] = useState(true)\n  useEffect(() => {\n    const on = () => setOnline(true)\n    const off = () => setOnline(false)\n    window.addEventListener(\"online\", on)\n    window.addEventListener(\"offline\", off)\n    return () => { // 卸载时解绑，避免泄漏\n      window.removeEventListener(\"online\", on)\n      window.removeEventListener(\"offline\", off)\n    }\n  }, [])\n  return online // 每次调用各自一份 state\n}"
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "抽出去的 effect 记得返回清理函数（解绑事件、清定时器），不然组件卸载后监听还在，多挂几次就重复触发；这是自定义 Hook 最高频的泄漏来源。"
           }
         ]
       ]
@@ -1281,8 +1381,12 @@
             "value": "1、"
           },
           {
-            "type": "strong",
-            "value": "HOC："
+            "type": "code",
+            "value": "HOC"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",
@@ -1295,12 +1399,12 @@
             "value": "2、"
           },
           {
-            "type": "strong",
-            "value": "render props："
+            "type": "code",
+            "value": "render props"
           },
           {
             "type": "text",
-            "value": "把渲染函数当 prop（或 children 函数）注入数据。灵活，但 JSX 嵌套深，读起来累。"
+            "value": "：把渲染函数当 prop（或 children 函数）注入数据。灵活，但 JSX 嵌套深，读起来累。"
           }
         ],
         [
@@ -1309,8 +1413,16 @@
             "value": "3、"
           },
           {
-            "type": "strong",
-            "value": "自定义 Hook："
+            "type": "text",
+            "value": "自定义 "
+          },
+          {
+            "type": "code",
+            "value": "Hook"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",
@@ -1320,23 +1432,29 @@
         [
           {
             "type": "text",
-            "value": "4、仍用旧模式的场景：第三方库已提供 HOC；虚拟列表的 renderItem 一类「UI 槽位」仍适合函数 prop。"
-          }
-        ],
-        [
+            "value": "4、"
+          },
           {
             "type": "strong",
-            "value": "示例："
+            "value": "仍用旧模式的场景："
           },
           {
             "type": "text",
-            "value": "同一逻辑：自定义 Hook 通常比 HOC 更直观。"
+            "value": "第三方库已提供 HOC；虚拟列表的 renderItem 一类「UI 槽位」仍适合函数 prop。"
           }
         ],
         [
           {
-            "type": "code",
-            "value": "// Hook：直接复用状态逻辑\nfunction useWindowWidth() {\n  const [w, setW] = useState(window.innerWidth)\n  useEffect(() => {\n    const onResize = () => setW(window.innerWidth)\n    window.addEventListener('resize', onResize)\n    return () => window.removeEventListener('resize', onResize)\n  }, [])\n  return w\n}\n\n// HOC（老写法，嵌套与 props 透传更绕）\nfunction withWidth(Comp) {\n  return function Wrapped(props) {\n    const w = useWindowWidth()\n    return <Comp {...props} width={w} /> // 额外注入 width\n  }\n}"
+            "type": "text",
+            "value": "5、"
+          },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "看场景选：纯状态逻辑复用用 Hook；要给组件注入 props（老库的 withRouter 式）才用 HOC；要一个渲染槽位让父级决定长什么样（虚拟列表的 renderItem）用 render props。新代码别主动引入 HOC，包装地狱和 props 覆盖都是真实踩过的坑。"
           }
         ]
       ]
@@ -1426,13 +1544,35 @@
         [
           {
             "type": "text",
-            "value": "4、边界：不会把同步重算挪到 Worker；DOM 太多仍要虚拟列表。过渡更新可被更高优打断并重做。"
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "边界："
+          },
+          {
+            "type": "text",
+            "value": "不会把同步重算挪到 Worker；DOM 太多仍要虚拟列表。过渡更新可被更高优打断并重做。"
           }
         ],
         [
           {
-            "type": "code",
-            "value": "const [isPending, startTransition] = useTransition()\nsetQuery(v) // 紧急：输入立刻变\nstartTransition(() => setResults(filter(v))) // 非紧急"
+            "type": "text",
+            "value": "5、"
+          },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "看场景选：setState 在你手里用 useTransition；值从上游来、包不住那次更新时用 useDeferredValue。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "别把受控输入本身塞进 Transition，输入会明显变慢，这是最常见的误用。"
           }
         ]
       ]
@@ -1510,7 +1650,13 @@
         [
           {
             "type": "text",
-            "value": "取舍：先用 Profiler 找真正慢的子树再包。依赖常变、每次新建对象，包了也白包；子组件没 "
+            "value": "取舍：先用 Profiler 找真正慢的子树再包，看场景选：重算贵的值用 useMemo，稳函数引用用 useCallback，子树整体跳过用 memo。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "依赖常变、每次新建对象，包了也白包；子组件没 "
           },
           {
             "type": "code",
@@ -1531,18 +1677,8 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
             "type": "text",
-            "value": "三者常一起出现：memo 子组件 + 稳定函数/值。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "const List = memo(function List({ items, onSelect }) { // props 浅比较未变则跳过渲染\n  return items.map((it) => (\n    <button key={it.id} onClick={() => onSelect(it.id)}>{it.name}</button>\n  ))\n})\n\nconst onSelect = useCallback((id) => setActive(id), []) // 稳定函数引用\nconst visible = useMemo(() => items.filter((x) => x.ok), [items]) // 缓存过滤结果\nreturn <List items={visible} onSelect={onSelect} />"
+            "value": "三者常配合出现：memo 包住的子组件，配上 useCallback 稳定的函数引用和 useMemo 缓存的派生数据，浅比较才能真的命中；缺一环，memo 就被打穿。"
           }
         ]
       ]
@@ -1644,7 +1780,15 @@
         [
           {
             "type": "text",
-            "value": "4、坑：到处 "
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "到处 "
           },
           {
             "type": "code",
@@ -1757,18 +1901,16 @@
         ],
         [
           {
+            "type": "text",
+            "value": "6、"
+          },
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "反例："
           },
           {
             "type": "text",
-            "value": "父子回调与状态提升。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "function Parent() {\n  const [q, setQ] = useState('') // 状态提升：兄弟共享同一份 query\n  return (\n    <>\n      <SearchBox value={q} onChange={setQ} />\n      <ResultList query={q} />\n    </>\n  )\n}\n\nfunction SearchBox({ value, onChange }) {\n  // 子 → 父：通过回调回传\n  return <input value={value} onChange={(e) => onChange(e.target.value)} />\n}"
+            "value": "兄弟组件共享一个输入框的值，最简做法是把 state 提到共同祖先再分发；别为这也上全局 store，状态放越远，追踪谁改的越费劲。"
           }
         ]
       ]
@@ -1833,18 +1975,24 @@
         ],
         [
           {
+            "type": "text",
+            "value": "3、"
+          },
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "典型坑："
           },
           {
             "type": "text",
-            "value": "Provider value 用 useMemo 稳住引用。"
-          }
-        ],
-        [
+            "value": "Provider 上直接写字面量 "
+          },
           {
             "type": "code",
-            "value": "const ThemeCtx = createContext(null)\n\nfunction App() {\n  const [theme, setTheme] = useState('light')\n  // 稳住 value 引用，避免无意义的 consumer 重渲染\n  const value = useMemo(() => ({ theme, setTheme }), [theme])\n  return (\n    <ThemeCtx.Provider value={value}>\n      <Page />\n    </ThemeCtx.Provider>\n  )\n}\n\nfunction Page() {\n  const { theme } = useContext(ThemeCtx)\n  return <div data-theme={theme} />\n}"
+            "value": "value={{ theme, setTheme }}"
+          },
+          {
+            "type": "text",
+            "value": "，每次父组件渲染都是新引用，consumer 全量重渲；用 useMemo 稳住引用，这是 Context 性能的第一课。"
           }
         ]
       ]
@@ -1931,18 +2079,16 @@
         ],
         [
           {
+            "type": "text",
+            "value": "5、"
+          },
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "取舍："
           },
           {
             "type": "text",
-            "value": "多字段、按 action 分支更新。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "function reducer(state, action) {\n  switch (action.type) {\n    case 'inc':\n      return { ...state, n: state.n + 1 } // 返回新对象\n    case 'setName':\n      return { ...state, name: action.name }\n    default:\n      return state\n  }\n}\n\nconst [state, dispatch] = useReducer(reducer, { n: 0, name: '' })\ndispatch({ type: 'inc' }) // 只描述意图，不直接改 state"
+            "value": "看场景选：一两个标量 state 用 useState 就够；更新逻辑有明确动作语义（提交/撤销/重置）、多字段联动、或想在 reducer 里单测状态流转，用 useReducer；跨组件共享才是状态库的事，别拿 reducer 当全局方案。"
           }
         ]
       ]
@@ -2001,18 +2147,24 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
+            "type": "text",
+            "value": "RTK 里 "
+          },
+          {
+            "type": "code",
+            "value": "createSlice"
           },
           {
             "type": "text",
-            "value": "RTK createSlice 常见写法。"
-          }
-        ],
-        [
+            "value": " 内置 Immer，reducer 里写「看起来直接改」的语法也会产出新引用；读侧用 "
+          },
           {
             "type": "code",
-            "value": "const counterSlice = createSlice({\n  name: 'counter',\n  initialState: { n: 0 },\n  reducers: {\n    inc(state) { state.n += 1 }, // Immer：可「看起来」直接改\n  },\n})\n\nstore.dispatch(counterSlice.actions.inc())\nconst n = useSelector((s) => s.counter.n) // 按切片订阅"
+            "value": "useSelector"
+          },
+          {
+            "type": "text",
+            "value": " 按切片订阅，注意 selector 返回新对象字面量会每次渲染都换引用，要么拆多个 selector，要么上浅比较。"
           }
         ]
       ]
@@ -2030,27 +2182,35 @@
           },
           {
             "type": "text",
-            "value": "Zustand 轻量、基于 hooks，"
-          },
-          {
-            "type": "code",
-            "value": "create((set) => ({ count, inc: () => set(...) }))"
-          },
-          {
-            "type": "text",
-            "value": "；可按 selector 订切片，少 Provider 嵌套。"
+            "value": "Zustand 轻量、基于 hooks，按 selector 订切片，少 Provider 嵌套。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、中小项目、想快速挂全局状态：Zustand 接入成本低。"
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "中小项目、想快速挂全局状态："
+          },
+          {
+            "type": "text",
+            "value": "Zustand 接入成本低。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、大型团队、强规范、中间件生态、时间旅行调试：Redux + RTK 仍常见。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "大型团队、强规范、中间件生态、时间旅行调试："
+          },
+          {
+            "type": "text",
+            "value": "Redux + RTK 仍常见。"
           }
         ],
         [
@@ -2061,18 +2221,16 @@
         ],
         [
           {
+            "type": "text",
+            "value": "4、"
+          },
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "取舍："
           },
           {
             "type": "text",
-            "value": "create + selector 订阅切片。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "const useStore = create((set) => ({\n  count: 0,\n  inc: () => set((s) => ({ count: s.count + 1 })),\n}))\n\nconst count = useStore((s) => s.count) // selector：只订 count\nconst inc = useStore((s) => s.inc)"
+            "value": "看团队规模和场景：Zustand 适合中小团队快速迭代，selector 订阅天然防多余重渲；代价是弱约束，store 怎么组织全靠自觉，大团队容易写出意大利面。Redux/RTK 样板多但边界清晰，动作可追溯，适合多人协作的大项目。"
           }
         ]
       ]
@@ -2086,7 +2244,7 @@
         [
           {
             "type": "strong",
-            "value": "问题："
+            "value": "要点："
           },
           {
             "type": "text",
@@ -2098,10 +2256,14 @@
           },
           {
             "type": "text",
-            "value": " 拿不到内部 DOM 或方法。"
+            "value": " 拿不到内部 DOM 或方法；forwardRef 就是把这个 ref 透传进去。"
           }
         ],
         [
+          {
+            "type": "text",
+            "value": "1、"
+          },
           {
             "type": "code",
             "value": "forwardRef((props, ref) => <input ref={ref} />)"
@@ -2114,7 +2276,7 @@
         [
           {
             "type": "text",
-            "value": "配合 "
+            "value": "2、配合 "
           },
           {
             "type": "code",
@@ -2122,13 +2284,13 @@
           },
           {
             "type": "text",
-            "value": " 可只暴露 focus、scroll 等有限方法，而不是整个 DOM 节点。"
+            "value": " 可只暴露 focus、scroll 等有限方法，而不是整个 DOM 节点。组件库优先这种写法，暴露面越小，内部实现越敢改。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "较新版本里 "
+            "value": "3、较新版本里 "
           },
           {
             "type": "code",
@@ -2136,23 +2298,7 @@
           },
           {
             "type": "text",
-            "value": " 也可当普通 prop 传入函数组件，forwardRef 场景在变少；存量代码与组件库仍常见。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "转发 DOM ref，或暴露有限命令式 API。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "const Input = forwardRef(function Input(props, ref) {\n  return <input ref={ref} {...props} /> // 把父 ref 绑到真实 DOM\n})\n\nconst FancyInput = forwardRef(function FancyInput(props, ref) {\n  const inputRef = useRef(null)\n  useImperativeHandle(ref, () => ({\n    focus: () => inputRef.current?.focus(), // 只暴露有限方法\n  }))\n  return <input ref={inputRef} {...props} />\n})"
+            "value": " 也可当普通 prop 传入函数组件，forwardRef 场景在变少；存量代码与组件库仍常见，别盲目重构掉。"
           }
         ]
       ]
@@ -2166,15 +2312,23 @@
         [
           {
             "type": "strong",
-            "value": "作用："
+            "value": "要点："
           },
           {
             "type": "text",
             "value": "把子树渲到"
           },
           {
-            "type": "strong",
-            "value": "任意 DOM 容器"
+            "type": "text",
+            "value": "任意 "
+          },
+          {
+            "type": "code",
+            "value": "DOM"
+          },
+          {
+            "type": "text",
+            "value": " 容器"
           },
           {
             "type": "text",
@@ -2194,19 +2348,19 @@
           },
           {
             "type": "text",
-            "value": " 裁剪。"
+            "value": " 裁剪和 z-index 层叠上下文。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "Modal、Dropdown、Tooltip 常用。事件仍按 React 组件树冒泡，不是按 DOM 父子关系。"
+            "value": "1、Modal、Dropdown、Tooltip 常用。事件仍按 React 组件树冒泡，不是按 DOM 父子关系——所以在 portal 里 stopPropagation，拦不住 React 树上的父组件监听，这是个反直觉的坑。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "服务端渲染（SSR）时目标容器要在服务端存在，或客户端 mount 后再 "
+            "value": "2、服务端渲染（SSR）时目标容器要在服务端存在，或客户端 mount 后再 "
           },
           {
             "type": "code",
@@ -2214,23 +2368,13 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "，否则 hydration 对不上。"
           }
         ],
         [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
           {
             "type": "text",
-            "value": "弹层挂到 body，避开父级 overflow。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "function Modal({ children }) {\n  return createPortal(\n    <div className=\"modal-mask\">{children}</div>,\n    document.body, // DOM 挂到 body；事件仍按 React 树冒泡\n  )\n}"
+            "value": "3、弹层挂到 body 后，样式作用域和主题变量也跟着变了；用 CSS 变量方案的主题，要确认变量定义在 :root 或 portal 容器也能继承到。"
           }
         ]
       ]
@@ -2276,7 +2420,15 @@
         [
           {
             "type": "text",
-            "value": "2、捕不到：事件处理、异步回调、服务端、边界自身错误——那些要自行 try/catch 或上报。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "捕不到："
+          },
+          {
+            "type": "text",
+            "value": "事件处理、异步回调、服务端、边界自身错误——那些要自行 try/catch 或上报。"
           }
         ],
         [
@@ -2287,18 +2439,24 @@
         ],
         [
           {
+            "type": "text",
+            "value": "4、"
+          },
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "实践："
           },
           {
             "type": "text",
-            "value": "类组件边界 + 降级 UI。"
-          }
-        ],
-        [
+            "value": "按路由或独立模块各包一层，某块挂了只降级那一块，别整树白屏；"
+          },
           {
             "type": "code",
-            "value": "class ErrorBoundary extends React.Component {\n  state = { error: null }\n  static getDerivedStateFromError(error) {\n    return { error } // 渲染期切到降级 UI\n  }\n  componentDidCatch(error, info) {\n    report(error, info) // 上报；捕不到事件/异步里的抛错\n  }\n  render() {\n    if (this.state.error) return <Fallback />\n    return this.props.children\n  }\n}"
+            "value": "componentDidCatch"
+          },
+          {
+            "type": "text",
+            "value": " 里把组件栈一起上报监控，不然只有报错信息没有现场。函数组件想省事可用 react-error-boundary 库，底层仍是类组件。"
           }
         ]
       ]
@@ -2369,18 +2527,84 @@
         ],
         [
           {
+            "type": "text",
+            "value": "标准组合是 ErrorBoundary 包 Suspense：lazy chunk 网络失败时 Suspense 不管 error，会一路抛到边界；只包 Suspense 不包边界，弱网用户看到的就是白屏。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-rsc-server-actions",
+      "navLabel": "RSC 与 Server Actions",
+      "question": "React Server Components 和 Server Actions 的边界在哪？use() 适合放哪？",
+      "questionNote": "RSC 在服务端跑、不进客户端包；要交互才标 Client。use() 读 Promise；Action 走表单变更，不是随便当 RPC。",
+      "answer": [
+        [
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "要点："
           },
           {
             "type": "text",
-            "value": "路由级拆包与加载占位。"
+            "value": "服务端组件（RSC）在服务端跑完再把结果序列化下来，默认不进客户端 bundle。要有状态、事件或浏览器 API，必须标成 Client Component。"
           }
         ],
         [
           {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "边界："
+          },
+          {
+            "type": "text",
+            "value": "Client 边界以下的子树默认也进客户端包，所以只把按钮、表单这类叶子标 client，别把整页标成 client，否则 RSC 的体积收益就没了。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
             "type": "code",
-            "value": "const Page = lazy(() => import('./Page')) // 路由/模块级拆包\n\nexport function App() {\n  return (\n    <ErrorBoundary> {/* 加载失败要边界，Suspense 不管 error */}\n      <Suspense fallback={<Skeleton />}>\n        <Page />\n      </Suspense>\n    </ErrorBoundary>\n  )\n}"
+            "value": "use"
+          },
+          {
+            "type": "text",
+            "value": " 与 "
+          },
+          {
+            "type": "code",
+            "value": "Actions"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "code",
+            "value": "use()"
+          },
+          {
+            "type": "text",
+            "value": " 在渲染里解开服务端 Promise，交给 Suspense 等数据。Server Actions 适合表单提交和变更；入参会过网序列化，不能塞函数或 DOM 节点。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "密钥、连库、鉴权只能留在服务端。Action 失败要能回滚乐观 UI；看场景，中后台内部工具未必值得上 RSC，代价是部署模型和心智都更重。"
           }
         ]
       ]

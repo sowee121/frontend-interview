@@ -2,331 +2,9 @@
   "slug": "javascript",
   "title": "JavaScript",
   "documentTitle": "JavaScript",
-  "description": "类型与作用域、原型与 this、事件循环，以及防抖节流、事件委托与常见内存泄漏。",
-  "lead": "运行时三条主线：作用域与类型、原型与 this、事件循环；再落到防抖节流、事件委托与内存泄漏。",
+  "description": "作用域与闭包、原型与 this、事件循环，以及防抖节流、事件委托与常见内存泄漏。",
+  "lead": "运行时三条主线：作用域与闭包、原型与 this、事件循环；再落到防抖节流、事件委托与内存泄漏。",
   "items": [
-    {
-      "id": "q-null-undefined",
-      "navLabel": "null 和 undefined",
-      "question": "null 与 undefined 差在哪？typeof null 为何返回 object？",
-      "questionNote": "undefined 是缺省未赋值；null 是主动置空；typeof null 返回 \"object\" 是历史包袱。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "undefined 表示缺省未赋值，null 表示主动置空；语义不同，判空和比较也别混着用。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "undefined"
-          },
-          {
-            "type": "text",
-            "value": " 常见于声明未初始化、对象缺 key、函数少传参。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "null"
-          },
-          {
-            "type": "text",
-            "value": " 由开发者显式赋上，用来释放引用或对接后端空字段。"
-          },
-          {
-            "type": "code",
-            "value": "typeof undefined === 'undefined'"
-          },
-          {
-            "type": "text",
-            "value": "；"
-          },
-          {
-            "type": "code",
-            "value": "typeof null === 'object'"
-          },
-          {
-            "type": "text",
-            "value": " 源于早期实现将空对象标签误用于 null，是历史遗留。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "判断 null 使用 "
-          },
-          {
-            "type": "code",
-            "value": "x === null"
-          },
-          {
-            "type": "text",
-            "value": "；要同时盖住 null 和 undefined 时，"
-          },
-          {
-            "type": "code",
-            "value": "x == null"
-          },
-          {
-            "type": "text",
-            "value": " 是少数还能接受的 "
-          },
-          {
-            "type": "code",
-            "value": "=="
-          },
-          {
-            "type": "text",
-            "value": " 用法，其余比较多用 "
-          },
-          {
-            "type": "code",
-            "value": "==="
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-loose-equality",
-      "navLabel": "== 与 ===",
-      "question": "== 与 === 差在哪？如何理解抽象相等比较（Abstract Equality Comparison）？",
-      "questionNote": "=== 类型不同直接 false；== 会走抽象相等比较做隐式转换。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "code",
-            "value": "==="
-          },
-          {
-            "type": "text",
-            "value": " 严格相等，类型不同直接为 false；"
-          },
-          {
-            "type": "code",
-            "value": "=="
-          },
-          {
-            "type": "text",
-            "value": " 宽松相等，按规范执行隐式类型转换。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "==="
-          },
-          {
-            "type": "text",
-            "value": " 不做隐式转换，业务代码默认用它，最好读。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "=="
-          },
-          {
-            "type": "text",
-            "value": " 走"
-          },
-          {
-            "type": "strong",
-            "value": "抽象相等比较（Abstract Equality Comparison）"
-          },
-          {
-            "type": "text",
-            "value": "，涉及 ToPrimitive、数字与字符串互转等规则。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "典型陷阱："
-          },
-          {
-            "type": "code",
-            "value": "[] == false"
-          },
-          {
-            "type": "text",
-            "value": " 为真、"
-          },
-          {
-            "type": "code",
-            "value": "null == undefined"
-          },
-          {
-            "type": "text",
-            "value": " 为真；"
-          },
-          {
-            "type": "code",
-            "value": "x == null"
-          },
-          {
-            "type": "text",
-            "value": " 判空是刻意用法。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "工程上默认 "
-          },
-          {
-            "type": "code",
-            "value": "==="
-          },
-          {
-            "type": "text",
-            "value": "，需要转换就显式 "
-          },
-          {
-            "type": "code",
-            "value": "Number()"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "String()"
-          },
-          {
-            "type": "text",
-            "value": "，别靠隐式转换。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-type-detection",
-      "navLabel": "类型判断",
-      "question": "如何判断数组、null 与日期等类型？typeof 与 instanceof 是否足够？",
-      "questionNote": "原始类型看 typeof；原型链看 instanceof；对象精确类型用 Object.prototype.toString。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "code",
-            "value": "typeof"
-          },
-          {
-            "type": "text",
-            "value": " 适合原始类型；"
-          },
-          {
-            "type": "code",
-            "value": "instanceof"
-          },
-          {
-            "type": "text",
-            "value": " 依赖原型链；精确判断对象类型多用 "
-          },
-          {
-            "type": "code",
-            "value": "Object.prototype.toString"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "typeof null === \"object\""
-          },
-          {
-            "type": "text",
-            "value": " 是历史坑，null 要单独用 "
-          },
-          {
-            "type": "code",
-            "value": "x === null"
-          },
-          {
-            "type": "text",
-            "value": " 判断。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "instanceof"
-          },
-          {
-            "type": "text",
-            "value": " 跨 iframe 或改过 prototype 后可能失效，对基本类型没意义。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "更稳："
-          },
-          {
-            "type": "code",
-            "value": "Object.prototype.toString.call(x)"
-          },
-          {
-            "type": "text",
-            "value": " 返回 "
-          },
-          {
-            "type": "code",
-            "value": "[object Array]"
-          },
-          {
-            "type": "text",
-            "value": " 等；数组优先用 "
-          },
-          {
-            "type": "code",
-            "value": "Array.isArray(x)"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "常用可靠判断对照。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "Array.isArray([])                 // true\nObject.prototype.toString.call(null) // '[object Null]'\nObject.prototype.toString.call(new Date()) // '[object Date]'\ntypeof null                        // 'object'（历史坑）"
-          }
-        ]
-      ]
-    },
     {
       "id": "q-float-precision",
       "navLabel": "浮点数精度",
@@ -340,13 +18,21 @@
           },
           {
             "type": "text",
-            "value": "JS 数字是 IEEE 754 双精度浮点，很多十进制小数存不准，直接比会有误差。"
+            "value": "JS 数字是 IEEE 754 双精度浮点，很多十进制小数存不准，因为二进制无法精确表示 0.1。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、金额等场景：用整数分存储，或借助 "
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "金额等场景："
+          },
+          {
+            "type": "text",
+            "value": "用整数分存储，或借助 "
           },
           {
             "type": "code",
@@ -916,7 +602,7 @@
         [
           {
             "type": "code",
-            "value": "fn.call(obj, 1, 2)      // 立刻执行，参数列表\nfn.apply(obj, [1, 2])   // 立刻执行，参数数组\nconst g = fn.bind(obj, 1) // 返回绑定 this 的新函数\ng(2)"
+            "value": "fn.call(obj, 1, 2)\nfn.apply(obj, [1, 2])\nconst g = fn.bind(obj, 1)\ng(2)"
           }
         ]
       ]
@@ -1094,7 +780,7 @@
           },
           {
             "type": "code",
-            "value": "Promise.then/catch/finally"
+            "value": "Promise.then"
           },
           {
             "type": "text",
@@ -1140,15 +826,15 @@
           },
           {
             "type": "code",
-            "value": "I/O 回调"
+            "value": "I/O"
           },
           {
             "type": "text",
-            "value": "、"
+            "value": " 回调、"
           },
           {
             "type": "code",
-            "value": "postMessage / MessageChannel"
+            "value": "MessageChannel"
           },
           {
             "type": "text",
@@ -1182,7 +868,7 @@
           },
           {
             "type": "text",
-            "value": " 优先于 Promise 微任务；浏览器无 nextTick。执行顺序：同步 → 微任务 → 宏任务。"
+            "value": " 优先于 Promise 微任务；浏览器无 nextTick。执行顺序：同步 → 微任务 → 宏任务。坑：微任务里若不断入队新的 then，本轮渲染会被拖住。"
           }
         ],
         [
@@ -1198,7 +884,7 @@
         [
           {
             "type": "code",
-            "value": "console.log(1)\nsetTimeout(() => console.log(2), 0)\nPromise.resolve().then(() => console.log(3))\nconsole.log(4)\n// 输出：1 4 3 2"
+            "value": "setTimeout(() => log(2))\nPromise.resolve().then(() => log(3)) // 3 then 2"
           }
         ]
       ]
@@ -1230,7 +916,7 @@
           },
           {
             "type": "text",
-            "value": " / 未 await 的 Promise 抛错不会进入外层 try。"
+            "value": " / 未 await 的 Promise 抛错不会进入外层 try，因为回调已离开当前调用栈。"
           }
         ],
         [
@@ -1364,7 +1050,7 @@
         [
           {
             "type": "code",
-            "value": "function debounce(fn, wait) {\n  let t\n  return function (...args) {\n    clearTimeout(t) // 每次触发先取消上一次\n    t = setTimeout(() => fn.apply(this, args), wait) // 静止 wait 后再跑\n  }\n}\n// 搜索：onInput={debounce(fetchList, 300)}"
+            "value": "function debounce(fn, wait) {\n  let t\n  return (...args) => {\n    clearTimeout(t)\n    t = setTimeout(() => fn.apply(this, args), wait)\n  }\n}"
           }
         ]
       ]
@@ -1396,7 +1082,29 @@
           },
           {
             "type": "text",
-            "value": " 区分真实点击源。"
+            "value": " 区分真实点击源；点到图标时要用 "
+          },
+          {
+            "type": "code",
+            "value": "closest"
+          },
+          {
+            "type": "text",
+            "value": " 回到行，否则拿到的是子节点。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "坑：子节点若 "
+          },
+          {
+            "type": "code",
+            "value": "stopPropagation"
+          },
+          {
+            "type": "text",
+            "value": "，父级委托收不到；后插入的子元素不用重绑，这是委托的收益。列表、表格这类子节点多且会增删的场景更合适。"
           }
         ],
         [
@@ -1412,7 +1120,7 @@
         [
           {
             "type": "code",
-            "value": "list.addEventListener('click', (e) => {\n  const item = e.target.closest('[data-id]') // 从点击目标向上找行\n  if (!item || !list.contains(item)) return // 点在空白或外部则忽略\n  console.log(item.dataset.id)\n})"
+            "value": "list.onclick = (e) => {\n  const row = e.target.closest('[data-id]')\n  if (row) open(row.dataset.id)\n}"
           }
         ]
       ]
@@ -1436,7 +1144,15 @@
         [
           {
             "type": "text",
-            "value": "1、委托场景：监听挂在父节点，"
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "委托场景："
+          },
+          {
+            "type": "text",
+            "value": "监听挂在父节点，"
           },
           {
             "type": "code",
@@ -1542,19 +1258,39 @@
         [
           {
             "type": "text",
-            "value": "1、观察者：被观察对象自己维护列表，状态变了同步调用；耦合点是「双方认识彼此」。"
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "观察者："
+          },
+          {
+            "type": "text",
+            "value": "被观察对象自己维护列表，状态变了同步调用；耦合点是「双方认识彼此」。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、发布订阅：双方只跟事件总线打交道，按事件名注册和派发，跨模块更容易解耦。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "发布订阅："
+          },
+          {
+            "type": "text",
+            "value": "双方只跟事件总线打交道，按事件名注册和派发，跨模块更容易解耦。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、前端："
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "前端："
           },
           {
             "type": "code",
@@ -1563,90 +1299,6 @@
           {
             "type": "text",
             "value": " / 自定义事件偏观察者；全局 event bus、消息中间件偏发布订阅。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-singleton",
-      "navLabel": "单例模式",
-      "question": "什么是单例模式？前端哪些场景会用到？",
-      "questionNote": "全局只保留一个实例，并提供统一入口；适合真正全局的配置或请求实例。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "保证某一类全局只有一个实例，并给统一入口。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、常见写法：模块顶层直接导出一份实例；或惰性创建（第一次调用再 new）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、场景：全局弹层/Toast、请求层 axios 实例、少量真正的全局配置。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、边界：会随用户变的状态少用单例，容易串数据；测试时记得重置。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-solid",
-      "navLabel": "SOLID 原则",
-      "question": "SOLID 五原则分别指什么？前端落地时怎么理解？",
-      "questionNote": "五原则约束职责、扩展、替换、接口粒度和依赖方向；前端多落在模块与组件边界。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "五条面向对象设计原则；前端多落在模块边界、组件职责和依赖方向，别机械套类图。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、单一职责：一个模块只因一类原因改动，页面容器和纯展示拆开。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、开闭：优先扩展（策略、插件），少在已有分支上堆 if。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、里氏替换：子类型能替换父类型且不破坏约定；Hooks/组合优于脆弱继承树。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4、接口隔离：组件 props / 服务 API 按场景拆细，别做上帝接口。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "5、依赖倒置：业务依赖抽象（接口、注入），请求实现、存储这类细节可替换。"
           }
         ]
       ]

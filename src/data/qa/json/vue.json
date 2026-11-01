@@ -2,8 +2,8 @@
   "slug": "vue",
   "title": "Vue",
   "documentTitle": "Vue",
-  "description": "先 Vue 2 生命周期与响应式边界，再 Diff/key 与 Vue 3 组合式、Pinia 等差异。",
-  "lead": "先 Vue 2 的生命周期与响应式边界，再对比总览，最后是 Vue 3 组合式 API 与 Pinia 生态。",
+  "description": "先 Vue 2 响应式边界，再组合式、defineModel、浅层响应与 Pinia。",
+  "lead": "先 Vue 2 的生命周期与响应式边界，再 Vue 3 组合式、defineModel 与浅层 API，最后是 Pinia。",
   "items": [
     {
       "id": "q-vue2-reactivity-core",
@@ -79,218 +79,8 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
             "type": "text",
-            "value": "defineProperty 读写时收集/触发依赖（示意）。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "Object.defineProperty(obj, 'count', {\n  get() {\n    dep.depend() // 收集当前 Watcher\n    return value\n  },\n  set(n) {\n    value = n\n    dep.notify() // 通知 Watcher 更新\n  },\n})"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-vue2-set-delete",
-      "navLabel": "Vue.set / 删除属性",
-      "question": "Vue 2 中为何新增/删除对象属性无法触发响应？应如何解决？",
-      "questionNote": "根因是初始化只遍历已有 key；Vue 3 改用 Proxy 后机制不同。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "初始化只对已有 key 做 defineProperty，"
-          },
-          {
-            "type": "strong",
-            "value": "后来新增的 key 没有 getter/setter"
-          },
-          {
-            "type": "text",
-            "value": "，写了也不触发更新；删属性同理。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、新增：用 "
-          },
-          {
-            "type": "code",
-            "value": "Vue.set(obj, key, val)"
-          },
-          {
-            "type": "text",
-            "value": " 或 "
-          },
-          {
-            "type": "code",
-            "value": "this.$set"
-          },
-          {
-            "type": "text",
-            "value": "，让新 key 也变成响应式。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、删除：用 "
-          },
-          {
-            "type": "code",
-            "value": "Vue.delete"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "this.$delete"
-          },
-          {
-            "type": "text",
-            "value": "；或整对象替换 "
-          },
-          {
-            "type": "code",
-            "value": "this.obj = { ...this.obj, a: 1 }"
-          },
-          {
-            "type": "text",
-            "value": "，靠引用变化触发。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "直接赋值与 $set 的对比。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "// 不会触发更新（对象新属性）\nthis.user.age = 18\n// 会触发\nthis.$set(this.user, 'age', 18)\nthis.$delete(this.user, 'age')"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-vue2-array-reactive",
-      "navLabel": "数组响应式",
-      "question": "Vue 2 数组如何实现响应式？哪些写法不会触发更新？",
-      "questionNote": "数组下标与 length 拦不住，靠重写变更方法补丁；这是 Vue 2 的经典边界。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "defineProperty 拦不住数组下标和 "
-          },
-          {
-            "type": "code",
-            "value": "length"
-          },
-          {
-            "type": "text",
-            "value": "，所以 Vue 2 "
-          },
-          {
-            "type": "strong",
-            "value": "重写变更方法"
-          },
-          {
-            "type": "text",
-            "value": "（push/pop/splice 等），方法里手动通知依赖。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "不触发更新："
-          },
-          {
-            "type": "text",
-            "value": "直接改下标 "
-          },
-          {
-            "type": "code",
-            "value": "arr[1] = x"
-          },
-          {
-            "type": "text",
-            "value": "，或改长度 "
-          },
-          {
-            "type": "code",
-            "value": "arr.length = 0"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "解决：用 "
-          },
-          {
-            "type": "code",
-            "value": "splice"
-          },
-          {
-            "type": "text",
-            "value": " 换元素，或 "
-          },
-          {
-            "type": "code",
-            "value": "Vue.set(arr, index, val)"
-          },
-          {
-            "type": "text",
-            "value": "；清空用 "
-          },
-          {
-            "type": "code",
-            "value": "arr.splice(0)"
-          },
-          {
-            "type": "text",
-            "value": "，别改 length。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "下标赋值与变异方法的对比。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "// 可能不更新视图\nthis.list[0] = item\n// 推荐\nthis.$set(this.list, 0, item)\nthis.list.splice(0, 1, item)"
+            "value": "这套机制的天花板就是「只能拦已存在的 key 的读写」，新增属性、数组下标都感知不到，所以才有 Vue.set 和数组方法重写这些补丁；Vue 3 换 Proxy 后这些坑才消失。"
           }
         ]
       ]
@@ -367,8 +157,12 @@
             "value": "：实例在初始化，"
           },
           {
-            "type": "strong",
-            "value": "还没有真实 DOM"
+            "type": "text",
+            "value": "还没有真实 "
+          },
+          {
+            "type": "code",
+            "value": "DOM"
           },
           {
             "type": "text",
@@ -489,18 +283,16 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
+            "type": "text",
+            "value": "Vue 3 里对应 "
+          },
+          {
+            "type": "code",
+            "value": "await nextTick()"
           },
           {
             "type": "text",
-            "value": "改数据后等 DOM 更新再读。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "this.msg = 'hello'\nthis.$nextTick(() => {\n  console.log(this.$refs.p.textContent) // 已是 hello\n})\n\n// Vue 3\nmsg.value = 'hello'\nawait nextTick()\nconsole.log(pRef.value.textContent)"
+            "value": "，语义一样。别把 nextTick 当「延迟执行」用，它不是 setTimeout，只是等本轮 DOM 刷完。"
           }
         ]
       ]
@@ -523,8 +315,12 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "computed："
+            "type": "code",
+            "value": "computed"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",
@@ -541,8 +337,12 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "watch："
+            "type": "code",
+            "value": "watch"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",
@@ -569,18 +369,8 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
             "type": "text",
-            "value": "computed 缓存与 watch 副作用的对比。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "computed: {\n  fullName() { return this.first + this.last } // 纯派生，有缓存\n},\nwatch: {\n  keyword: {\n    immediate: true, // 一进来就跑一次\n    handler(v) { this.fetch(v) } // 有副作用：发请求\n  }\n}"
+            "value": "取舍：看场景选——模板里要展示的值（全名、过滤列表）用 computed，纯函数有缓存；要响应变化做动作（发请求、写缓存、跳转）用 watch。拿 watch 拼派生值，会重复计算还没缓存，是最常见的误用。"
           }
         ]
       ]
@@ -636,7 +426,7 @@
           },
           {
             "type": "text",
-            "value": " 回传，父级 state 跟着变，本质是双向绑定语法糖。"
+            "value": " 回传，父级 state 跟着变，本质是双向绑定语法糖——数据仍是单向流的，只是 prop + event 的固定搭配被编译成了写法上的便捷。"
           }
         ],
         [
@@ -655,18 +445,24 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
+            "type": "text",
+            "value": "Vue 3 改成 "
+          },
+          {
+            "type": "code",
+            "value": "modelValue"
           },
           {
             "type": "text",
-            "value": "父子约定 value + input。"
-          }
-        ],
-        [
+            "value": " + "
+          },
           {
             "type": "code",
-            "value": "<!-- 父 -->\n<MyInput v-model=\"text\" />\n\n<!-- 子 -->\n<input\n  :value=\"value\"\n  @input=\"$emit('input', $event.target.value)\"\n/>\n\n<!-- 自定义 checkbox -->\n// model: { prop: 'checked', event: 'change' }"
+            "value": "update:modelValue"
+          },
+          {
+            "type": "text",
+            "value": "，且支持多个 v-model 参数；迁移时这套约定要跟着改，别混用两套。"
           }
         ]
       ]
@@ -712,7 +508,15 @@
         [
           {
             "type": "text",
-            "value": "2、做法：外层 "
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "做法："
+          },
+          {
+            "type": "text",
+            "value": "外层 "
           },
           {
             "type": "code",
@@ -750,23 +554,7 @@
         [
           {
             "type": "text",
-            "value": "3、列表很大时先过滤，能少造虚拟节点。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "不要同节点叠用；先过滤再遍历。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "<!-- 别同节点叠用 -->\n<li v-for=\"item in list\" v-if=\"item.ok\" :key=\"item.id\">\n\n<!-- 推荐：computed 过滤 -->\n<li v-for=\"item in visibleList\" :key=\"item.id\">\n{{ item.name }}\n</li>"
+            "value": "3、列表很大时先过滤，能少造虚拟节点。Vue 2 里优先级和 Vue 3 相反（v-for 更高），同一份模板在两个大版本下行为不同，迁移时这是隐藏坑，别同节点叠用。"
           }
         ]
       ]
@@ -804,7 +592,15 @@
         [
           {
             "type": "text",
-            "value": "2、作用域插槽：子向父暴露数据，父用插槽 props 自定义行渲染（如表格列）。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "作用域插槽："
+          },
+          {
+            "type": "text",
+            "value": "子向父暴露数据，父用插槽 props 自定义行渲染（如表格列）。"
           }
         ],
         [
@@ -831,18 +627,16 @@
         ],
         [
           {
+            "type": "text",
+            "value": "4、"
+          },
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "取舍："
           },
           {
             "type": "text",
-            "value": "具名插槽与作用域插槽。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "<!-- 子 -->\n<header><slot name=\"header\" /></header>\n<slot :row=\"row\" />\n\n<!-- 父 -->\n<MyTable :data=\"list\">\n  <template #header>标题</template>\n  <template #default=\"{ row }\">{{ row.name }}</template>\n</MyTable>"
+            "value": "数据向下用 props，结构坑位用插槽，别混用——把一大段 JSX/模板当 prop 传进去，类型和响应式都变扭。表格这类「数据在子、展示在父」的场景，作用域插槽是标准解法。"
           }
         ]
       ]
@@ -1077,8 +871,12 @@
             "value": "2、"
           },
           {
-            "type": "strong",
-            "value": "Diff 直觉："
+            "type": "code",
+            "value": "Diff"
+          },
+          {
+            "type": "text",
+            "value": " 直觉："
           },
           {
             "type": "text",
@@ -1091,12 +889,20 @@
             "value": "3、"
           },
           {
-            "type": "strong",
-            "value": "key 别用 index："
+            "type": "code",
+            "value": "key"
           },
           {
             "type": "text",
-            "value": "插入/删除后 index 会漂，输入框错位、组件内部状态乱套；用业务唯一 id。"
+            "value": " 别用 "
+          },
+          {
+            "type": "code",
+            "value": "index"
+          },
+          {
+            "type": "text",
+            "value": "：插入/删除后 index 会漂，输入框错位、组件内部状态乱套；用业务唯一 id。"
           }
         ],
         [
@@ -1197,18 +1003,16 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
+            "type": "text",
+            "value": "写法如 "
+          },
+          {
+            "type": "code",
+            "value": ".panel :deep(.el-input__inner) { ... }"
           },
           {
             "type": "text",
-            "value": "scoped 下穿透子组件根内节点。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "<style scoped>\n/* :deep 让选择器穿透到子组件内部节点 */\n.panel :deep(.el-input__inner) {\n  border-radius: 8px;\n}\n</style>"
+            "value": "，scoped 属性只加在外层选择器上，后代不再加，所以能穿透。"
           }
         ]
       ]
@@ -1264,7 +1068,15 @@
         [
           {
             "type": "text",
-            "value": "2、放 Vuex：多页面共享的用户/权限/购物车；放组件：仅本组件 UI 状态。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "放 Vuex："
+          },
+          {
+            "type": "text",
+            "value": "多页面共享的用户/权限/购物车；放组件：仅本组件 UI 状态。"
           }
         ],
         [
@@ -1297,6 +1109,16 @@
       "question": "Vue 3 相对 Vue 2 的关键变化有哪些？（只做总览，不展开重复题）",
       "questionNote": "维度：响应式、编译优化、API 与生态。",
       "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "三条主线：响应式换 Proxy、编译期做了更多优化、API 全面转向组合式；迁移成本主要在写法习惯，不在机制理解。"
+          }
+        ],
         [
           {
             "type": "strong",
@@ -1489,18 +1311,8 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
             "type": "text",
-            "value": "ref 需 .value；解构 reactive 用 toRefs。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "const count = ref(0)\ncount.value++\n\nconst state = reactive({ n: 1 })\n// 错：解构丢代理\n// let { n } = state\nconst { n } = toRefs(state)\nn.value++"
+            "value": "取舍：看场景选——ref 心智最稳（模板自动解包、脚本 .value），团队约定「一律 ref」也不失为一种省事做法；reactive 适合配置对象这类从不整体替换的结构，一旦要解构或换引用就是给自己挖坑。"
           }
         ]
       ]
@@ -1524,7 +1336,15 @@
         [
           {
             "type": "text",
-            "value": "1、逻辑聚合：同一功能的 state、computed、watch 收到一个 "
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "逻辑聚合："
+          },
+          {
+            "type": "text",
+            "value": "同一功能的 state、computed、watch 收到一个 "
           },
           {
             "type": "code",
@@ -1538,7 +1358,15 @@
         [
           {
             "type": "text",
-            "value": "2、类型：返回值即类型，和 TypeScript 推断更贴，少做选项式里 "
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "类型："
+          },
+          {
+            "type": "text",
+            "value": "返回值即类型，和 TypeScript 推断更贴，少做选项式里 "
           },
           {
             "type": "code",
@@ -1552,23 +1380,29 @@
         [
           {
             "type": "text",
-            "value": "3、取舍：权限、表格、弹窗缠在一起的复杂页，组合式更好读；简单展示继续选项式也行。"
-          }
-        ],
-        [
+            "value": "3、"
+          },
           {
             "type": "strong",
-            "value": "示例："
+            "value": "取舍："
           },
           {
             "type": "text",
-            "value": "按功能抽出 composable。"
+            "value": "权限、表格、弹窗缠在一起的复杂页，组合式更好读；简单展示继续选项式也行。"
           }
         ],
         [
           {
-            "type": "code",
-            "value": "// useUser.js：按功能抽出的 composable\nexport function useUser(userId) {\n  const user = ref(null)\n  const loading = ref(false)\n  async function load() {\n    loading.value = true\n    user.value = await fetchUser(userId)\n    loading.value = false\n  }\n  onMounted(load)\n  return { user, loading, load } // 共享逻辑，不共享同一份状态\n}\n\n// 组件里\nconst { user, loading } = useUser(props.id)"
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "composable 复用的是逻辑不是状态——每个组件调一次 useXxx 都是独立一份 state，想要跨组件共享同一份，得把状态提升到模块级或交给 Pinia，别以为抽成 composable 就自动「单例」了。"
           }
         ]
       ]
@@ -1736,23 +1570,143 @@
           },
           {
             "type": "text",
-            "value": "，别直接改 props 对象。"
+            "value": "，别直接改 props 对象——开发期会告警，且父组件一重渲染你的修改就被盖掉，典型的「改了没生效」坑。"
           }
-        ],
+        ]
+      ]
+    },
+    {
+      "id": "q-define-model",
+      "navLabel": "defineModel",
+      "question": "Vue 3 的 defineModel 解决了什么？和自己 emit 有何取舍？",
+      "questionNote": "defineModel 把 v-model 收成可写 ref；多 v-model 用 name；仍不能直接改 props 对象本身。",
+      "answer": [
         [
           {
             "type": "strong",
-            "value": "示例："
+            "value": "要点："
           },
           {
             "type": "text",
-            "value": "script setup 声明 props / emits。"
+            "value": "defineModel 把父组件的 v-model 收成子组件里一个可写 ref，少写 props + emit。适合表单控件；复杂双向同步仍可能要自己拆。"
           }
         ],
         [
           {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
+          },
+          {
+            "type": "text",
+            "value": "编译后仍是 modelValue + update:modelValue，只是写法短了。多个 v-model 用 "
+          },
+          {
             "type": "code",
-            "value": "<script setup>\nconst props = defineProps({\n  title: { type: String, required: true },\n})\nconst emit = defineEmits(['change']) // 声明可触发事件\n\nfunction onInput(e) {\n  emit('change', e.target.value) // 子 → 父\n}\n</script>\n\n<template>\n  <input :value=\"title\" @input=\"onInput\" />\n</template>"
+            "value": "defineModel('title')"
+          },
+          {
+            "type": "text",
+            "value": " 对上 "
+          },
+          {
+            "type": "code",
+            "value": "v-model:title"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "简单控件适合 defineModel；要在更新前拦截、或跟多个来源同步，自己 emit 更清楚。代价是团队要统一，别一半宏一半手写。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "它解决的是「字段级双向」，不是「可以改 props 对象」。直接 obj.foo = 1 在开发期仍会告警，父级一刷新就被盖掉。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-shallow-ref",
+      "navLabel": "shallowRef 与性能 API",
+      "question": "什么时候用 shallowRef / shallowReactive，而不是 ref / reactive？",
+      "questionNote": "只追踪顶层时用浅层 API，适合大列表和第三方实例；深层改动不会触发更新。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "shallowRef / shallowReactive 只追踪顶层替换，不递归代理。大列表、图表实例、不可变快照适合它；要深改字段就别用。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
+          },
+          {
+            "type": "text",
+            "value": "普通 ref 会把对象做成深响应。浅层 API 只在 .value 或顶层 key 被换成新引用时通知，深层赋值静默。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "场景："
+          },
+          {
+            "type": "text",
+            "value": "虚拟列表的整页数据、ECharts 实例、从服务端来的只读树，用浅层能少代理。看规模，几百项普通 ref 也够，上万项或频繁替换才值得。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "拿到浅层对象后在里面 push 或改字段，页面不更新。要更新必须换新引用，或对那一项再包一层 ref。"
           }
         ]
       ]
@@ -1819,18 +1773,8 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
             "type": "text",
-            "value": "弹层渲染到 body。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "<!-- 逻辑仍在组件树，DOM 挂到 body，避开父级 overflow -->\n<Teleport to=\"body\">\n  <div v-if=\"open\" class=\"modal\">\n    <slot />\n  </div>\n</Teleport>"
+            "value": "和 React 的 createPortal 是同一类方案。注意弹层挂走后，scoped 样式和 CSS 变量的继承链也变了，主题变量定义在组件局部的话，portal 内容会拿不到。"
           }
         ]
       ]
@@ -1906,23 +1850,45 @@
         [
           {
             "type": "text",
-            "value": "3、何时用：跨路由/多组件共享的业务状态；局部 UI 仍用 ref/reactive。"
-          }
-        ],
-        [
+            "value": "3、"
+          },
           {
             "type": "strong",
-            "value": "示例："
+            "value": "何时用："
           },
           {
             "type": "text",
-            "value": "defineStore + 组件内使用。"
+            "value": "跨路由/多组件共享的业务状态；局部 UI 仍用 ref/reactive。别什么状态都往 store 塞，一个弹窗开关也放全局，状态从哪改的完全追不到。"
           }
         ],
         [
           {
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "直接解构 "
+          },
+          {
             "type": "code",
-            "value": "export const useCounterStore = defineStore('counter', {\n  state: () => ({ n: 0 }),\n  getters: {\n    double: (s) => s.n * 2, // 类似 computed\n  },\n  actions: {\n    inc() { this.n += 1 },\n  },\n})\n\nconst counter = useCounterStore()\ncounter.inc()\nconst { n, double } = storeToRefs(counter) // 解构仍保持响应式"
+            "value": "const { n } = useCounterStore()"
+          },
+          {
+            "type": "text",
+            "value": " 会丢响应式，要配 "
+          },
+          {
+            "type": "code",
+            "value": "storeToRefs"
+          },
+          {
+            "type": "text",
+            "value": "；actions 可以直接改 state，不需要像 Vuex 那样过 mutation，这不是 bug 是设计。"
           }
         ]
       ]

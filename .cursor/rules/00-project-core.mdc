@@ -6,6 +6,7 @@ alwaysApply: true
 # frontend-interview（前端面试手册）
 
 - **沟通语言**：始终用中文（简体）输出。
+- **题库定位**：面向 8 年+中高级前端，强调取舍与边界，不考背 API、名词解释。
 - **站点名称**：展示名为「前端面试手册」，常量 `SITE_NAME` 在 `src/config/site.ts`；勿与旧名「前端面试速记」混用。
 - **项目定位**：纯静态 SPA；构建时把 `src/data/qa/json/*.json` 打包进前端，运行时不依赖后端 API。
 - **章节规模**：共 18 章，顺序以 `src/data/constants.ts` 的 `CHAPTER_ORDER` 为准（含 `vue`、`es6`、`backend`、`miniprogram`、`ai`、`electron`、`agent`、`project` 等）；内容注册以 `src/data/qa/registry.ts` 静态 import 为准。Vue 2 / Vue 3 合并为单章 `vue`，题目按先 2 后 3 排列。`backend`（后端）已合并原 `node` 章，含 Node 运行时、中间件与 BFF，以及索引与事务、缓存与消息队列、幂等限流与接口协作入门，只考边界与常见坑，不考数据库原理。

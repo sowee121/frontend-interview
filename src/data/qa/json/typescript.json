@@ -2,8 +2,8 @@
   "slug": "typescript",
   "title": "TypeScript",
   "documentTitle": "TypeScript",
-  "description": "基础类型、type/interface、any/unknown、泛型与工具类型，以及 strict 与声明文件。",
-  "lead": "类型系统怎么选、怎么收窄；工程里怎么开 strict、怎么补声明文件。",
+  "description": "为何用 TS、收窄与断言、泛型与工具类型，以及 satisfies、条件类型与模板字面量类型。",
+  "lead": "类型怎么选、怎么收窄；工程开 strict、补声明；再用 satisfies、infer 和模板字面量类型表达契约。",
   "items": [
     {
       "id": "q-why",
@@ -76,144 +76,6 @@
       ]
     },
     {
-      "id": "q-basic-types",
-      "navLabel": "基础类型",
-      "question": "TypeScript 中常见的基础类型有哪些？",
-      "questionNote": "先掌握变量、数组与简单对象的标注，再学进阶语法。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "常用 string、number、boolean、null/undefined，再加上数组、元组和对象形状。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、原始类型："
-          },
-          {
-            "type": "code",
-            "value": "let name: string = \"Tom\""
-          },
-          {
-            "type": "text",
-            "value": "；"
-          },
-          {
-            "type": "code",
-            "value": "let ids: number[] = [1, 2]"
-          },
-          {
-            "type": "text",
-            "value": " 或 "
-          },
-          {
-            "type": "code",
-            "value": "Array<number>"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、特殊值："
-          },
-          {
-            "type": "code",
-            "value": "null"
-          },
-          {
-            "type": "text",
-            "value": " 与 "
-          },
-          {
-            "type": "code",
-            "value": "undefined"
-          },
-          {
-            "type": "text",
-            "value": " 单独一类；开了 "
-          },
-          {
-            "type": "code",
-            "value": "strictNullChecks"
-          },
-          {
-            "type": "text",
-            "value": " 就不能直接赋给 "
-          },
-          {
-            "type": "code",
-            "value": "string"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、其它常用："
-          },
-          {
-            "type": "code",
-            "value": "tuple"
-          },
-          {
-            "type": "text",
-            "value": "（定长、每位类型固定）、"
-          },
-          {
-            "type": "code",
-            "value": "enum"
-          },
-          {
-            "type": "text",
-            "value": "（具名常量）、"
-          },
-          {
-            "type": "code",
-            "value": "void"
-          },
-          {
-            "type": "text",
-            "value": "（无返回值）、"
-          },
-          {
-            "type": "code",
-            "value": "never"
-          },
-          {
-            "type": "text",
-            "value": "（走不到的类型，比如必抛错的函数）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4、对象与函数："
-          },
-          {
-            "type": "code",
-            "value": "type User = { id: string; age: number }"
-          },
-          {
-            "type": "text",
-            "value": "；函数要标参数和返回值。类型对了访问有提示，拼错编译期就报。"
-          }
-        ]
-      ]
-    },
-    {
       "id": "q-optional-union",
       "navLabel": "可选与联合",
       "question": "可选属性（?）与联合类型（|）分别如何运用？",
@@ -244,53 +106,43 @@
         [
           {
             "type": "text",
-            "value": "可选属性："
-          },
-          {
-            "type": "code",
-            "value": "type User = { id: string; nickname?: string }"
-          },
-          {
-            "type": "text",
-            "value": "，"
-          },
-          {
-            "type": "code",
-            "value": "nickname"
-          },
-          {
-            "type": "text",
-            "value": " 可不传；访问时常配 "
-          },
-          {
-            "type": "code",
-            "value": "?."
-          },
-          {
-            "type": "text",
-            "value": " 可选链。"
+            "value": "可选属性适合描述「这个字段可以不给」：比如 User 里的 nickname 标了 ?，调用处可以不传，访问时配 ?. 可选链防 undefined。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "联合类型："
+            "value": "联合类型适合穷举有限状态：Status 写成 \"pending\" | \"done\" | \"failed\"，拼写错了编译期就拦下来，比裸 string 安全；string | null 则用来显式表达「可能为空」，逼着调用处先判空。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "坑："
           },
           {
             "type": "code",
-            "value": "type Status = \"pending\" | \"done\" | \"failed\""
+            "value": "nickname?: string"
           },
           {
             "type": "text",
-            "value": "，只能是列出的字面量；"
+            "value": " 和 "
           },
           {
             "type": "code",
-            "value": "string | null"
+            "value": "nickname: string | undefined"
           },
           {
             "type": "text",
-            "value": " 用来表示可能为空。"
+            "value": " 不完全等价——前者允许整个 key 不存在，后者要求 key 必须在、值是 undefined；开 "
+          },
+          {
+            "type": "code",
+            "value": "exactOptionalPropertyTypes"
+          },
+          {
+            "type": "text",
+            "value": " 后差别会真实咬人，对接口反序列化场景尤其要注意。"
           }
         ]
       ]
@@ -317,7 +169,7 @@
             "value": "1、"
           },
           {
-            "type": "strong",
+            "type": "code",
             "value": "interface"
           },
           {
@@ -347,7 +199,7 @@
             "value": "2、"
           },
           {
-            "type": "strong",
+            "type": "code",
             "value": "type"
           },
           {
@@ -374,7 +226,15 @@
         [
           {
             "type": "text",
-            "value": "3、选型：对外契约、要声明合并或 implements 用 "
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "选型："
+          },
+          {
+            "type": "text",
+            "value": "对外契约、要声明合并或 implements 用 "
           },
           {
             "type": "code",
@@ -545,18 +405,8 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
             "type": "text",
-            "value": "unknown 必须先收窄才能用。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "function f(x: unknown) {\n  // x.toFixed() // 报错\n  if (typeof x === 'number') x.toFixed(2) // OK\n}\n// any：随便调，但放弃类型保护"
+            "value": "取舍：看场景选——外部边界数据（接口返回、localStorage、消息事件）标 unknown 强制收窄；存量迁移临时放行可以 any，但要当技术债记着，团队 lint 开 no-explicit-any 才拦得住。"
           }
         ]
       ]
@@ -574,13 +424,25 @@
           },
           {
             "type": "text",
-            "value": "void 是「没返回值」；never 是「不可能有值」（走不到）。"
+            "value": "void 是「没返回值」；never 是「不可能有值」（走不到）。看场景选，别拿 void 表达「不可达」。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、函数无 return 或只 "
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "void"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "函数无 return 或只 "
           },
           {
             "type": "code",
@@ -596,13 +458,13 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "；调用处能拿到值（undefined），只是没意义。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、永远抛错、死循环、穷尽检查剩下的分支，用 "
+            "value": "2、"
           },
           {
             "type": "code",
@@ -610,7 +472,11 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "永远抛错、死循环、穷尽检查剩下的分支用 never；它是底类型，可赋给任意类型。"
           }
         ],
         [
@@ -619,12 +485,12 @@
             "value": "3、"
           },
           {
-            "type": "code",
-            "value": "never"
+            "type": "strong",
+            "value": "实用场景："
           },
           {
             "type": "text",
-            "value": " 是底类型，可赋给任意类型；别用 void 表达「不可达」。"
+            "value": "switch 联合类型时，default 分支把值标成 never，新增联合成员漏处理时编译期直接报错——这是 never 最值钱的用法，等于给枚举式判断上了保险。"
           }
         ]
       ]
@@ -722,7 +588,11 @@
         [
           {
             "type": "text",
-            "value": "4、判空："
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "判空："
           },
           {
             "type": "code",
@@ -744,7 +614,15 @@
         [
           {
             "type": "text",
-            "value": "5、自定义类型谓词：写 "
+            "value": "5、"
+          },
+          {
+            "type": "strong",
+            "value": "自定义类型谓词："
+          },
+          {
+            "type": "text",
+            "value": "写 "
           },
           {
             "type": "code",
@@ -776,7 +654,11 @@
         [
           {
             "type": "text",
-            "value": "1、写法："
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "写法："
           },
           {
             "type": "code",
@@ -920,6 +802,12 @@
             "type": "text",
             "value": " 回调参数保持一致。"
           }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "取舍：泛型不是越多越好。工具函数里一个 T 保输入输出一致就够用；套三四个泛型参数再加默认值，调用方看不懂推断结果，IDE 提示一长串，维护成本反而高。写库时才需要那种复杂度，业务代码别学。"
+          }
         ]
       ]
     },
@@ -1021,18 +909,196 @@
         ],
         [
           {
+            "type": "text",
+            "value": "坑：别把 Partial 当「补丁类型」随手套——PATCH 接口入参全可选意味着空对象也合法，后端收到 {} 不会报错，字段校验还得靠运行时。需要「至少改一个字段」时，得自己写映射类型加约束，别指望 Partial 兜底。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-satisfies",
+      "navLabel": "satisfies",
+      "question": "satisfies 和 as、显式标注差在哪？什么时候该用？",
+      "questionNote": "satisfies 校验结构但不拓宽类型；as 是断言；标注会把字面量收窄丢掉。",
+      "answer": [
+        [
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "要点："
           },
           {
             "type": "text",
-            "value": "Partial / Pick 作用在同一类型。"
+            "value": "satisfies 检查值符不符合某个类型，同时保留更窄的字面量类型。as 是「我保证」，标错也过；显式标注常把字面量收成宽类型。"
           }
         ],
         [
           {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
+          },
+          {
+            "type": "text",
+            "value": "对象 satisfies 一份配置类型时，多写、少写字段会报错，但取值仍能推出具体 key。as 不会做这层检查。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "配置表、路由表、主题 token 适合 satisfies。要强制拓宽、或跟外部类型对齐，用标注。不要拿 as 消红线，那是在关检查。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "satisfies 不改变运行时。它拦的是形状，拦不住「字段是对的但值域错了」——枚举值还是得靠联合类型收。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-conditional-infer",
+      "navLabel": "条件类型与 infer",
+      "question": "条件类型和 infer 怎么配合？适合抽哪些类型？",
+      "questionNote": "T extends U ? X : Y 按分配展开；infer 在匹配里取出一块，用来解 Promise、函数参数和数组元素。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "条件类型按 T extends U 分支；infer 在匹配成功时取出一块类型。适合从 Promise、函数、数组里反推，不适合表达业务分支。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
+          },
+          {
+            "type": "text",
+            "value": "裸类型参数会分配：A|B 会拆开各走一遍。包一层元组能关掉分配。infer 写在 extends 右侧，只在匹配到时存在。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "场景："
+          },
+          {
+            "type": "text",
+            "value": "解包 Awaited、抽函数参数、拿数组元素类型，这些是它的主场。看团队，工具类型能表达就别再造一套。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "分配一旦没意识到，联合类型会「少一个分支」。infer 推断失败要给兜底，不然变成 never，调用处全红却看不出哪一步断了。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-template-literal-types",
+      "navLabel": "模板字面量类型",
+      "question": "模板字面量类型能解决什么？边界在哪？",
+      "questionNote": "用字符串模板拼出字面量联合，适合事件名、CSS 变量和路由 path；别用来描述任意自然语言。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "模板字面量类型按字符串模板拼出新的字面量联合，比如 "
+          },
+          {
             "type": "code",
-            "value": "type User = { id: number; name: string; age: number }\ntype UserPatch = Partial<User>           // 字段全可选\ntype UserLite = Pick<User, 'id' | 'name'> // 只留两字段"
+            "value": "on${Capitalize<K>}"
+          },
+          {
+            "type": "text",
+            "value": "。适合有限、可枚举的名字，不适合自由文本。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
+          },
+          {
+            "type": "text",
+            "value": "联合会分配展开，套进模板就变成两套字符串。再配合 infer 可以拆前缀后缀。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "事件名、BEM class、带前缀的 CSS 变量适合它。任意用户输入、或无限路径别用，类型会爆、编辑器也会卡。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "递归拆字符串要设终止条件。和 any 混用会立刻退化成 string，看起来写了很强的类型，运行时什么都没拦住。"
           }
         ]
       ]
@@ -1241,6 +1307,12 @@
           {
             "type": "text",
             "value": " 糊过去。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "取舍：自建声明文件是技术债——库升级后声明和实现对不上，编译期看不出来，运行时才炸。能提 PR 给 @types 或库本身补类型最好；内部私有库才自建，且要跟着版本走。@ts-expect-error 比 @ts-ignore 好：修复后会报错提醒你删掉这行。"
           }
         ]
       ]

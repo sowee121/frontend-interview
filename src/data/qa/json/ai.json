@@ -2,8 +2,8 @@
   "slug": "ai",
   "title": "AI",
   "documentTitle": "AI",
-  "description": "前端流式对话：多会话、读流与帧状态、推理与正文分离、停止与重生、渲染性能与 Markdown、断流兜底。",
-  "lead": "前端流式对话主线：多会话隔离 → 读流与帧状态 → 推理/重生与上下文 → 停止/性能/Markdown → 断流与兜底。",
+  "description": "前端流式对话：多会话、读流与帧状态、工具调用与配额、推理与重生、渲染与 Markdown、断流兜底。",
+  "lead": "流式对话主线：多会话隔离 → 读流与帧状态 → 工具调用/配额 → 推理/重生 → 停止/性能/Markdown → 断流兜底。",
   "items": [
     {
       "id": "q-ai-chat-e2e",
@@ -48,7 +48,15 @@
         [
           {
             "type": "text",
-            "value": "1、发送：防连点，本地占位，创建 "
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "发送："
+          },
+          {
+            "type": "text",
+            "value": "防连点，本地占位，创建 "
           },
           {
             "type": "code",
@@ -62,7 +70,15 @@
         [
           {
             "type": "text",
-            "value": "2、请求：body 通常含 "
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "请求："
+          },
+          {
+            "type": "text",
+            "value": "body 通常含 "
           },
           {
             "type": "code",
@@ -108,7 +124,15 @@
         [
           {
             "type": "text",
-            "value": "3、消费：每帧取 "
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "消费："
+          },
+          {
+            "type": "text",
+            "value": "每帧取 "
           },
           {
             "type": "code",
@@ -138,7 +162,11 @@
         [
           {
             "type": "text",
-            "value": "4、停止与卸载："
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "停止与卸载："
           },
           {
             "type": "code",
@@ -189,8 +217,16 @@
             "value": "1、"
           },
           {
-            "type": "strong",
-            "value": "两层 Id："
+            "type": "text",
+            "value": "两层 "
+          },
+          {
+            "type": "code",
+            "value": "Id"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",
@@ -325,8 +361,8 @@
         ],
         [
           {
-            "type": "code",
-            "value": "// 开流时同时钉住会话与轮次\nconst conversationId = activeId\nconst myReq = ++requestId\nfunction onChunk(delta) {\n  if (myReq !== requestId) return // 已 stop / 已开新一轮\n  if (conversationId !== activeId) return // 用户已切走，勿写当前屏\n  // 写入 store[conversationId].messages 里对应助手气泡\n}"
+            "type": "text",
+            "value": "竞态处理：开流时同时钉住会话 Id 和轮次 requestId，onChunk 回调里先校验这两个值和当前活跃状态是否一致——不一致说明用户已 stop 或切走，直接 return 别写屏，否则旧流会拼进新会话。"
           }
         ]
       ]
@@ -361,8 +397,12 @@
             "value": "1、"
           },
           {
-            "type": "strong",
-            "value": "相对整包 JSON"
+            "type": "text",
+            "value": "相对整包 "
+          },
+          {
+            "type": "code",
+            "value": "JSON"
           },
           {
             "type": "text",
@@ -375,8 +415,12 @@
             "value": "2、"
           },
           {
-            "type": "strong",
-            "value": "相对 WebSocket"
+            "type": "text",
+            "value": "相对 "
+          },
+          {
+            "type": "code",
+            "value": "WebSocket"
           },
           {
             "type": "text",
@@ -675,18 +719,22 @@
         ],
         [
           {
+            "type": "text",
+            "value": "5、"
+          },
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "解析细节："
           },
           {
             "type": "text",
-            "value": "流式请求骨架。"
+            "value": "网络 chunk 边界 ≠ SSE 事件边界，一个事件可能被拆到两个 chunk 里，要用 buf 缓存拼半包，按 \\n\\n 切帧；TextDecoder 要开 stream: true 保跨块半字符，不然中文会乱码。"
           }
         ],
         [
           {
-            "type": "code",
-            "value": "// token=用户登录态（不是模型 Key）；model/input 为入参\nconst abort = new AbortController()\nlet content = '' // 当前助手气泡文案\nconst res = await fetch('/api/chat', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n    Authorization: `Bearer ${token}`,\n  },\n  body: JSON.stringify({\n    model,\n    stream: true, // 开启流式\n    messages: [{ role: 'user', content: input }],\n  }),\n  signal: abort.signal, // 停止/卸载时 abort.abort()\n})\n// 不是 SSE 就别当流式读\nif (!res.ok || !res.headers.get('content-type')?.includes('text/event-stream')) {\n  throw new Error('bad stream')\n}\nconst reader = res.body.getReader() // 按块读响应体\nconst decoder = new TextDecoder()\nlet buf = '' // 拼接不完整的 SSE 半包\ntry {\n  while (true) {\n    const { done, value } = await reader.read()\n    if (done) break // 连接结束 ≠ 业务完成，还要看 [DONE]\n    buf += decoder.decode(value, { stream: true }) // 保留跨块半字符\n    const parts = buf.split('\\n\\n') // SSE 事件以空行分隔\n    buf = parts.pop() ?? '' // 最后一段可能不完整，留到下次\n    for (const part of parts) {\n      const line = part.split('\\n').find((l) => l.startsWith('data: '))\n      if (!line) continue\n      const data = line.slice('data: '.length) // 去掉前缀，剩下 JSON 或 [DONE]\n      if (data === '[DONE]') return // 正常结束\n      const json = JSON.parse(data)\n      const text = json.choices?.[0]?.delta?.content // 本帧增量文本\n      if (text) content += text // 拼到当前助手消息\n    }\n  }\n} catch (err) {\n  if (err?.name === 'AbortError') return // 用户取消，不当失败\n  throw err\n}"
+            "type": "text",
+            "value": "坑：reader.read() 返回 done 只代表连接结束，不代表业务完成——得看收到 [DONE] 帧才算一轮生成完毕。abort 后 reader 会抛 AbortError，捕获时当正常取消处理，别弹错误 Toast。"
           }
         ]
       ]
@@ -767,8 +815,12 @@
             "value": "2、"
           },
           {
-            "type": "strong",
-            "value": "UTF-8 截断："
+            "type": "code",
+            "value": "UTF-8"
+          },
+          {
+            "type": "text",
+            "value": " 截断："
           },
           {
             "type": "text",
@@ -841,18 +893,8 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
             "type": "text",
-            "value": "缓冲与解码。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "// reader 来自：const reader = res.body.getReader()\nlet buf = '' // 跨多次 read 的残留文本\nconst decoder = new TextDecoder()\nconst { done, value } = await reader.read() // value: Uint8Array 字节块\nif (done) {\n  // 连接关了但没见过 [DONE] → 当断流，不是成功收尾\n  break\n}\nbuf += decoder.decode(value, { stream: true }) // stream:true 保住跨块 UTF-8\nconst parts = buf.split('\\n\\n') // 按 SSE 空行切完整事件\nbuf = parts.pop() ?? '' // 半帧留下一轮再拼"
+            "value": "取舍：缓冲策略别太激进——buf 攒太大才切帧会延迟首字时间，攒太小又频繁触发渲染。一般按 SSE 事件边界（\\n\\n）切完就写屏，别等攒够 N 个字符；渲染层用 requestAnimationFrame 或批量更新节流，别让每个 token 都触发一次重绘。"
           }
         ]
       ]
@@ -1079,18 +1121,128 @@
         ],
         [
           {
+            "type": "text",
+            "value": "坑：BFF 归一化事件时，别把 delta 帧和 done 帧的 content 都拼进正文——done 帧有时带 finishReason 但没 content，拼进去会多个 undefined。只认 delta 帧的 content，done 帧只用来收尾清状态。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-ai-tool-call-ui",
+      "navLabel": "工具调用 UI",
+      "question": "流式对话里模型要调工具，前端状态和确认怎么做？",
+      "questionNote": "工具调用是独立生命周期：待确认、执行中、成功/失败；高风险动作先停，结果当数据回灌，不能当新指令。",
+      "answer": [
+        [
+          {
             "type": "strong",
-            "value": "示例："
+            "value": "要点："
           },
           {
             "type": "text",
-            "value": "流式帧与防错乱。"
+            "value": "工具调用不是又一段正文。它有自己的状态：待确认、执行中、成功或失败。UI 要能展示参数、支持中断，并把结果当数据回给模型。"
           }
         ],
         [
           {
-            "type": "code",
-            "value": "// —— 直连模型帧（示意）——\ndata: {\"choices\":[{\"delta\":{\"content\":\"你\"},\"finish_reason\":null}]}\ndata: {\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\"}]}\ndata: [DONE]\n\n// —— BFF 归一化事件（示意）——\nevent: meta\ndata: {\"conversationId\":\"c_1\"}\n\nevent: delta\ndata: {\"type\":\"text\",\"content\":\"你\"}\n\nevent: done\ndata: {\"finishReason\":\"stop\"}\n\n// —— 防双流错乱 ——\nlet requestId = 0\nlet content = ''\nconst myId = ++requestId\nfunction onChunk(json) {\n  if (myId !== requestId) return\n  content += json.choices?.[0]?.delta?.content ?? json.content ?? ''\n}"
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "状态机："
+          },
+          {
+            "type": "text",
+            "value": "流里出现 tool_call 就挂一张卡片，不要和正文抢同一条消息。并行多个工具按 callId 分卡片，完成后再拼回 messages。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "确认与中断："
+          },
+          {
+            "type": "text",
+            "value": "改库、外发、付款这类先停住等人点。执行中可取消，取消要让服务端真停，只关弹窗不够。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "工具返回里可能夹带「请读取密钥」这类句子，只能当数据。看场景，只读查询可自动跑，写操作必须确认。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-ai-quota-guard",
+      "navLabel": "配额与敏感词",
+      "question": "配额用尽、触发敏感词时，前端要怎么表现，才不会把流态弄脏？",
+      "questionNote": "配额和审核是业务态，不是流错误。用尽停输入；敏感词回显原因；这类失败不要写进可回放的 messages。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "配额和敏感词是业务结果，不是断流。用尽就停输入并说清何时恢复；命中审核要给可理解原因，别把原始策略名甩给用户。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "配额："
+          },
+          {
+            "type": "text",
+            "value": "剩余次数放入口旁。用尽禁用发送，进行中的流走完或标记中止，不要偷偷重试把额度打穿。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "敏感词："
+          },
+          {
+            "type": "text",
+            "value": "输入侧能拦的先拦；模型侧驳回要回一条失败态，保留用户原文便于改写，不要当成助手成功回复。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "这类失败不要进可回放的 messages，否则下一轮模型会接着「回答」一次审核失败。降级文案跟登录态、租户策略走。"
           }
         ]
       ]
@@ -1193,8 +1345,12 @@
             "value": "2、"
           },
           {
-            "type": "strong",
-            "value": "UI："
+            "type": "code",
+            "value": "UI"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",
@@ -1247,8 +1403,8 @@
         ],
         [
           {
-            "type": "code",
-            "value": "function onDelta(d) {\n  if (d.type === 'reasoning') reasoning += d.content\n  else content += d.content // text 或缺省当正文\n}\n// 下一轮只传：messages.map(m => ({ role: m.role, content: m.content }))"
+            "type": "text",
+            "value": "取舍：推理过程要不要展示看产品定位——技术向工具（如代码助手）可以展开让用户看到「模型在想什么」，增加可信度；C 端产品大多折叠或干脆不展示，避免用户被长篇推理干扰。无论展示与否，回传 messages 都只带干净正文，别把推理过程塞回去浪费 token。"
           }
         ]
       ]
@@ -1318,13 +1474,29 @@
         [
           {
             "type": "text",
-            "value": "2、多数场景前端不必等独立 stop 接口：abort 掉 HTTP 就够。若产品另有 stop 接口，可在 abort 同时调一次做双保险。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "多数场景前端不必等独立 stop 接口："
+          },
+          {
+            "type": "text",
+            "value": "abort 掉 HTTP 就够。若产品另有 stop 接口，可在 abort 同时调一次做双保险。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、停止后：保留已生成文本、清 streaming、标记已停止；若用了 rAF 合并，立刻把缓冲写入并 "
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "停止后："
+          },
+          {
+            "type": "text",
+            "value": "保留已生成文本、清 streaming、标记已停止；若用了 rAF 合并，立刻把缓冲写入并 "
           },
           {
             "type": "code",
@@ -1375,18 +1547,8 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
             "type": "text",
-            "value": "停止。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "const ctrl = new AbortController()\nlet requestId = 0\nlet content = ''\nlet pending = '' // rAF 合并时，先攒着还没写入 content\nlet raf = 0\nlet streaming = false\n\n// 开流：const myId = ++requestId; fetch(..., { signal: ctrl.signal })\n// 用户点停止，或 beforeUnmount / onBeforeUnmount：\nctrl.abort() // 打断 fetch\nrequestId++ // 旧回调 if (myId !== requestId) return\nif (raf) {\n  cancelAnimationFrame(raf)\n  raf = 0\n}\nif (pending) {\n  content += pending // 未刷屏的字立刻写入\n  pending = ''\n}\nstreaming = false"
+            "value": "坑：停止后如果用了 rAF 合并渲染，记得 cancelAnimationFrame 并把 pending 缓冲里的字立刻写入 content，不然用户看到的最后几个字会丢。另外 requestId++ 要在 abort() 之后立刻做，不然迟到的 delta 回调可能对上新 requestId 误写屏。"
           }
         ]
       ]
@@ -1519,8 +1681,8 @@
         ],
         [
           {
-            "type": "code",
-            "value": "// 重生：截断到 keepCount，再开流（示意）\nfunction regenerate(keepCount) {\n  messages = messages.slice(0, keepCount) // 含最后一条 user\n  // POST { messages, regenerate: true, keepMessageCount: keepCount, stream: true }\n}\n// 组装上下文：丢掉失败空助手、errorMessage、停止占位\nconst payload = messages\n  .filter((m) => m.role === 'user' || (m.role === 'assistant' && m.content))\n  .map((m) => ({ role: m.role, content: m.content }))"
+            "type": "text",
+            "value": "坑：组装上下文时过滤空助手消息要小心——用户手动停止的半截助手消息如果 content 非空，应该保留还是丢弃？看产品策略：保留会让模型看到「上次说到一半」，可能续写；丢弃则完全重来。一般推荐保留半截并标记 stopped，让模型知道是被打断的。"
           }
         ]
       ]
@@ -1655,18 +1817,8 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
             "type": "text",
-            "value": "合并写入 + 贴底。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "const el = document.getElementById('msg-list') // 消息列表滚动容器\nlet content = '' // 当前助手气泡文案\nlet pending = '' // 先拼字，不每个 token 都触发渲染\nlet raf = 0\nlet follow = true // 是否贴底自动滚动\n\nfunction onDelta(text) { // 每收到一段 delta.content 调用\n  pending += text\n  if (raf) return // 本帧已排队，等一起刷\n  raf = requestAnimationFrame(() => {\n    content += pending // 合并写入，减少重渲染\n    pending = ''\n    raf = 0\n    if (follow) el.scrollTop = el.scrollHeight // 仅贴底时追滚\n  })\n}\n\nconst NEAR = 80 // 距底多少像素算「还在底部」\nel.addEventListener('scroll', () => {\n  const distance = el.scrollHeight - el.scrollTop - el.clientHeight\n  follow = distance <= NEAR // 上滑离开底部后不再强制滚到底\n})"
+            "value": "坑：贴底判断的阈值别太紧——用户手指在屏幕上轻微滑动就可能超过阈值，导致自动滚动突然停掉，体验很跳。一般 80~120px 比较稳；另外流式输出时长文本会频繁触发 ResizeObserver，记得节流，别让滚动监听和重排互相打架。"
           }
         ]
       ]
@@ -1806,7 +1958,7 @@
         [
           {
             "type": "code",
-            "value": "// fullText 只追加；渲染用补丁副本\nfullText += chunk\nsetView(patchPartialMd(fullText))\n\nfunction patchPartialMd(raw: string) {\n  let text = raw\n  const fences = text.match(/```/g) || []\n  if (fences.length % 2 === 1) return text + '\\n```' // 已进代码块，不再补行内\n  if ((text.match(/`/g) || []).length % 2 === 1) text += '`'\n  if ((text.match(/~~/g) || []).length % 2 === 1) text += '~~'\n  if ((text.match(/\\*\\*/g) || []).length % 2 === 1) text += '**'\n  // 斜体嵌套易翻车；复杂场景改 remend(fullText)\n  return text\n}"
+            "value": "fullText += chunk\nsetView(patchPartialMd(fullText)) // 渲染用补丁，原文不动\n\nfunction patchPartialMd(raw) {\n  const n = (raw.match(/```/g) || []).length\n  return n % 2 ? raw + '\\n```' : raw\n}"
           }
         ]
       ]
@@ -1833,8 +1985,16 @@
             "value": "1、"
           },
           {
-            "type": "strong",
-            "value": "不要照搬 EventSource："
+            "type": "text",
+            "value": "不要照搬 "
+          },
+          {
+            "type": "code",
+            "value": "EventSource"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",

@@ -24,7 +24,7 @@
         [
           {
             "type": "text",
-            "value": "1、MVC：Controller 接收输入，改 Model，View 观察 Model 或由 Controller 刷新。"
+            "value": "1、MVC：Controller 先接收输入再改 Model，View 观察 Model 或由 Controller 刷新。"
           }
         ],
         [
@@ -43,84 +43,6 @@
           {
             "type": "text",
             "value": "4、单页里关键是单向数据流与可测的状态层，不必死磕标签名。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-debounce-search",
-      "navLabel": "搜索防抖",
-      "question": "搜索框请求过于频繁时，应如何优化？",
-      "questionNote": "防抖、最小关键词长度与请求取消，是搜索框优化的标准组合。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "输入防抖约 300ms，结合最小关键词长度与请求取消，减少无效调用。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、"
-          },
-          {
-            "type": "strong",
-            "value": "最小长度"
-          },
-          {
-            "type": "text",
-            "value": "：少于 2 字不请求，减无效调用。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "strong",
-            "value": "取消上一次"
-          },
-          {
-            "type": "text",
-            "value": "：每次带新 "
-          },
-          {
-            "type": "code",
-            "value": "AbortController"
-          },
-          {
-            "type": "text",
-            "value": "，下次输入 "
-          },
-          {
-            "type": "code",
-            "value": "abort()"
-          },
-          {
-            "type": "text",
-            "value": "，避免慢请求覆盖新关键词结果。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
-          {
-            "type": "text",
-            "value": "防抖 + 取消上一次请求。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "let ctrl\nconst onSearch = debounce(async (q) => {\n  ctrl?.abort() // 新关键词先取消旧请求，防竞态\n  ctrl = new AbortController()\n  const res = await fetch('/s?q=' + q, { signal: ctrl.signal })\n  // ...\n}, 300)"
           }
         ]
       ]
@@ -150,11 +72,11 @@
           },
           {
             "type": "code",
-            "value": "rootMargin: '200px'"
+            "value": "rootMargin"
           },
           {
             "type": "text",
-            "value": " 提前加载）。"
+            "value": " 提前 200px 加载）。"
           }
         ],
         [
@@ -186,11 +108,11 @@
           },
           {
             "type": "code",
-            "value": "hasMore === false"
+            "value": "hasMore"
           },
           {
             "type": "text",
-            "value": " 时 disconnect；失败时提供重试入口。"
+            "value": " 为假时 disconnect；失败时提供重试入口。坑：哨兵一直在视口里会连打请求，所以要先设 loading 再请求。"
           }
         ],
         [
@@ -220,7 +142,7 @@
         [
           {
             "type": "code",
-            "value": "const io = new IntersectionObserver((entries) => {\n  if (entries[0].isIntersecting) loadMore() // 哨兵进入视口再翻页\n})\nio.observe(sentryEl) // 观察列表底部哨兵节点"
+            "value": "const io = new IntersectionObserver((ents) => {\n  if (ents[0].isIntersecting) loadMore()\n})\nio.observe(sentryEl)"
           }
         ]
       ]
@@ -255,8 +177,12 @@
             "value": "1、"
           },
           {
-            "type": "strong",
-            "value": "双 token"
+            "type": "text",
+            "value": "双 "
+          },
+          {
+            "type": "code",
+            "value": "token"
           },
           {
             "type": "text",
@@ -346,7 +272,7 @@
           },
           {
             "type": "text",
-            "value": "前端权限只是体验，接口必须服务端鉴权，否则改 URL 或直调 API 仍能越权。"
+            "value": "前端权限只是体验，接口必须服务端鉴权，否则改 URL 或直调 API 仍能越权；守卫只能挡页面。"
           }
         ]
       ]
@@ -430,7 +356,11 @@
         [
           {
             "type": "text",
-            "value": "1、分片："
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "分片："
           },
           {
             "type": "code",
@@ -468,87 +398,29 @@
         [
           {
             "type": "text",
-            "value": "2、断点续传：上传前先调接口查「已收到哪些分片」，只补缺失的那几片。这是断点续传的核心，不查进度就只能整个文件重传。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、合并与秒传：服务端合并分片或走对象存储的分片 API；秒传先算文件 hash 查是否已存在，命中则直接完成。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4、重试与进度：单片失败要幂等重试；进度条用服务端已确认字节 / 总大小，避免重复计数。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-fcp",
-      "navLabel": "首屏优化",
-      "question": "首屏加载偏慢时，应从哪些方面分析与优化？",
-      "questionNote": "资源、请求、体验三块下手；用 FCP/LCP 和线上真实用户数据验收。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "分别砍资源体积、接口等待和「看起来慢」的感知；用 FCP、LCP 和线上真实数据验收，别只看本地一次刷新。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、"
-          },
-          {
-            "type": "strong",
-            "value": "资源"
-          },
-          {
-            "type": "text",
-            "value": "：非首屏库 "
-          },
-          {
-            "type": "code",
-            "value": "import()"
-          },
-          {
-            "type": "text",
-            "value": " 懒加载；图片用 WebP/AVIF 等现代格式与合适尺寸；关键 CSS 内联。"
-          }
-        ],
-        [
-          {
-            "type": "text",
             "value": "2、"
           },
           {
             "type": "strong",
-            "value": "请求"
+            "value": "断点续传："
           },
           {
             "type": "text",
-            "value": "："
-          },
-          {
-            "type": "code",
-            "value": "Promise.all"
-          },
-          {
-            "type": "text",
-            "value": " 并行首屏接口；能缓存的用 HTTP 缓存或 stale-while-revalidate（SWR，先回缓存再后台更新）。"
+            "value": "上传前先调接口查「已收到哪些分片」，只补缺失的那几片。这是断点续传的核心，不查进度就只能整个文件重传。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、首字节时间（TTFB）偏高时再评估服务端渲染（SSR）/静态站点生成（SSG），避免将过重逻辑全部堆至服务端。"
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "合并与秒传："
+          },
+          {
+            "type": "text",
+            "value": "服务端合并分片或走对象存储的分片 API；秒传先算文件 hash 查是否已存在，命中则直接完成。"
           }
         ],
         [
@@ -558,25 +430,11 @@
           },
           {
             "type": "strong",
-            "value": "体验"
+            "value": "重试与进度："
           },
           {
             "type": "text",
-            "value": "：骨架屏减累积布局偏移（CLS）；字体 "
-          },
-          {
-            "type": "code",
-            "value": "font-display: swap"
-          },
-          {
-            "type": "text",
-            "value": " 或子集化。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "5、验证：本地观测 FCP、LCP 与长任务；线上用 RUM 按版本、地区对比。"
+            "value": "单片失败要幂等重试；进度条用服务端已确认字节 / 总大小，避免重复计数。"
           }
         ]
       ]
@@ -599,18 +457,30 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "CSR（客户端渲染）："
+            "type": "code",
+            "value": "CSR"
           },
           {
             "type": "text",
-            "value": "浏览器拉 JS 再画页面，中后台、强交互 SPA 常见；首屏和 SEO 偏弱。"
+            "value": "（客户端渲染）：浏览器拉 JS 再画页面，中后台、强交互 SPA 常见；首屏和 SEO 偏弱。"
           }
         ],
         [
           {
-            "type": "strong",
-            "value": "SSG（构建时出 HTML）："
+            "type": "code",
+            "value": "SSG"
+          },
+          {
+            "type": "text",
+            "value": "（构建时出 "
+          },
+          {
+            "type": "code",
+            "value": "HTML"
+          },
+          {
+            "type": "text",
+            "value": "）："
           },
           {
             "type": "text",
@@ -619,8 +489,20 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "SSR（请求时拼 HTML）："
+            "type": "code",
+            "value": "SSR"
+          },
+          {
+            "type": "text",
+            "value": "（请求时拼 "
+          },
+          {
+            "type": "code",
+            "value": "HTML"
+          },
+          {
+            "type": "text",
+            "value": "）："
           },
           {
             "type": "text",
@@ -630,7 +512,15 @@
         [
           {
             "type": "text",
-            "value": "混合：ISR 增量再生、流式 SSR 先出壳再填数据，都能改善首字节感知（TTFB）。"
+            "value": "混合：ISR 增量再生、流式 SSR 先出壳再填数据，都能改善首字节感知（"
+          },
+          {
+            "type": "code",
+            "value": "TTFB"
+          },
+          {
+            "type": "text",
+            "value": "）。"
           }
         ]
       ]
@@ -664,7 +554,7 @@
           },
           {
             "type": "text",
-            "value": " 捕未处理的 Promise 拒绝。"
+            "value": " 捕未处理的 Promise 拒绝。同类错误要先聚合再报，否则一刷新会打爆通道。"
           }
         ],
         [
@@ -750,7 +640,11 @@
         [
           {
             "type": "text",
-            "value": "3、曝光埋点："
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "曝光埋点："
           },
           {
             "type": "code",
@@ -776,7 +670,7 @@
           },
           {
             "type": "text",
-            "value": "入库或渲染前做白名单清洗，减少直接渲染原始 HTML。"
+            "value": "入库或渲染前做白名单清洗，减少直接渲染原始 HTML。坑：只转义不够，事件属性和伪协议链接仍能执行；预览和正式展示要走同一套清洗。"
           }
         ],
         [
@@ -864,7 +758,7 @@
           },
           {
             "type": "text",
-            "value": " 事件仅监听 localStorage 写入（sessionStorage 不跨标签）。"
+            "value": " 事件仅监听 localStorage 写入，因为 sessionStorage 不跨标签，当前页自己写入也收不到。"
           }
         ],
         [
@@ -920,7 +814,15 @@
         [
           {
             "type": "text",
-            "value": "3、重连成功后要补数据：按会话 id 或消息游标（lastMsgId）拉取断线期间的增量，只重连不补拉会丢消息。"
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "重连成功后要补数据："
+          },
+          {
+            "type": "text",
+            "value": "按会话 id 或消息游标（lastMsgId）拉取断线期间的增量，只重连不补拉会丢消息。"
           }
         ],
         [
@@ -965,8 +867,12 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "SSE："
+            "type": "code",
+            "value": "SSE"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",
@@ -975,8 +881,12 @@
         ],
         [
           {
-            "type": "strong",
-            "value": "WebSocket："
+            "type": "code",
+            "value": "WebSocket"
+          },
+          {
+            "type": "text",
+            "value": "："
           },
           {
             "type": "text",

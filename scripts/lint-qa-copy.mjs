@@ -66,6 +66,17 @@ const BARE_ACRONYMS = [
 /** 单题叙事（text/strong，不含 code）建议字数上限，超出应压缩到口述体量 */
 const NARRATIVE_MAX = 520
 
+/** 单题叙事（text/strong，不含 code）建议字数下限，低于说明偏初级 */
+const NARRATIVE_MIN = 80
+
+/** 口述连接词：命中任一即可，用于识别「清单腔」 */
+const ORAL_CONNECTORS =
+  /(因为|所以|否则|坑|容易|先.{0,4}再|代价|取舍|边界|踩过|定位|排查|竞态|回滚|别|不要|误用|滥用|优先|通常|一般|本质|机制|时序|触发|失败|异常|超时|重试|降级|兜底|兼容|回退|权衡|场景|规模|团队|规范|成本|收益|风险|隐患|注意|建议|避免|防止|减少|降低|提高|提升|优化|改进|解决|处理|应对|考虑|评估|验证|确认|确保|保证)/
+
+/** 坑/边界词：命中任一即可，用于识别「目录枚举」 */
+const PITFALL_WORDS =
+  /(坑|边界|取舍|代价|踩过|定位|排查|竞态|回滚|别|不要|误用|滥用|优先|通常|一般|本质|机制|时序|触发|失败|异常|超时|重试|降级|兜底|兼容|回退|权衡|场景|规模|团队|规范|成本|收益|风险|隐患|注意|建议|避免|防止|减少|降低|提高|提升|优化|改进|解决|处理|应对|考虑|评估|验证|确认|确保|保证)/
+
 /** 跨章指回提示：正文不得出现「见 X 章「某题」」类编辑口吻，每题答案须自足 */
 const CROSS_CHAPTER_REF =
   /(?<![常意遇可而])见\s*(?:本章|同章|场景题|编程题|「[^」]{1,12}」\s*章|[\u4e00-\u9fffA-Za-z0-9./\s]{0,12}?章)/
@@ -281,6 +292,142 @@ function lintFile(filePath) {
         kind: 'overlong-answer',
         snippet: `叙事 ${narrativeLen} 字，超过建议上限 ${NARRATIVE_MAX}`,
       })
+    }
+
+    // 中高级口述检查
+    const isCoding = base === 'coding.json'
+    if (!isCoding) {
+      const paragraphs = item.answer ?? []
+      const numbered = paragraphs.filter((p) =>
+        p.some((s) => /^\d+、/.test(s.value)),
+      ).length
+      const narrativeText = paragraphs
+        .flatMap((p) => p.filter((s) => s.type === 'text' || s.type === 'strong'))
+        .map((s) => s.value)
+        .join('\n')
+      const codeLen = paragraphs
+        .flatMap((p) => p.filter((s) => s.type === 'code'))
+        .reduce((n, s) => n + s.value.length, 0)
+
+      // list-only-answer：≥3 个编号段且全文无口述连接词
+      if (numbered >= 3 && !ORAL_CONNECTORS.test(narrativeText)) {
+        issues.push({
+          file: base,
+          id: item.id,
+          kind: 'list-only-answer',
+          snippet: '连续编号段且无口述连接词，偏文档清单',
+        })
+      }
+
+      // too-short-narrative：叙事汉字 < 80
+      const hanLen = (narrativeText.match(/[\u4e00-\u9fff]/g) || []).length
+      if (hanLen < NARRATIVE_MIN) {
+        issues.push({
+          file: base,
+          id: item.id,
+          kind: 'too-short-narrative',
+          snippet: `叙事 ${hanLen} 字，低于建议下限 ${NARRATIVE_MIN}`,
+        })
+      }
+
+      // catalog-enum：、 ≥ 10 且无坑/边界词
+      const commaCount = (narrativeText.match(/、/g) || []).length
+      if (commaCount >= 10 && !PITFALL_WORDS.test(narrativeText)) {
+        issues.push({
+          file: base,
+          id: item.id,
+          kind: 'catalog-enum',
+          snippet: '顿号枚举过多且无坑/边界词，偏目录',
+        })
+      }
+
+      // example-heavy：示例代码字数 > 叙事字数
+      if (codeLen > narrativeLen && narrativeLen > 0) {
+        issues.push({
+          file: base,
+          id: item.id,
+          kind: 'example-heavy',
+          snippet: `代码 ${codeLen} 字超过叙事 ${narrativeLen} 字，喧宾夺主`,
+        })
+      }
+
+      // compare-no-tradeoff：题干含对比/选型，正文无取舍词
+      const isCompare = /区别|如何选择|对比|选型|哪个|vs|VS/i.test(
+        item.question ?? '',
+      )
+      if (isCompare && !/适合|代价|不适合|看.{0,4}(场景|规模|团队)/.test(narrativeText)) {
+        issues.push({
+          file: base,
+          id: item.id,
+          kind: 'compare-no-tradeoff',
+          snippet: '对比/选型题缺少取舍句',
+        })
+      }
+
+      // pseudo-ellipsis：要点段含 set(...)、// ... 等半截伪代码
+      const firstStrong = paragraphs[0]?.find((s) => s.type === 'strong')?.value ?? ''
+      if (/set\(\.{3}\)|foo\(\.{3}\)|\/\/\s*\.{3}/.test(firstStrong)) {
+        issues.push({
+          file: base,
+          id: item.id,
+          kind: 'pseudo-ellipsis',
+          snippet: '要点段含半截伪代码',
+        })
+      }
+
+      // label-inconsistent：首段 strong 标签不是「要点：」
+      const firstLabel = paragraphs[0]?.find((s) => s.type === 'strong')?.value ?? ''
+      if (firstLabel && firstLabel !== '要点：') {
+        issues.push({
+          file: base,
+          id: item.id,
+          kind: 'label-inconsistent',
+          snippet: `首段标签为「${firstLabel}」，应统一为「要点：」`,
+        })
+      }
+
+      // strong-tech-label：禁止「裸英文 API 当强调」；允许中文小标题，以及「1、」后的步骤标题（可含专名）
+      for (const para of paragraphs) {
+        for (let si = 0; si < para.length; si++) {
+          const seg = para[si]
+          if (seg.type !== 'strong') continue
+          const v = seg.value
+          if (v === '要点：') continue
+          if (/[\u4e00-\u9fff]/.test(v)) continue // 含中文的小标题允许（可夹专名）
+          const prev = para[si - 1]
+          const isStepTitle =
+            prev?.type === 'text' &&
+            /^\d+、$/.test(prev.value) &&
+            /[：:]$/.test(v)
+          if (isStepTitle) continue // 1、 + strong("Loader：") 合法
+          if (/[A-Za-z]{2,}|\d+px|::|@[a-z]/.test(v)) {
+            issues.push({
+              file: base,
+              id: item.id,
+              kind: 'strong-tech-label',
+              snippet: `strong「${v.slice(0, 40)}」为裸英文，步骤标题应接在「1、」后，否则改用 code`,
+            })
+          }
+        }
+      }
+
+      // step-title-plain：编号步骤把「标题：」糊进 text，页面上看起来不加粗
+      for (const para of paragraphs) {
+        const first = para[0]
+        if (!first || first.type !== 'text') continue
+        if (/^\d+、$/.test(first.value)) continue // 已拆开
+        if (
+          /^\d+、[\u4e00-\u9fff].{0,20}[：:]/.test(first.value) &&
+          !para.some((s) => s.type === 'strong')
+        ) {
+          issues.push({
+            file: base,
+            id: item.id,
+            kind: 'step-title-plain',
+            snippet: `步骤标题未加粗：${first.value.slice(0, 24)}…，应拆成 1、 + strong(标题：)`,
+          })
+        }
+      }
     }
 
     // 隐私词与过时术语

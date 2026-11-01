@@ -2,8 +2,8 @@
   "slug": "electron",
   "title": "Electron",
   "documentTitle": "Electron",
-  "description": "进程模型与安全隔离、进程间通信（IPC），打包发版与自动更新，以及单实例、路径差异、原生模块与崩溃恢复。",
-  "lead": "进程隔离与安全边界、进程间通信（IPC）、打包发版与远程更新；再补单实例、路径/asar、原生模块与崩溃恢复，以及自助终端超时运维。",
+  "description": "进程模型与安全隔离、IPC，打包签名与自动更新，以及 utilityProcess、单实例、原生模块与崩溃恢复。",
+  "lead": "进程隔离与安全、IPC、打包签名与远程更新；再补 utilityProcess、单实例、路径/asar、原生模块与崩溃恢复。",
   "items": [
     {
       "id": "q-electron-why",
@@ -24,19 +24,43 @@
         [
           {
             "type": "text",
-            "value": "1、相对纯 Web：可访问本机能力，但安装包大、内存开销高，轻量工具别硬上。"
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "相对纯 Web："
+          },
+          {
+            "type": "text",
+            "value": "可访问本机能力，但安装包大、内存开销高，轻量工具别硬上。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、相对原生：交付快、跨平台一套 UI；性能与系统深度集成弱于原生。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "相对原生："
+          },
+          {
+            "type": "text",
+            "value": "交付快、跨平台一套 UI；性能与系统深度集成弱于原生。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、自助机/内网客户端：大屏触控 + 读卡扫码打印，Electron 常是务实选择。"
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "自助机/内网客户端："
+          },
+          {
+            "type": "text",
+            "value": "大屏触控 + 读卡扫码打印，Electron 常是务实选择。"
           }
         ]
       ]
@@ -99,7 +123,7 @@
             "value": "3、"
           },
           {
-            "type": "strong",
+            "type": "code",
             "value": "preload"
           },
           {
@@ -220,7 +244,15 @@
         [
           {
             "type": "text",
-            "value": "3、进一步收紧：不加载远程 URL；拦截 "
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "进一步收紧："
+          },
+          {
+            "type": "text",
+            "value": "不加载远程 URL；拦截 "
           },
           {
             "type": "code",
@@ -258,23 +290,27 @@
         [
           {
             "type": "text",
-            "value": "4、其余：校验更新包签名、能力白名单、敏感操作一律在主进程再校验参数。"
-          }
-        ],
-        [
+            "value": "4、"
+          },
           {
             "type": "strong",
-            "value": "示例："
+            "value": "其余："
           },
           {
             "type": "text",
-            "value": "创建窗口时的安全配置（多为默认值，不要改动）。"
+            "value": "校验更新包签名、能力白名单、敏感操作一律在主进程再校验参数。"
           }
         ],
         [
           {
-            "type": "code",
-            "value": "new BrowserWindow({\n  webPreferences: {\n    preload: path.join(__dirname, 'preload.js'),\n    contextIsolation: true,   // 默认即 true\n    nodeIntegration: false,   // 默认即 false\n    sandbox: true,            // 默认即 true\n  },\n})"
+            "type": "text",
+            "value": "坑：团队里最常见的踩法是「为了调 fs 方便把 nodeIntegration 打开」，或者「把 ipcRenderer 整个挂 window 上让页面随便调」——这两步等于把安全基线拆光，XSS 一来直接拿到本机能力。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "正确的做法是 preload 里用 contextBridge 只暴露白名单方法，比如 window.api.readConfig()，页面连 ipcRenderer 的影子都看不到。"
           }
         ]
       ]
@@ -322,77 +358,53 @@
         [
           {
             "type": "text",
-            "value": "主进程注册：通道名固定，参数校验后再执行敏感操作。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "// main.js\nconst { ipcMain, dialog } = require('electron')\n\nipcMain.handle('dialog:openFile', async () => {\n  const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openFile'] })\n  if (canceled) return null\n  return filePaths[0] // 只回路径，勿暴露整个 fs\n})\n\nipcMain.handle('device:scan', async (_event, payload) => {\n  if (!payload || typeof payload.type !== 'string') throw new Error('invalid payload')\n  return { ok: true, type: payload.type }\n})"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "preload 白名单：只暴露业务方法，不暴露裸 "
-          },
-          {
-            "type": "code",
-            "value": "ipcRenderer"
-          },
-          {
-            "type": "text",
-            "value": "；订阅要返回取消函数，避免泄漏。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "// preload.js：只暴露白名单 API，渲染进程不能直接 require electron\nconst { contextBridge, ipcRenderer } = require('electron')\n\ncontextBridge.exposeInMainWorld('api', {\n  openFile: () => ipcRenderer.invoke('dialog:openFile'), // 主进程 dialog\n  scan: (type) => ipcRenderer.invoke('device:scan', { type }),\n  onUpdateProgress: (cb) => {\n    const listener = (_e, data) => cb(data)\n    ipcRenderer.on('update:progress', listener)\n    return () => ipcRenderer.removeListener('update:progress', listener) // 记得解绑\n  },\n})"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "渲染进程只访问 "
-          },
-          {
-            "type": "code",
-            "value": "window.api"
-          },
-          {
-            "type": "text",
-            "value": "；主进程推送用 "
-          },
-          {
-            "type": "code",
-            "value": "win.webContents.send('update:progress', { percent: 42 })"
-          },
-          {
-            "type": "text",
-            "value": "。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "边界：IPC 只能传"
+            "value": "1、"
           },
           {
             "type": "strong",
-            "value": "结构化克隆（structured clone）"
+            "value": "主进程注册："
           },
           {
             "type": "text",
-            "value": "支持的数据，函数、类实例、"
+            "value": "用 ipcMain.handle 挂固定通道名。handle 里第一件事是校验参数——渲染进程传来的 payload 不可信，类型不对直接抛错，别直接拼进系统调用。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
           },
           {
-            "type": "code",
-            "value": "Symbol"
+            "type": "strong",
+            "value": "preload 白名单："
           },
           {
             "type": "text",
-            "value": "、DOM 节点都传不过去，复杂对象要先序列化。"
+            "value": "contextBridge 把 window.api.openFile() 这类业务方法挂出去，页面连 ipcRenderer 的影子都看不到。订阅类 API 必须返回取消函数，组件卸载时解绑，否则监听器越积越多。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、渲染进程只访问 window.api；主进程主动推送用 webContents.send 走另一个通道，preload 里转成回调透给页面。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "边界：IPC 只能传结构化克隆支持的数据，函数、类实例、DOM 节点都传不过去，复杂对象要先序列化。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "坑：别把 ipcRenderer 整个挂 window 上图省事——一旦页面有 XSS，攻击者就能调任意通道，等于把主进程能力全暴露。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "也别在 handle 里直接 return 整个 fs 模块或 dialog 对象，只回最小必要数据（比如选中的文件路径），缩小攻击面。"
           }
         ]
       ]
@@ -416,29 +428,21 @@
         [
           {
             "type": "text",
-            "value": "1、构建流水：编译 TS/Vite 产出 "
+            "value": "1、"
           },
           {
-            "type": "code",
-            "value": "dist"
-          },
-          {
-            "type": "text",
-            "value": " → builder 把 Electron 运行时 + 业务文件打成 "
-          },
-          {
-            "type": "code",
-            "value": "nsis/dmg/AppImage"
+            "type": "strong",
+            "value": "构建流水："
           },
           {
             "type": "text",
-            "value": " 等。"
+            "value": "编译 TS/Vite 产出 dist 目录，builder 把 Electron 运行时和业务文件一起打成 nsis/dmg/AppImage 等平台安装包。"
           }
         ],
         [
           {
-            "type": "code",
-            "value": "// package.json 片段（示意）\n{\n  \"main\": \"dist/main/index.js\",\n  \"scripts\": {\n    \"build\": \"vite build && electron-builder\"\n  },\n  \"build\": {\n    \"appId\": \"com.example.kiosk\",\n    \"productName\": \"KioskApp\",\n    \"directories\": { \"output\": \"release\" },\n    \"files\": [\"dist/**/*\", \"package.json\"],\n    \"asar\": true,\n    \"win\": { \"target\": [\"nsis\"] },\n    \"publish\": [\n      { \"provider\": \"generic\", \"url\": \"https://cdn.example.com/kiosk-updates/\" }\n    ]\n  }\n}"
+            "type": "text",
+            "value": "package.json 里要配 appId、productName、files（只含 dist 和必要资源）、asar 开关，publish 字段指到更新元数据地址。"
           }
         ],
         [
@@ -452,7 +456,7 @@
           },
           {
             "type": "text",
-            "value": " 把源码打成归档，减少散文件；需要原生解压的资源可放 "
+            "value": " 把源码打成归档，减少散文件；需要原生解压的资源（比如 .node 原生模块）可放 "
           },
           {
             "type": "code",
@@ -476,6 +480,12 @@
             "type": "text",
             "value": "（或平台对应元数据）和安装包，供自动更新比对版本与下载地址。"
           }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "坑：files 字段别贪全——把 node_modules 整个打进安装包是新手常犯的错，asar 一解开几百 MB，安装慢、更新包也大。生产依赖用 electron-builder 的自动依赖收集，开发依赖千万别混进去。"
+          }
         ]
       ]
     },
@@ -497,46 +507,16 @@
         ],
         [
           {
-            "type": "code",
-            "value": "// main.js — electron-updater 示意\nconst { autoUpdater } = require('electron-updater');\nconst { BrowserWindow, ipcMain } = require('electron');\n\nautoUpdater.autoDownload = false; // 先询用户或业务空闲再下\n\nfunction setupAutoUpdate() {\n  autoUpdater.checkForUpdates();\n\n  autoUpdater.on('update-available', (info) => {\n    // 通知渲染：有新版本\n    BrowserWindow.getAllWindows()[0]?.webContents.send('update:available', info);\n  });\n\n  autoUpdater.on('download-progress', (p) => {\n    BrowserWindow.getAllWindows()[0]?.webContents.send('update:progress', {\n      percent: p.percent,\n    });\n  });\n\n  autoUpdater.on('update-downloaded', () => {\n    BrowserWindow.getAllWindows()[0]?.webContents.send('update:downloaded');\n  });\n\n  autoUpdater.on('error', (err) => {\n    BrowserWindow.getAllWindows()[0]?.webContents.send('update:error', String(err));\n  });\n}\n\nipcMain.handle('update:startDownload', async () => {\n  await autoUpdater.downloadUpdate();\n});\n\nipcMain.handle('update:quitAndInstall', () => {\n  autoUpdater.quitAndInstall(); // 退出并安装已下载包\n});"
-          }
-        ],
-        [
-          {
             "type": "text",
             "value": "1、"
           },
           {
             "type": "strong",
-            "value": "配置来源"
+            "value": "配置来源："
           },
           {
             "type": "text",
-            "value": "：builder 的 "
-          },
-          {
-            "type": "code",
-            "value": "publish.url"
-          },
-          {
-            "type": "text",
-            "value": " 指向静态目录或 GitHub Releases；客户端启动后 "
-          },
-          {
-            "type": "code",
-            "value": "checkForUpdates"
-          },
-          {
-            "type": "text",
-            "value": " 拉 "
-          },
-          {
-            "type": "code",
-            "value": "latest.yml"
-          },
-          {
-            "type": "text",
-            "value": " 比版本。"
+            "value": "builder 的 publish.url 指向静态目录或 GitHub Releases；客户端启动后 checkForUpdates 拉 latest.yml 比版本，版本新就下载更新包。"
           }
         ],
         [
@@ -546,11 +526,11 @@
           },
           {
             "type": "strong",
-            "value": "签名与校验"
+            "value": "签名与校验："
           },
           {
             "type": "text",
-            "value": "：Windows 需代码签名；macOS 必须同时完成代码签名与公证（notarization），否则新版本装上后会被系统直接拦下。两类系统都应配置签名，兼顾防篡改与可安装。"
+            "value": "Windows 需代码签名，不然 SmartScreen 会拦；macOS 必须同时完成代码签名与公证（notarization），否则新版本装上后会被系统直接拦下。"
           }
         ],
         [
@@ -560,19 +540,143 @@
           },
           {
             "type": "strong",
-            "value": "自助机"
+            "value": "自助机场景："
           },
           {
             "type": "text",
-            "value": "：业务空闲时再 "
-          },
+            "value": "业务空闲时再 quitAndInstall，别在用户操作中途重启；失败提示并保留旧版可运行，必要时提供手动装包兜底。"
+          }
+        ],
+        [
           {
-            "type": "code",
-            "value": "quitAndInstall"
+            "type": "text",
+            "value": "坑：autoDownload 默认 true，一检测到新版就后台下载，自助机场景下可能正在交易时带宽被占满，一定要关掉。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "macOS 公证最容易踩——开发者证书过期、Team ID 配错、或漏配 entitlements，都会导致装完打不开。自助机更新失败一定要有回退方案，别让机器变砖。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-electron-sign",
+      "navLabel": "签名与发布渠道",
+      "question": "Electron 应用的代码签名和发布渠道一般怎么做？不签会怎样？",
+      "questionNote": "签名让系统认出发版者；渠道决定更新从哪来。不签会触发拦截，内测包和正式包密钥必须分开。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
           },
           {
             "type": "text",
-            "value": "；失败提示并保留旧版可运行，必要时提供手动装包兜底。"
+            "value": "代码签名证明安装包来自谁；发布渠道决定自动更新拉哪套包。不签，系统会拦截或每次都提示未知开发者，更新也会被当来路不明。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "签名："
+          },
+          {
+            "type": "text",
+            "value": "macOS 还要公证，Windows 用证书签 exe/msi。CI 里密钥走密钥库，不要写进仓库。内测证书和正式证书分开。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "渠道："
+          },
+          {
+            "type": "text",
+            "value": "正式、灰度、内测分不同更新地址和签名身份。用户装错渠道再热更新，可能验签失败或被系统拦。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "只签安装包、不签更新差分，热更新会失败。看团队规模，内部工具可以先不公证，对外发版必须走完。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-electron-utility-process",
+      "navLabel": "utilityProcess",
+      "question": "utilityProcess 和 child_process.fork 差在哪？什么时候该用？",
+      "questionNote": "utilityProcess 是 Electron 提供的受控子进程，方便走服务端式消息；fork 更通用但和渲染/沙箱集成更麻烦。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "utilityProcess 是 Electron 自己的工具进程：和主进程用消息端口说话，默认更适合放 Node 任务。fork 通用，但和沙箱、打包路径更容易打架。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
+          },
+          {
+            "type": "text",
+            "value": "它独立于渲染进程，崩了不带白整窗。适合跑原生模块、长计算、设备 I/O。和渲染之间仍要经主进程或显式端口。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "官方插件、要跟 app 生命周期一起退出，适合 utilityProcess。已有一套纯 Node 脚本、还要在非 Electron 环境跑，继续 fork 更合适。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "别在里面直接碰 BrowserWindow。打包后入口路径和 asar 解包跟主进程不一样，本地能跑、安装包里找不到文件是常见坑。"
           }
         ]
       ]
@@ -647,8 +751,14 @@
         ],
         [
           {
-            "type": "code",
-            "value": "const gotLock = app.requestSingleInstanceLock() // 首个实例拿到锁\nif (!gotLock) {\n  app.quit() // 二次启动的进程直接退出\n  return\n}\n\napp.on('second-instance', (_event, argv) => {\n  // argv 含本次启动参数（如自定义协议 URL）\n  const win = BrowserWindow.getAllWindows()[0]\n  if (win) {\n    if (win.isMinimized()) win.restore()\n    win.focus() // 聚焦已有窗口，而不是再开一个\n  }\n  handleDeepLink(argv)\n})"
+            "type": "text",
+            "value": "机制：主进程启动时 requestSingleInstanceLock() 争锁，第一个实例拿到锁继续跑；二次启动的进程抢不到锁，立刻 app.quit() 退出，别创建窗口。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "已有进程监听 second-instance 事件，拿到二次启动的 argv（可能含自定义协议 URL），聚焦已有窗口并处理参数。"
           }
         ],
         [
@@ -706,7 +816,15 @@
         [
           {
             "type": "text",
-            "value": "3、多窗口时约定「唤起哪一个」：通常聚焦主窗或按业务路由打开对应页，避免 silent 多开。"
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "多窗口时约定「唤起哪一个」："
+          },
+          {
+            "type": "text",
+            "value": "通常聚焦主窗或按业务路由打开对应页，避免 silent 多开。"
           }
         ]
       ]
@@ -944,7 +1062,15 @@
         [
           {
             "type": "text",
-            "value": "3、打包：把含 "
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "打包："
+          },
+          {
+            "type": "text",
+            "value": "把含 "
           },
           {
             "type": "code",
@@ -1022,39 +1148,7 @@
         [
           {
             "type": "text",
-            "value": "1、"
-          },
-          {
-            "type": "code",
-            "value": "webContents.on('render-process-gone', (_e, details) => { ... })"
-          },
-          {
-            "type": "text",
-            "value": "：看 "
-          },
-          {
-            "type": "code",
-            "value": "details.reason"
-          },
-          {
-            "type": "text",
-            "value": "（如 "
-          },
-          {
-            "type": "code",
-            "value": "crashed"
-          },
-          {
-            "type": "text",
-            "value": "、"
-          },
-          {
-            "type": "code",
-            "value": "oom"
-          },
-          {
-            "type": "text",
-            "value": "），埋点后重建页面。"
+            "value": "1、render-process-gone：webContents 上监听这个事件，回调里看 details.reason（crashed 或 oom 等），先埋点上报，再 loadURL 重载或重建 BrowserWindow 恢复页面。"
           }
         ],
         [
@@ -1090,13 +1184,29 @@
         [
           {
             "type": "text",
-            "value": "3、主进程自身也要有兜底：未捕获异常记日志；自助机可用系统服务或外部看门狗在进程退出后拉起，避免黑屏无人值守。"
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "主进程自身也要有兜底："
+          },
+          {
+            "type": "text",
+            "value": "未捕获异常记日志；自助机可用系统服务或外部看门狗在进程退出后拉起，避免黑屏无人值守。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、预防：大计算放 Worker 或主进程队列；外设 I/O 勿堵渲染；控制内存（少开隐藏窗、及时销毁不用的 "
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "预防："
+          },
+          {
+            "type": "text",
+            "value": "大计算放 Worker 或主进程队列；外设 I/O 勿堵渲染；控制内存（少开隐藏窗、及时销毁不用的 "
           },
           {
             "type": "code",

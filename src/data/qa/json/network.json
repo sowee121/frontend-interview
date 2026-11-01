@@ -9,7 +9,7 @@
       "id": "q-dns",
       "navLabel": "DNS 与建连",
       "question": "前端如何减少 DNS 解析和 TLS 建连耗时？",
-      "questionNote": "dns-prefetch / preconnect 提前解析和建连；HTTP/2 下乱分域名往往更慢。",
+      "questionNote": "dns-prefetch 只做域名解析，preconnect 会连上 TCP 和 TLS；HTTP/2 下再拆一堆域名往往更慢。",
       "answer": [
         [
           {
@@ -18,17 +18,15 @@
           },
           {
             "type": "text",
-            "value": "用 dns-prefetch 提前解析、preconnect 预建连；静态资源尽量同站，避免 HTTP/2 下过度域名分片。"
-          }
-        ],
-        [
+            "value": "域名解析（DNS）和传输层安全（TLS）握手发生在首字节之前；用 "
+          },
           {
             "type": "code",
             "value": "dns-prefetch"
           },
           {
             "type": "text",
-            "value": " 提前解析第三方域名；"
+            "value": " / "
           },
           {
             "type": "code",
@@ -36,19 +34,25 @@
           },
           {
             "type": "text",
-            "value": " 进一步完成 TCP + TLS握手。"
+            "value": " 提前做完，比请求发出再等一轮往返划算。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "静态资源尽量与主文档同站；HTTP/2 多路复用下过多域名分片反而增加连接开销。"
-          }
-        ],
-        [
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
+          },
+          {
+            "type": "code",
+            "value": "dns-prefetch"
+          },
           {
             "type": "text",
-            "value": "HTTP/3 基于 QUIC（跑在 UDP 上）首包建连更快，多在网关/CDN 侧开启；页面侧把 "
+            "value": " 只解析域名；"
           },
           {
             "type": "code",
@@ -56,7 +60,55 @@
           },
           {
             "type": "text",
-            "value": " 用对通常就够。"
+            "value": " 继续完成传输控制协议（TCP）和 TLS 握手。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "统计、字体、内容分发网络（CDN）这类稳定第三方在 HTML 头里提前挂，首屏真正发出请求时连接已经热了。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "适合字体、主 CDN、登录必打的网关这几条。代价是每条预建连都占槽位；广告和实验 SDK 域名不稳定，不适合全挂。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "HTTP/2 已经单连接多路复用，再按旧习惯把图片拆到四五个域名，等于多付几次握手。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "我见过弱网下这样拆完首屏更慢，Network 里全是并行握手。还有 "
+          },
+          {
+            "type": "code",
+            "value": "preconnect"
+          },
+          {
+            "type": "text",
+            "value": " 写了 A 域、页面实际打 B 域，等于白握。"
           }
         ]
       ]
@@ -74,17 +126,25 @@
           },
           {
             "type": "text",
-            "value": "GET 幂等、参数在 URL；POST 常用于提交 body；HTTPS 下两者均加密，POST 并非更安全。"
+            "value": "GET 和 POST 差在语义和缓存，不在「谁更加密」。HTTPS 下两者都加密，安全取决于有没有把敏感信息写进 URL 和日志。"
           }
         ],
         [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
+          },
           {
             "type": "code",
             "value": "GET"
           },
           {
             "type": "text",
-            "value": "：语义上偏幂等、读资源，参数通常在 URL query，可被缓存、书签、服务端日志记录。"
+            "value": " 表示读资源、语义上偏幂等，参数在 query，可被缓存、书签、代理日志记下来。"
           }
         ],
         [
@@ -94,27 +154,51 @@
           },
           {
             "type": "text",
-            "value": "：常表示创建/提交，body 可带复杂结构，默认不被强缓存。"
+            "value": " 表示提交或改状态，复杂结构走 body，默认不被强缓存。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "HTTPS 下两者都加密传输；「POST 更安全」不成立。"
+            "value": "2、"
           },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "读数据用 GET，适合列表查询和可预取；改状态用 POST，代价是不能被浏览器当缓存命中。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "看场景选语义，别反过来：用 GET 下单、用 POST 拉列表，中间件和缓存会按错语义处理。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "有人觉得 POST 更安全，于是把令牌放进 URL 再改用 POST。链路加密了，Referer、access log、浏览历史照样留下 query。"
+          }
+        ],
+        [
           {
             "type": "code",
             "value": "GET"
           },
           {
             "type": "text",
-            "value": " 也能带 body，但中间件与缓存行为不一致，一般别这么用。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "敏感信息不要放 URL，避免进日志、Referer 与浏览器历史。"
+            "value": " 也能带 body，但网关和缓存行为不一致，一般别这么用。"
           }
         ]
       ]
@@ -132,61 +216,61 @@
           },
           {
             "type": "text",
-            "value": "HTTP/1.1 受并发连接限制需域名分片；HTTP/2 单连接多路复用并压缩头部。"
+            "value": "HTTP/1.1 一条连接同时只能好好服务有限请求；HTTP/2 在同一条连接上多路复用多个流，并压缩重复头部。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "HTTP/1.1：同域名并发连接数有限（常见 6 条），多了要靠"
+            "value": "1、"
           },
           {
             "type": "strong",
-            "value": "域名分片"
+            "value": "机制："
           },
           {
             "type": "text",
-            "value": "、合并资源顶住；文本头部重复传输多。"
-          }
-        ],
-        [
-          {
-            "type": "strong",
-            "value": "HTTP/2"
-          },
-          {
-            "type": "text",
-            "value": "：单连接"
-          },
-          {
-            "type": "strong",
-            "value": "多路复用"
-          },
-          {
-            "type": "text",
-            "value": "多个流，二进制分帧，"
-          },
-          {
-            "type": "strong",
-            "value": "头部压缩（HPACK）"
-          },
-          {
-            "type": "text",
-            "value": "减少重复头；服务端推送（Server Push）自 Chrome 106 起已被移除支持，已不再使用。"
+            "value": "1.1 同域名常见 6 条连接上限，头部是重复的纯文本；资源一多就要域名分片、合并文件。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "HTTP/3 跑在 "
+            "value": "HTTP/2 改成二进制分帧，头部压缩（HPACK）压重复头，一条连接上多个流并行。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
           },
           {
-            "type": "code",
-            "value": "QUIC/UDP"
+            "type": "strong",
+            "value": "取舍："
           },
           {
             "type": "text",
-            "value": " 上，减少握手往返时延（RTT），弱网丢包只阻塞单流。"
+            "value": "页面已经走 HTTP/2，再堆雪碧图、再拆一堆静态域名，收益变小。适合留下体积优化和缓存拆分，不适合把 1.1 的分片策略原样搬过来。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "HTTP/2 解开的是应用层排队，传输控制协议（TCP）丢一个包仍可能拖住整条连接。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "服务端推送（Server Push）已被主流浏览器移除支持，已不再使用。弱网丢包多时，要看网关有没有上 HTTP/3。"
           }
         ]
       ]
@@ -204,25 +288,63 @@
           },
           {
             "type": "text",
-            "value": "队头阻塞指前面的请求/响应占住通道，后面的被卡住；要分清应用层与传输层。"
+            "value": "队头阻塞是前面的报文占住通道，后面的只能等。要分清是 HTTP 应用层在排队，还是传输层丢包把整条连接冻住。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、HTTP/1.1：同连接上响应要按请求顺序，常用多连接或管线化（坑多）缓解。"
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "HTTP/1.1"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "同一条连接上响应必须按请求顺序回来。浏览器靠多开连接缓解；管线化理论上能并行，但代理实现坑多，基本没人用。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、HTTP/2：一连接多路流，应用层不再互相堵；但 TCP 丢包仍可能拖住整连接。"
+            "value": "2、"
+          },
+          {
+            "type": "code",
+            "value": "HTTP/2"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "一条连接切成多条流，应用层不再互相堵。底层还是传输控制协议（TCP），丢一个包，整条连接上的流都可能停下来等重传。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、HTTP/3 / QUIC 进一步减轻传输层队头阻塞。"
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "边界："
+          },
+          {
+            "type": "text",
+            "value": "HTTP/3 用基于 UDP 的快速传输协议（QUIC），丢包只伤自己那条流。前端改不了协议，要看 CDN/网关有没有开。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "我见过只升到 HTTP/2，弱网下大图丢包，同连接上的小接口一起卡住，排查时先以为是业务慢。"
           }
         ]
       ]
@@ -240,25 +362,49 @@
           },
           {
             "type": "text",
-            "value": "HTTP/3 基于 QUIC（跑在 UDP 上），把连接迁移、握手与多路复用做得更抗丢包。"
+            "value": "HTTP/3 跑在基于 UDP 的快速传输协议（QUIC）上，把连接迁移、握手与多路复用做得更抗丢包。本质是解决 HTTP/2 遗留的传输层队头阻塞。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、HTTP/2 多路复用仍受单条 TCP 丢包队头阻塞；QUIC 流之间更独立。"
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "队头阻塞："
+          },
+          {
+            "type": "text",
+            "value": "HTTP/2 多路复用仍受单条 TCP 丢包队头阻塞——一条流丢包，同连接其他流都等；QUIC 流之间更独立，丢包只影响自己那条流。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、常结合 TLS 1.3，握手往返更少；弱网、切换网络时连接迁移更友好。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "握手与迁移："
+          },
+          {
+            "type": "text",
+            "value": "常结合传输层安全（TLS）1.3，握手往返更少；弱网、切网络时连接迁移更友好，因为 QUIC 用连接 ID 而不是四元组识别连接。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、落地看CDN/ 网关是否开启；前端仍用 "
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "落地边界："
+          },
+          {
+            "type": "text",
+            "value": "前端不用改代码，仍用 "
           },
           {
             "type": "code",
@@ -274,7 +420,13 @@
           },
           {
             "type": "text",
-            "value": "，协议由栈协商。"
+            "value": "，协议由栈协商；要看 CDN/网关是否开启，没开就白搭。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "我见过控制台写着已开 HTTP/3，抓包仍是 HTTP/2，因为中间代理拦了 UDP。部署了不代表生效，抓包看协议版本才算数。"
           }
         ]
       ]
@@ -292,7 +444,7 @@
           },
           {
             "type": "text",
-            "value": "HTTPS 在 HTTP 上叠加 TLS：传输加密、防篡改，并用证书校验站点身份，降低中间人风险。"
+            "value": "HTTPS 是在 HTTP 上叠传输层安全（TLS）：加密传输、校验证书身份，降低链路被窃听和中间人改包的风险。"
           }
         ],
         [
@@ -302,11 +454,11 @@
           },
           {
             "type": "strong",
-            "value": "相对 HTTP："
+            "value": "机制："
           },
           {
             "type": "text",
-            "value": "明文可被链路窃听；HTTPS 协商会话密钥后对称加密传数据，证书链校验域名与有效期。"
+            "value": "HTTP 明文，途经代理都能看。HTTPS 先握手协商会话密钥，再用对称加密传数据；证书链核验域名和有效期，对不上浏览器直接拦。"
           }
         ],
         [
@@ -320,7 +472,15 @@
           },
           {
             "type": "text",
-            "value": "全站 HTTPS、避免混合内容；敏感 Cookie 配 "
+            "value": "全站 HTTPS，页面里别再引 "
+          },
+          {
+            "type": "code",
+            "value": "http://"
+          },
+          {
+            "type": "text",
+            "value": " 脚本或图（混合内容会被拦或降级）。敏感 Cookie 加 "
           },
           {
             "type": "code",
@@ -336,7 +496,13 @@
           },
           {
             "type": "text",
-            "value": "；可用 HTTP 严格传输安全（HSTS）强制跳转 HTTPS。"
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "再用 HTTP 严格传输安全（HSTS）让浏览器以后只走 HTTPS，减少第一次被降级到明文的窗口。"
           }
         ],
         [
@@ -346,11 +512,25 @@
           },
           {
             "type": "strong",
-            "value": "边界："
+            "value": "坑："
           },
           {
             "type": "text",
-            "value": "证书申请与续期多在运维/网关；前端重点是不降级明文、不引入不安全第三方脚本。"
+            "value": "证书续期在网关。前端更容易踩的是自己引入了不安全第三方，或本地关了 HTTPS 后 "
+          },
+          {
+            "type": "code",
+            "value": "Secure"
+          },
+          {
+            "type": "text",
+            "value": " Cookie 丢了登录态。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "HTTPS 只保护传输，跨站脚本（XSS）照样能读非 HttpOnly 的票。锁了链路不等于页面不能被注入。"
           }
         ]
       ]
@@ -368,7 +548,7 @@
           },
           {
             "type": "text",
-            "value": "强缓存未过期则不发请求；过期后走协商缓存向服务端确认是否仍可用。"
+            "value": "强缓存未过期则不发请求；过期后走协商缓存向服务端确认是否仍可用。选型看资源能不能换 URL：能换就长缓存，入口文件每次校验。"
           }
         ],
         [
@@ -378,15 +558,15 @@
           },
           {
             "type": "strong",
-            "value": "强缓存"
+            "value": "强缓存："
           },
           {
             "type": "text",
-            "value": "：响应含 "
+            "value": "响应含 "
           },
           {
             "type": "code",
-            "value": "Cache-Control: max-age=..."
+            "value": "Cache-Control: max-age"
           },
           {
             "type": "text",
@@ -398,15 +578,7 @@
           },
           {
             "type": "text",
-            "value": "，未过期不发网络请求，直接用本地副本；两者同时存在时 "
-          },
-          {
-            "type": "code",
-            "value": "Cache-Control"
-          },
-          {
-            "type": "text",
-            "value": " 优先级更高。"
+            "value": "，未过期直接用本地副本；两者同时在时前者优先。"
           }
         ],
         [
@@ -416,11 +588,11 @@
           },
           {
             "type": "strong",
-            "value": "协商缓存"
+            "value": "协商缓存："
           },
           {
             "type": "text",
-            "value": "：过期后带 "
+            "value": "过期后带 "
           },
           {
             "type": "code",
@@ -436,13 +608,17 @@
           },
           {
             "type": "text",
-            "value": " 询问服务端；返回 304 则响应体为空、继续用旧文件，200 则下载新内容。"
+            "value": " 询问；304 则响应体为空、继续用旧文件，200 则下载新内容。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、容易混淆的指令："
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "容易混的指令："
           },
           {
             "type": "code",
@@ -450,7 +626,7 @@
           },
           {
             "type": "text",
-            "value": " 是可缓存但每次都要协商校验；"
+            "value": " 是可缓存但每次协商；"
           },
           {
             "type": "code",
@@ -466,21 +642,21 @@
           },
           {
             "type": "text",
-            "value": " 表示有效期内不必再校验，"
-          },
-          {
-            "type": "code",
-            "value": "must-revalidate"
-          },
-          {
-            "type": "text",
-            "value": " 表示过期后必须回服务端确认。"
+            "value": " 表示有效期内不必再校验。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、生产组合：静态资源文件名带 "
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "生产组合："
+          },
+          {
+            "type": "text",
+            "value": "带 "
           },
           {
             "type": "code",
@@ -488,7 +664,7 @@
           },
           {
             "type": "text",
-            "value": " 配合长 "
+            "value": " 的静态文件配长 "
           },
           {
             "type": "code",
@@ -496,15 +672,7 @@
           },
           {
             "type": "text",
-            "value": "（或 "
-          },
-          {
-            "type": "code",
-            "value": "immutable"
-          },
-          {
-            "type": "text",
-            "value": "），HTML 入口用 "
+            "value": "；HTML 入口用 "
           },
           {
             "type": "code",
@@ -514,6 +682,20 @@
             "type": "text",
             "value": "，保证发版后能立刻拿到新的资源地址。"
           }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "我见过 HTML 也配了长 "
+          },
+          {
+            "type": "code",
+            "value": "max-age"
+          },
+          {
+            "type": "text",
+            "value": "，发版后用户还在跑旧入口，里面的旧哈希文件已被清掉，表现为大面积 404。"
+          }
         ]
       ]
     },
@@ -521,7 +703,7 @@
       "id": "q-cdn",
       "navLabel": "CDN",
       "question": "CDN是什么？静态资源为何常上 CDN？",
-      "questionNote": "CDN 把静态资源放在边缘节点就近返回，内容更新靠更换带哈希的 URL。",
+      "questionNote": "CDN 把可缓存文件放到边缘节点就近返回；更新靠更换带哈希的 URL。",
       "answer": [
         [
           {
@@ -530,25 +712,75 @@
           },
           {
             "type": "text",
-            "value": "CDN把资源缓存在边缘节点，用户就近获取，降低延迟与源站压力。"
+            "value": "内容分发网络（CDN）把可缓存文件放到离用户近的边缘节点，就近返回，降低延迟，也给源站减负。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、静态 JS/CSS/图、可缓存 API 响应适合；带用户隐私的动态接口不要共用边缘缓存。"
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
+          },
+          {
+            "type": "text",
+            "value": "用户请求打到边缘；命中就直接回，未命中再回源并写入节点。静态 JS/CSS/图、带哈希的构建产物最适合。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、配合文件名哈希与长缓存；更新靠换 URL，避免边缘脏缓存难刷。"
+            "value": "带登录态的用户信息接口若被边缘公共缓存，A 用户可能拿到 B 的响应。我见过这类串号，查了半天接口本身没写错。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、注意跨域、HTTPS 证书与回源策略；核心接口可保留同源或专线。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "取舍："
+          },
+          {
+            "type": "text",
+            "value": "适合读多写少、URL 能变的静态资源。更新靠换带 "
+          },
+          {
+            "type": "code",
+            "value": "contenthash"
+          },
+          {
+            "type": "text",
+            "value": " 的地址，而不是去全网「刷」节点。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "看场景：全国静态资源上 CDN；交易和个性化接口留同源或专线，不适合共用那层边缘缓存。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "我见过发版只更了源站，边缘还在吐旧 JS，用户表现为「清缓存才好」。根因是文件名没变，缓存键还是旧 URL。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "跨域、证书和回源 Host 也要对齐，否则边缘 200、浏览器跨域资源共享（CORS）报错，排查时容易只盯源站。"
           }
         ]
       ]
@@ -566,25 +798,63 @@
           },
           {
             "type": "text",
-            "value": "都表示换 URI 再请求，差异在是否永久、方法是否允许变成 GET。"
+            "value": "都表示换 URI 再请求，差异在两个维度：是否永久、方法是否允许变成 GET。选型时看场景：站点搬家用 301/308，临时跳转用 302/307。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、301 永久、302 临时；历史实现里不少客户端会把 POST 改成 GET。"
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "301/302"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "301 永久、302 临时。历史客户端常把 POST 改成 GET。我见过 API 用 302 迁接口，body 丢了，日志只剩 GET，排了很久才定位到是重定向改了方法。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、303 明确用 GET 去看结果（POST 后跳转结果页常见）。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "303："
+          },
+          {
+            "type": "text",
+            "value": "明确用 GET 去看结果，POST 提交后跳结果页常见（PRG 模式），适合表单提交防刷新重复提交。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、307/308 保持原方法与正文；308 为永久、307 为临时，语义更严。"
+            "value": "3、"
+          },
+          {
+            "type": "code",
+            "value": "307/308"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "保持原方法与正文，语义更严；308 为永久、307 为临时。API 网关迁移接口要保方法时用它们，代价是老客户端兼容性要确认。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "301 会被浏览器和 CDN 强缓存。我见过接口迁错用了 301，改回 200 之后老用户还在跳旧地址，只能靠换路径止血。302 缓存少，适合临时活动页，错了还能改回来。"
           }
         ]
       ]
@@ -602,35 +872,21 @@
           },
           {
             "type": "text",
-            "value": "协议/主机/端口任一不同即为跨源；浏览器限制 JS 读取跨源响应，需跨域资源共享（CORS）或服务端代理。"
+            "value": "跨域是协议、主机、端口任一不同。浏览器限制的是页面 JS 去读另一源的响应，不是请求发不出去。生产靠跨域资源共享（CORS）或同源代理。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "协议/主机/端口任一不同即为跨源；页面 JS 用 "
-          },
-          {
-            "type": "code",
-            "value": "fetch/XHR"
-          },
-          {
-            "type": "text",
-            "value": " "
+            "value": "1、"
           },
           {
             "type": "strong",
-            "value": "读另一源响应"
+            "value": "机制："
           },
           {
             "type": "text",
-            "value": "会被浏览器拦截。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "简单请求直接发；复杂请求先 "
+            "value": "简单请求直接发，复杂请求先 "
           },
           {
             "type": "code",
@@ -638,21 +894,7 @@
           },
           {
             "type": "text",
-            "value": " 预检。"
-          },
-          {
-            "type": "code",
-            "value": "curl"
-          },
-          {
-            "type": "text",
-            "value": "、服务端互调不受跨域资源共享（CORS）限制。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "生产：服务端返回 "
+            "value": " 预检。服务端回 "
           },
           {
             "type": "code",
@@ -660,29 +902,39 @@
           },
           {
             "type": "text",
-            "value": "；带凭证时需 "
+            "value": "；带 Cookie 时必须写具体 Origin，不能是 "
           },
           {
             "type": "code",
-            "value": "Allow-Credentials"
+            "value": "*"
           },
           {
             "type": "text",
-            "value": " + 具体 Origin。"
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "curl"
+          },
+          {
+            "type": "text",
+            "value": " 和服务端互调没有这层限制，所以「接口工具能通、页面报跨域」很常见。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "本地开发用 dev server "
+            "value": "2、"
           },
           {
             "type": "strong",
-            "value": "代理"
+            "value": "取舍："
           },
           {
             "type": "text",
-            "value": " 把 "
+            "value": "生产给明确 Origin。本地用 dev server 把 "
           },
           {
             "type": "code",
@@ -690,27 +942,35 @@
           },
           {
             "type": "text",
-            "value": " 转后端同源；"
-          },
-          {
-            "type": "text",
-            "value": "JSONP（用 script 标签绕过跨域的历史方案）仅支持 GET。"
+            "value": " 代理成同源，适合日更联调。JSONP 用 script 标签绕过，只适合 GET，现在基本不该再上。"
           }
         ],
         [
+          {
+            "type": "text",
+            "value": "3、"
+          },
           {
             "type": "strong",
-            "value": "示例："
+            "value": "坑："
           },
           {
             "type": "text",
-            "value": "服务端放行示意（配合前端 credentials 策略）。"
+            "value": "带凭证却回 "
+          },
+          {
+            "type": "code",
+            "value": "*"
+          },
+          {
+            "type": "text",
+            "value": "，浏览器直接拒绝。我见过网关把 Origin 写成开发域名，预发页面全红，Network 里请求其实 200。"
           }
         ],
         [
           {
-            "type": "code",
-            "value": "Access-Control-Allow-Origin: https://app.example.com\nAccess-Control-Allow-Credentials: true\n// 注意：带 Cookie 时 Origin 不能是 *"
+            "type": "text",
+            "value": "跨域报错是浏览器读响应失败，不是网关没收到。前端对这类错误重试没有意义，要去对 Origin 白名单。"
           }
         ]
       ]
@@ -728,7 +988,15 @@
           },
           {
             "type": "text",
-            "value": "简单请求不预检；带 Authorization、application/json 等非简单特征时先发 OPTIONS。"
+            "value": "预检不是「所有 POST 都会多一枪」，而是浏览器判断这次跨源请求不像简单请求，才先发 "
+          },
+          {
+            "type": "code",
+            "value": "OPTIONS"
+          },
+          {
+            "type": "text",
+            "value": "。"
           }
         ],
         [
@@ -742,13 +1010,7 @@
           },
           {
             "type": "text",
-            "value": "需同时满足：方法是 GET/HEAD/POST；头都在安全清单内（不含自定义头）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "且 "
+            "value": "要同时满足：方法只有 GET/HEAD/POST；头都在安全清单里；"
           },
           {
             "type": "code",
@@ -756,7 +1018,13 @@
           },
           {
             "type": "text",
-            "value": " 只限 "
+            "value": " 只限表单三类。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "这三类是 "
           },
           {
             "type": "code",
@@ -780,7 +1048,7 @@
           },
           {
             "type": "text",
-            "value": " 三种。"
+            "value": "。缺一条就算非简单请求。"
           }
         ],
         [
@@ -790,11 +1058,11 @@
           },
           {
             "type": "strong",
-            "value": "非简单请求"
+            "value": "会预检："
           },
           {
             "type": "text",
-            "value": "：如带 "
+            "value": "带 "
           },
           {
             "type": "code",
@@ -810,7 +1078,15 @@
           },
           {
             "type": "text",
-            "value": "、自定义头，浏览器先发 OPTIONS 预检。"
+            "value": " 或自定义头。服务端要回允许的方法和头，并用 "
+          },
+          {
+            "type": "code",
+            "value": "Access-Control-Max-Age"
+          },
+          {
+            "type": "text",
+            "value": " 缓存结果。"
           }
         ],
         [
@@ -820,57 +1096,31 @@
           },
           {
             "type": "strong",
-            "value": "减少预检"
+            "value": "坑："
           },
           {
             "type": "text",
-            "value": "：预检响应带 "
-          },
-          {
-            "type": "code",
-            "value": "Access-Control-Max-Age"
-          },
-          {
-            "type": "text",
-            "value": " 缓存结果，并带上 "
-          },
-          {
-            "type": "code",
-            "value": "Access-Control-Allow-Methods"
-          },
-          {
-            "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "Allow-Headers"
-          },
-          {
-            "type": "text",
-            "value": "。"
+            "value": "中后台接口几乎都是 PUT/DELETE + JSON + 令牌，每个请求多一次往返，弱网延迟翻倍。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "网关对 OPTIONS 快速返回 204；开发期用代理保持同源可直接绕开。"
-          }
-        ],
-        [
+            "value": "我见过网关没给 "
+          },
           {
-            "type": "strong",
-            "value": "示例："
+            "type": "code",
+            "value": "OPTIONS"
           },
           {
             "type": "text",
-            "value": "易触发预检的请求形态。"
+            "value": " 放行，页面只看到预检失败，业务接口其实没被打到。开发期用代理保持同源可以直接绕开。"
           }
         ],
         [
           {
-            "type": "code",
-            "value": "fetch('/api', {\n  method: 'PUT', // 非简单方法 → 触发预检\n  headers: {\n    Authorization: 'Bearer xxx', // 自定义头也会触发预检\n    'Content-Type': 'application/json',\n  },\n  body: JSON.stringify({ a: 1 }),\n})\n// 浏览器先发 OPTIONS 预检"
+            "type": "text",
+            "value": "Max-Age 没配时，每个按钮点击都先 OPTIONS 再 POST。我见过弱网列表页因此慢出一截，Network 里预检比业务请求还多。"
           }
         ]
       ]
@@ -888,7 +1138,7 @@
           },
           {
             "type": "text",
-            "value": "跨站脚本（XSS）是恶意脚本进入页面上下文；跨站请求伪造（CSRF）是浏览器自动携带 Cookie 发状态改变请求，两者攻击面不同。"
+            "value": "跨站脚本（XSS）是恶意脚本进入页面上下文；跨站请求伪造（CSRF）是浏览器自动携带 Cookie 发状态改变请求。两者攻击面不同，防护手段也不通用。"
           }
         ],
         [
@@ -897,12 +1147,16 @@
             "value": "1、"
           },
           {
-            "type": "strong",
-            "value": "跨站脚本（XSS）"
+            "type": "code",
+            "value": "XSS"
           },
           {
             "type": "text",
-            "value": "：恶意脚本进入页面上下文，能读 "
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "脚本进了页面，能读非 HttpOnly 的 "
           },
           {
             "type": "code",
@@ -910,27 +1164,13 @@
           },
           {
             "type": "text",
-            "value": "（非 HttpOnly 时）、调接口、改 DOM。"
+            "value": "、调接口、改 DOM。按注入方式分存储型、反射型、DOM 型。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "按注入方式分三类：存储型（脏数据落库）、反射型（随请求参数回显）、DOM 型（前端把不可信数据写进 innerHTML 等）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、XSS 防护：输出转义、模板默认转义、"
-          },
-          {
-            "type": "code",
-            "value": "Content-Security-Policy"
-          },
-          {
-            "type": "text",
-            "value": " 限制脚本源、敏感 Cookie 设 "
+            "value": "防护是输出转义、模板默认转义、内容安全策略（CSP）限脚本源、Cookie 设 "
           },
           {
             "type": "code",
@@ -938,7 +1178,7 @@
           },
           {
             "type": "text",
-            "value": "、少用 "
+            "value": "。少用 "
           },
           {
             "type": "code",
@@ -954,27 +1194,37 @@
           },
           {
             "type": "text",
-            "value": "。DOM 型完全可由前端自己防住。"
+            "value": "。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、"
-          },
-          {
-            "type": "strong",
-            "value": "跨站请求伪造（CSRF）："
-          },
-          {
-            "type": "text",
-            "value": "诱导已登录用户访问恶意页，浏览器自动带 Cookie 发状态改变请求。"
+            "value": "DOM 型完全可由前端自己防住；存储型必须前后端一起堵。我见过富文本回显没转义，后台一条评论就能把运营 Cookie 读走。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、CSRF 防护："
+            "value": "2、"
+          },
+          {
+            "type": "code",
+            "value": "CSRF"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "诱导已登录用户打开恶意页，浏览器自动带 Cookie 发改状态请求。本质是发送行为不受控，不是你的页面被注入。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "防护用 "
           },
           {
             "type": "code",
@@ -990,7 +1240,7 @@
           },
           {
             "type": "text",
-            "value": "、关键接口用 CSRF Token 或校验 "
+            "value": "、关键接口校验 CSRF Token 或 "
           },
           {
             "type": "code",
@@ -998,15 +1248,7 @@
           },
           {
             "type": "text",
-            "value": " / "
-          },
-          {
-            "type": "code",
-            "value": "Referer"
-          },
-          {
-            "type": "text",
-            "value": "、敏感操作改用 "
+            "value": "，敏感操作改走 "
           },
           {
             "type": "code",
@@ -1015,6 +1257,12 @@
           {
             "type": "text",
             "value": " 头（不会自动携带）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "看场景取舍：SameSite=Strict 最严，但会影响外链跳回后的登录态。一般 Lax 起步，转账一类操作再叠 Token。"
           }
         ]
       ]
@@ -1032,13 +1280,21 @@
           },
           {
             "type": "text",
-            "value": "内容安全策略（CSP）用白名单限制脚本、样式、连接等来源，降低 XSS 注入后的危害面。"
+            "value": "内容安全策略（CSP）用白名单限制脚本、样式、连接等来源，降低跨站脚本（XSS）注入后的危害面。定位是兜底：注入发生了也让脚本跑不起来。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、常见头："
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "配置："
+          },
+          {
+            "type": "text",
+            "value": "优先响应头 "
           },
           {
             "type": "code",
@@ -1046,7 +1302,7 @@
           },
           {
             "type": "text",
-            "value": "；也可用 "
+            "value": "；"
           },
           {
             "type": "code",
@@ -1054,13 +1310,21 @@
           },
           {
             "type": "text",
-            "value": "（能力较少）。"
+            "value": " 能力较少，没有 report-uri、frame-ancestors。meta 只是降级方案。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、指令如 "
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "指令与灰度："
+          },
+          {
+            "type": "text",
+            "value": "常用 "
           },
           {
             "type": "code",
@@ -1076,7 +1340,7 @@
           },
           {
             "type": "text",
-            "value": "；开发可先 "
+            "value": "。上线前先用 "
           },
           {
             "type": "code",
@@ -1084,13 +1348,47 @@
           },
           {
             "type": "text",
-            "value": " 收集违规。"
+            "value": " 只上报不拦截。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、与转义、HttpOnly Cookie 互补：CSP 挡「跑起来的脚本」，不能替代输入消毒。"
+            "value": "直接开拦截容易一刀切死统计 SDK、第三方组件。看团队节奏：先 Report-Only 跑一阵，再收白名单。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "边界："
+          },
+          {
+            "type": "text",
+            "value": "与转义、HttpOnly Cookie 互补：CSP 挡「跑起来的脚本」，不能替代输入消毒。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "我见过白名单放开 "
+          },
+          {
+            "type": "code",
+            "value": "unsafe-inline"
+          },
+          {
+            "type": "text",
+            "value": " 只为图省事过线，等于没配。内联脚本一多，XSS 注入后照样能执行。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "CSP 也挡不住已获允许的源里再被挖洞。白名单只能缩小面，不能当唯一防线。"
           }
         ]
       ]
@@ -1108,13 +1406,31 @@
           },
           {
             "type": "text",
-            "value": "攻击页用透明 iframe 覆盖诱导按钮，用户以为点的是可见 UI，实际点到了被嵌页面的敏感操作。"
+            "value": "点击劫持是攻击页用透明 iframe 叠在你的页面上，用户以为点的是可见按钮，实际点到了被嵌页的转账、授权一类操作。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、响应头 "
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
+          },
+          {
+            "type": "text",
+            "value": "被嵌页面自己不知道外层有透明层。浏览器不会因为「看不清」就拦截点击，所以要靠响应头禁止或限制被嵌入。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "防护："
           },
           {
             "type": "code",
@@ -1130,13 +1446,7 @@
           },
           {
             "type": "text",
-            "value": " 限制被嵌。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、CSP 的 "
+            "value": "；内容安全策略（CSP）的 "
           },
           {
             "type": "code",
@@ -1144,13 +1454,43 @@
           },
           {
             "type": "text",
-            "value": " 更灵活，可列允许嵌套的父页面来源。"
+            "value": " 能列允许的父页面来源，比旧头灵活。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、敏感操作加二次确认，关键操作校验来源，降低误点后果。"
+            "value": "敏感操作再加一次确认，降低误点后果。适合后台不可被嵌的页面用 DENY；要给合作方嵌套时看场景改白名单。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "只在前端用 JS 判断 "
+          },
+          {
+            "type": "code",
+            "value": "window.top === window"
+          },
+          {
+            "type": "text",
+            "value": " 不稳，攻击页可以限制脚本。我见过只配了旧头，合作方合法嵌套后台打不开，后来改成 "
+          },
+          {
+            "type": "code",
+            "value": "frame-ancestors"
+          },
+          {
+            "type": "text",
+            "value": " 白名单才分清谁可以嵌。"
           }
         ]
       ]
@@ -1168,7 +1508,7 @@
           },
           {
             "type": "text",
-            "value": "Header.Payload.Signature；payload 仅编码非加密，鉴权结论以服务端验签为准。"
+            "value": "JSON Web Token（JWT）是 Header.Payload.Signature 三段；中间段只是编码，谁都能解开看，鉴权只认服务端验签。"
           }
         ],
         [
@@ -1182,7 +1522,13 @@
           },
           {
             "type": "text",
-            "value": "前两段 Base64URL 可解码查看；签名防篡改，密钥只在服务端，前端无法「自己验过就算登录」。"
+            "value": "前两段 Base64URL 可解码；签名用服务端密钥，前端不能「自己解开 payload 就算登录」。过期和权限都以服务端校验为准。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "改完 payload 没密钥也签不出第三段，所以解码不等于可信。"
           }
         ],
         [
@@ -1192,7 +1538,45 @@
           },
           {
             "type": "strong",
-            "value": "存放：localStorage 易被 XSS 读，Cookie 要防 CSRF。"
+            "value": "存放："
+          },
+          {
+            "type": "code",
+            "value": "localStorage"
+          },
+          {
+            "type": "text",
+            "value": " 方便，但跨站脚本（XSS）能读走；Cookie 能加 "
+          },
+          {
+            "type": "code",
+            "value": "HttpOnly"
+          },
+          {
+            "type": "text",
+            "value": "，但要防跨站请求伪造（CSRF）。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "看场景：纯接口令牌常走 "
+          },
+          {
+            "type": "code",
+            "value": "Authorization"
+          },
+          {
+            "type": "text",
+            "value": " 头；带 Cookie 的会话就要配 "
+          },
+          {
+            "type": "code",
+            "value": "SameSite"
+          },
+          {
+            "type": "text",
+            "value": "。适合无状态水平扩展，代价是服务端默认不能立刻作废某一张。"
           }
         ],
         [
@@ -1202,25 +1586,11 @@
           },
           {
             "type": "strong",
-            "value": "前端职责："
+            "value": "坑："
           },
           {
             "type": "text",
-            "value": "请求带上凭证、处理过期与刷新竞态；不要在前端存密钥，也不要把可解码的 payload 当机密。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4、"
-          },
-          {
-            "type": "strong",
-            "value": "最大短板："
-          },
-          {
-            "type": "text",
-            "value": "JWT 是无状态的，服务端不保存会话，因此无法主动让某个 token 立即失效；要做登出或踢人只能靠短过期 + refresh token，或额外维护黑名单。"
+            "value": "登出或踢人要么短过期加 refresh，要么另做黑名单。我见过前端把 payload 里的手机号当机密展示，其实任何人解开都能看。"
           }
         ]
       ]
@@ -1238,25 +1608,55 @@
           },
           {
             "type": "text",
-            "value": "拦截器要同时覆盖 HTTP 状态与约定业务码，统一清会话并单飞处理跳转。"
+            "value": "登录失效经常有两路：HTTP 401，以及 body 里的业务码。拦截器只处理一路，另一路会留下「看着已登录、接口全失败」的脏会话。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、401 与业务失效码：走统一未授权处理，清 token 并跳登录。"
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
+          },
+          {
+            "type": "text",
+            "value": "约定码和 401 走同一套未授权处理：清 token、停后续请求、再跳登录。403 是已登录但没权限，应进无权限页，不要一律踢回登录。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、多请求同时失效：只弹一次登录、只清一次态，避免连环 toast；可与 refresh 单飞队列配合。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "竞态："
+          },
+          {
+            "type": "text",
+            "value": "多个请求同时失效时只清一次态、只弹一次登录。和 refresh 单飞队列一起做，避免第一个 401 触发刷新、第二个又把新票清掉。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、区分「无权限」与「未登录」：前者 403 页，后者回登录，不要一律踢回首页。"
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "我见过 HTTP 层跳登录、业务码只 toast「请重新登录」却不清理本地票，用户刷新又自动带上旧票。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "还有把所有 4xx 当未登录，运营账号点一个没权限按钮就被踢出去。无权限和未登录要分开处理。"
           }
         ]
       ]
@@ -1265,7 +1665,7 @@
       "id": "q-fetch-abort",
       "navLabel": "AbortController",
       "question": "fetch 如何取消请求？竞态应如何处理？",
-      "questionNote": "搜索框、路由切换是典型竞态场景；Strict Mode 双挂载要注意清理。",
+      "questionNote": "搜索框连续输入、路由切换是典型竞态；取消后要把 AbortError 和网络失败分开。",
       "answer": [
         [
           {
@@ -1274,17 +1674,53 @@
           },
           {
             "type": "text",
-            "value": "AbortController 取消 fetch；竞态场景在新请求前 abort 旧请求，或用 requestId 比对。"
+            "value": "fetch 本身不能中途关掉，要靠 AbortController 把 "
+          },
+          {
+            "type": "code",
+            "value": "signal"
+          },
+          {
+            "type": "text",
+            "value": " 传进去；abort 之后 Promise 以 AbortError reject。竞态是旧响应回来覆盖新结果。"
           }
         ],
         [
           {
-            "type": "code",
-            "value": "const ctrl = new AbortController(); fetch(url, { signal: ctrl.signal }); ctrl.abort()"
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
           },
           {
             "type": "text",
-            "value": " 会 reject。"
+            "value": "每次请求新建 controller，把 "
+          },
+          {
+            "type": "code",
+            "value": "signal"
+          },
+          {
+            "type": "text",
+            "value": " 交给 "
+          },
+          {
+            "type": "code",
+            "value": "fetch"
+          },
+          {
+            "type": "text",
+            "value": "；路由离开或重新搜索时 "
+          },
+          {
+            "type": "code",
+            "value": "abort()"
+          },
+          {
+            "type": "text",
+            "value": "。取消的是浏览器侧等待，服务端可能已经在跑，不能当事务回滚。"
           }
         ],
         [
@@ -1298,19 +1734,41 @@
           },
           {
             "type": "text",
-            "value": " 区分用户取消与真实网络错误，避免误报。"
+            "value": " 区分取消和真网络错误，取消不要当失败 toast。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "搜索框、路由切换：新请求前 abort 上一次，或维护递增 requestId，响应回来时比对再 setState。"
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "竞态："
+          },
+          {
+            "type": "text",
+            "value": "搜索框每个字都打接口，慢请求后到会写错列表。新请求前 abort 上一次，或维护递增 requestId，回来时对不上就丢弃。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "React Strict Mode 双挂载时，在 effect cleanup 里 abort，防慢请求覆盖新结果或内存泄漏。"
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "React Strict Mode 开发态会双挂载，effect 不在 cleanup 里 abort，会看到重复请求，或慢请求写回已卸载组件。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "我见过只 abort 没判断 AbortError，监控里全是「网络失败」，值班被无效告警淹没。取消是预期路径，不要和超时、5xx 混进同一条失败率。"
           }
         ]
       ]
@@ -1319,7 +1777,7 @@
       "id": "q-websocket-basics",
       "navLabel": "WebSocket 基础",
       "question": "WebSocket（全双工长连接）与 HTTP 是什么关系？",
-      "questionNote": "握手走 HTTP 升级；同一条连接上双向传帧。",
+      "questionNote": "握手走 HTTP 升级；同一条连接上双向传帧，心跳和重连要自己做。",
       "answer": [
         [
           {
@@ -1328,13 +1786,21 @@
           },
           {
             "type": "text",
-            "value": "先经 HTTP 协议升级（Upgrade），再在同一条 TCP 上双向传帧，非短连接一问一答。"
+            "value": "WebSocket 先走 HTTP 升级握手，成功后在同一条传输控制协议（TCP）连接上双向传帧，不再是短连接一问一答。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、请求头带 "
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "机制："
+          },
+          {
+            "type": "text",
+            "value": "请求头带 "
           },
           {
             "type": "code",
@@ -1342,35 +1808,49 @@
           },
           {
             "type": "text",
-            "value": "，服务端 101 后进入 WebSocket。"
+            "value": "，服务端回 101 后切到 WebSocket。之后双方随时推帧，心跳和鉴权都要自己做。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、适合聊天、协同、行情等低延迟双向场景；只读推送可评估服务端发送事件（SSE）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、注意代理超时与握手鉴权。"
-          }
-        ],
-        [
+            "value": "2、"
+          },
           {
             "type": "strong",
-            "value": "示例："
+            "value": "取舍："
           },
           {
             "type": "text",
-            "value": "浏览器侧连接。"
+            "value": "适合聊天、协同、行情这类低延迟双向。只读推送看服务端发送事件（SSE）更简单。不适合偶尔拉一次的列表，长连接的代理超时和重连成本更高。"
           }
         ],
         [
           {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "坑："
+          },
+          {
+            "type": "text",
+            "value": "握手阶段鉴权失败常被当成「连不上」。我见过网关空闲 60 秒断连接，页面没心跳，用户以为推送丢了。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "重连要带退避。有人在 "
+          },
+          {
             "type": "code",
-            "value": "const ws = new WebSocket('wss://example.com/ws')\nws.onopen = () => ws.send('hi')\nws.onmessage = (e) => console.log(e.data)"
+            "value": "onclose"
+          },
+          {
+            "type": "text",
+            "value": " 里裸重连，弱网一抖就把网关打满，最后整页推送集体掉线。"
           }
         ]
       ]

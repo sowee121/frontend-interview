@@ -2,14 +2,14 @@
   "slug": "performance",
   "title": "性能",
   "documentTitle": "性能",
-  "description": "优化维度与白屏首屏、拆包懒加载与长列表，以及主线程卡顿、图片优化与以 LCP / INP / CLS 为核心的性能监控。",
-  "lead": "以白屏、首屏、卡顿为入口：拆包与懒加载、主线程与长列表；验收优先看 LCP、INP、CLS。",
+  "description": "白屏首屏与主线程卡顿、拆包懒加载与长列表、图片与资源提示，以及以 LCP / INP / CLS 为核心的性能监控。",
+  "lead": "先分清慢在加载还是卡在交互：白屏/首屏 → 拆包与图片 → 主线程与长列表 → 用 LCP、INP、CLS 验收。",
   "items": [
     {
       "id": "q-perf-overview",
       "navLabel": "优化从哪说",
       "question": "前端性能优化一般从哪些维度展开？",
-      "questionNote": "加载、运行时、网络与缓存、监控验收四个维度。",
+      "questionNote": "加载决定首屏快慢，运行时决定点按是否跟手，网络与缓存决定重复访问成本，最后用指标验收。",
       "answer": [
         [
           {
@@ -18,7 +18,7 @@
           },
           {
             "type": "text",
-            "value": "常从加载、运行时、网络与验收四个维度展开。"
+            "value": "先分清用户抱怨的是「打开慢」还是「用起来卡」，再落到加载、运行时、网络、验收四块，避免一上来背优化清单。"
           }
         ],
         [
@@ -32,7 +32,7 @@
           },
           {
             "type": "text",
-            "value": "路由/组件拆包、压缩与Tree-shaking、图片体积与格式、关键请求并行与缓存。"
+            "value": "首屏要下载和执行的 JS/CSS/图是否过大、是否阻塞。手段是路由拆包、压缩与 Tree-shaking、图片压格式、关键请求并行。"
           }
         ],
         [
@@ -46,7 +46,7 @@
           },
           {
             "type": "text",
-            "value": "减少无效渲染、长列表虚拟化、主线程耗时任务拆分、合理防抖节流。"
+            "value": "点击、滚动时主线程是否被长任务占满、DOM 是否过多。手段是减无效渲染、虚拟列表、任务分片、防抖节流。"
           }
         ],
         [
@@ -56,11 +56,19 @@
           },
           {
             "type": "strong",
-            "value": "网络："
+            "value": "网络与缓存："
           },
           {
             "type": "text",
-            "value": "CDN、缓存策略、合并或减少请求、避免阻塞渲染的脚本。"
+            "value": "重复打开是否还在打满量请求。手段是 CDN、强缓存/协商缓存、合并请求、脚本 "
+          },
+          {
+            "type": "code",
+            "value": "defer/async"
+          },
+          {
+            "type": "text",
+            "value": " 避免挡 HTML 解析。"
           }
         ],
         [
@@ -70,16 +78,50 @@
           },
           {
             "type": "strong",
-            "value": "验收：先看 LCP（最大内容绘制）、INP（交互是否跟得上）、CLS（布局是否晃），再补白屏/首屏与接口耗时。"
+            "value": "验收："
+          },
+          {
+            "type": "text",
+            "value": "优先看网页核心性能指标（Core Web Vitals）三项，再补白屏/首屏与接口耗时。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "LCP"
+          },
+          {
+            "type": "text",
+            "value": "（Largest Contentful Paint，最大内容绘制）：视口内最大内容元素完成绘制的时间，衡量加载。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "INP"
+          },
+          {
+            "type": "text",
+            "value": "（Interaction to Next Paint，交互到下次绘制）：用户操作到下一帧绘制的延迟，衡量交互响应。"
+          }
+        ],
+        [
+          {
+            "type": "code",
+            "value": "CLS"
+          },
+          {
+            "type": "text",
+            "value": "（Cumulative Layout Shift，累积布局偏移）：意外布局移动的累积分数，衡量视觉稳定性。"
           }
         ]
       ]
     },
     {
-      "id": "q-white-screen",
-      "navLabel": "白屏与首屏",
-      "question": "页面白屏时间长、首屏慢，通常如何排查与优化？",
-      "questionNote": "白屏偏首包与阻塞资源；首屏还叠加关键接口与渲染路径。",
+      "id": "q-cwv-core",
+      "navLabel": "LCP / INP / CLS",
+      "question": "LCP、INP、CLS 分别量的是什么？线上怎么定位、怎么改？",
+      "questionNote": "LCP 看最大内容何时画出，INP 看交互到下一帧，CLS 看布局是否跳。先分清是哪条差，再对症改。",
       "answer": [
         [
           {
@@ -88,7 +130,39 @@
           },
           {
             "type": "text",
-            "value": "先分清慢在资源下载、JS 执行，还是接口；再对症减体积、并行与骨架屏。"
+            "value": "核心网页指标（"
+          },
+          {
+            "type": "code",
+            "value": "CWV"
+          },
+          {
+            "type": "text",
+            "value": "）："
+          },
+          {
+            "type": "code",
+            "value": "LCP"
+          },
+          {
+            "type": "text",
+            "value": "（Largest Contentful Paint，最大内容绘制）看主内容何时稳定出现；"
+          },
+          {
+            "type": "code",
+            "value": "INP"
+          },
+          {
+            "type": "text",
+            "value": "（Interaction to Next Paint）看点击到下一帧；"
+          },
+          {
+            "type": "code",
+            "value": "CLS"
+          },
+          {
+            "type": "text",
+            "value": "（Cumulative Layout Shift）看布局是否跳。"
           }
         ],
         [
@@ -97,12 +171,96 @@
             "value": "1、"
           },
           {
-            "type": "strong",
-            "value": "排查："
+            "type": "code",
+            "value": "LCP"
           },
           {
             "type": "text",
-            "value": "看首包体积、阻塞脚本、关键接口耗时；本地 Performance / Network 对照环境差异。"
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "常见元凶是英雄图太大、字体阻塞、主 JS 挡住首屏。先在 Performance 里找 "
+          },
+          {
+            "type": "code",
+            "value": "LCP"
+          },
+          {
+            "type": "text",
+            "value": " 元素，再决定压图、预加载、还是别让 JS 挡 HTML。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "code",
+            "value": "INP"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "点下去到画面有反馈超过约 200ms 就不跟手。拆长任务、减同步渲染、输入用过渡更新。别只优化加载却不管点击。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "code",
+            "value": "CLS"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "图没尺寸、字体替换、广告插入会把下面顶走。给图留高宽、字体用 fallback 对齐。看场景先盯最差的那条，三条一起抓容易散。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-bfcache-hydrate",
+      "navLabel": "bfcache 与水合",
+      "question": "往返缓存（bfcache）和 SSR 水合分别会在哪些地方把性能吃掉？",
+      "questionNote": "bfcache 让后退瞬间恢复，但 unload 监听会让页面进不了缓存；SSR 水合成本在客户端把事件重新挂上。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "往返缓存（bfcache）把整页冻结在内存，后退几乎瞬开；服务端渲染（SSR）的水合是客户端把事件和状态接回去。两条线都容易被自己写的监听废掉。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "code",
+            "value": "bfcache"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "pagehide / pageshow 里 percisted=true 才是命中。注册 unload、开着 WebSocket 不关、用 beforeunload 弹窗，都会让页面进不了缓存。"
           }
         ],
         [
@@ -112,11 +270,11 @@
           },
           {
             "type": "strong",
-            "value": "手段："
+            "value": "水合："
           },
           {
             "type": "text",
-            "value": "代码分割、压缩、图片优化、服务端或边缘缓存、服务端渲染（SSR）/ 骨架屏减少白屏感。"
+            "value": "HTML 先出来，JS 再把监听挂上。水合前点了没反应，水合时 DOM 对不上还会整树重绘。能流式出 HTML 就别等整包 JS。"
           }
         ],
         [
@@ -126,20 +284,20 @@
           },
           {
             "type": "strong",
-            "value": "渲染："
+            "value": "取舍："
           },
           {
             "type": "text",
-            "value": "避免首屏同步超大 JSON 解析与长任务；非关键模块延后执行。"
+            "value": "营销落地页适合 SSR + 少水合；强交互中后台 CSR 更简单。代价是两套心智，团队规范跟不上就别上。"
           }
         ]
       ]
     },
     {
-      "id": "q-longtask",
-      "navLabel": "主线程卡顿",
-      "question": "页面操作卡顿、滚动掉帧时，如何定位主线程耗时并优化？",
-      "questionNote": "长任务/掉帧的业务说法；拆分计算、减渲染、Web Worker 等。",
+      "id": "q-white-screen",
+      "navLabel": "白屏与首屏",
+      "question": "页面白屏时间长、首屏慢，通常如何排查与优化？",
+      "questionNote": "白屏是几乎看不到内容；首屏是关键模块可交互前的等待。两者慢点不同，不要混成一句「打开慢」。",
       "answer": [
         [
           {
@@ -148,7 +306,7 @@
           },
           {
             "type": "text",
-            "value": "交互卡不卡看交互到下次绘制（INP）；用 PerformanceObserver 听长任务，火焰图找长条，线上按分位统计超 50ms 次数。"
+            "value": "白屏多卡在 HTML/JS/CSS 还没画出第一屏内容；首屏慢还叠加关键接口与渲染。先用 Network / Performance 分清是下载、执行还是等接口。"
           }
         ],
         [
@@ -158,11 +316,123 @@
           },
           {
             "type": "strong",
-            "value": "分片"
+            "value": "怎么分："
           },
           {
             "type": "text",
-            "value": "：大数组用 "
+            "value": "白屏看文档与主包是否迟迟不到、是否有同步脚本挡解析；首屏再看首屏接口是否串行、骨架是否盖住等待。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "下载侧："
+          },
+          {
+            "type": "text",
+            "value": "主包过大就拆路由/组件；静态资源走 CDN 与压缩；字体、非关键 CSS 不要堵首屏。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "执行侧："
+          },
+          {
+            "type": "text",
+            "value": "避免首屏同步解析超大 JSON、一口气挂一堆插件；非关键逻辑 "
+          },
+          {
+            "type": "code",
+            "value": "import()"
+          },
+          {
+            "type": "text",
+            "value": " 延后。可用服务端渲染（SSR）或骨架屏先出结构，缩短「空白」体感。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "数据侧："
+          },
+          {
+            "type": "text",
+            "value": "首屏接口能并行就并行，能缓存就缓存；关键字段先返，次要模块后补，避免一条慢接口拖死整屏。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-longtask",
+      "navLabel": "主线程卡顿",
+      "question": "页面操作卡顿、滚动掉帧时，如何定位主线程耗时并优化？",
+      "questionNote": "主线程被超过约 50ms 的长任务占满时，输入和绘制都会排队，INP 与掉帧一起变差。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "卡顿本质是主线程忙于 JS/布局/绘制，来不及响应输入。线上用长任务与 "
+          },
+          {
+            "type": "code",
+            "value": "INP"
+          },
+          {
+            "type": "text",
+            "value": " 看严重度，本地用 Performance 火焰图找连续长条。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "定位："
+          },
+          {
+            "type": "text",
+            "value": "PerformanceObserver 听 "
+          },
+          {
+            "type": "code",
+            "value": "longtask"
+          },
+          {
+            "type": "text",
+            "value": "（单次超过约 50ms）；火焰图里看是业务计算、强制同步布局，还是第三方脚本。线上按 P75/P95 统计，别只看均值。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "拆任务："
+          },
+          {
+            "type": "text",
+            "value": "大循环按帧切开，用 "
           },
           {
             "type": "code",
@@ -178,29 +448,7 @@
           },
           {
             "type": "text",
-            "value": " 每帧处理一批，避免一次算太久。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、"
-          },
-          {
-            "type": "strong",
-            "value": "下沉"
-          },
-          {
-            "type": "text",
-            "value": "：重计算放到 "
-          },
-          {
-            "type": "code",
-            "value": "Web Worker"
-          },
-          {
-            "type": "text",
-            "value": "，主线程只收结果。"
+            "value": " 每批干一点，把主线程还给输入与绘制。"
           }
         ],
         [
@@ -210,11 +458,19 @@
           },
           {
             "type": "strong",
-            "value": "减首屏同步活"
+            "value": "搬家与减活："
           },
           {
             "type": "text",
-            "value": "：避免首屏同步 "
+            "value": "纯计算放 "
+          },
+          {
+            "type": "code",
+            "value": "Web Worker"
+          },
+          {
+            "type": "text",
+            "value": "；滚动/输入回调节流；少在滚动里读布局再写样式（避免强制同步布局）。首屏不要同步 "
           },
           {
             "type": "code",
@@ -222,7 +478,7 @@
           },
           {
             "type": "text",
-            "value": " 超大 localStorage。"
+            "value": " 超大本地缓存。"
           }
         ]
       ]
@@ -231,7 +487,7 @@
       "id": "q-gpu-composite",
       "navLabel": "合成与硬件加速",
       "question": "什么是合成层与硬件加速？位移为何常用 transform？",
-      "questionNote": "transform 和 opacity 更容易只做合成，改 left 或 top 往往会触发布局。",
+      "questionNote": "样式变更可能走「布局 → 绘制 → 合成」；能只走到合成，就少占主线程。",
       "answer": [
         [
           {
@@ -240,21 +496,7 @@
           },
           {
             "type": "text",
-            "value": "部分样式变更可只做合成（composite），少触发布局与绘制；GPU 参与合成常被称作硬件加速。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、改 "
-          },
-          {
-            "type": "code",
-            "value": "left/top"
-          },
-          {
-            "type": "text",
-            "value": " 易引发重排；"
+            "value": "浏览器把页面分成若干层再叠在一起叫合成。改 "
           },
           {
             "type": "code",
@@ -270,13 +512,67 @@
           },
           {
             "type": "text",
-            "value": " 更易走合成。"
+            "value": " 常可只更新合成，少做布局和绘制；GPU 参与这一步就是常说的硬件加速。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、过度 "
+            "value": "1、"
+          },
+          {
+            "type": "text",
+            "value": "为何不用 "
+          },
+          {
+            "type": "code",
+            "value": "left/top"
+          },
+          {
+            "type": "text",
+            "value": "："
+          },
+          {
+            "type": "text",
+            "value": "改 "
+          },
+          {
+            "type": "code",
+            "value": "left/top/width"
+          },
+          {
+            "type": "text",
+            "value": " 容易触发布局（重排），再绘制；动画帧里反复做会卡。位移、淡入优先 "
+          },
+          {
+            "type": "code",
+            "value": "transform"
+          },
+          {
+            "type": "text",
+            "value": " / "
+          },
+          {
+            "type": "code",
+            "value": "opacity"
+          },
+          {
+            "type": "text",
+            "value": "。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "提层代价："
+          },
+          {
+            "type": "text",
+            "value": "层过多占内存、增加合成负担。"
           },
           {
             "type": "code",
@@ -284,13 +580,29 @@
           },
           {
             "type": "text",
-            "value": " 或盲目提层会占内存，只针对热路径。"
+            "value": "、盲目 "
+          },
+          {
+            "type": "code",
+            "value": "translateZ(0)"
+          },
+          {
+            "type": "text",
+            "value": " 只留给真正在动的热路径，动画结束可去掉。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "3、用 Performance 面板看 layers / paint，验证是否真减负。"
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "验证："
+          },
+          {
+            "type": "text",
+            "value": "用 Performance 的 Layers / Paint flashing 看是否少了大面积重绘，而不是凭感觉加加速。"
           }
         ]
       ]
@@ -299,7 +611,7 @@
       "id": "q-image",
       "navLabel": "图片优化",
       "question": "前端图片资源应如何优化？",
-      "questionNote": "格式、尺寸、传输、占位四块；LCP 图可提优先级。",
+      "questionNote": "体积影响 LCP，占位不准影响 CLS；格式、尺寸、传输、优先级要一起看。",
       "answer": [
         [
           {
@@ -308,7 +620,23 @@
           },
           {
             "type": "text",
-            "value": "用对格式与尺寸，再配合 CDN、懒加载和占位，兼顾体积与累积布局偏移（CLS）。"
+            "value": "图太大拖慢 "
+          },
+          {
+            "type": "code",
+            "value": "LCP"
+          },
+          {
+            "type": "text",
+            "value": "，没有宽高占位会把下面内容顶来顶去（伤 "
+          },
+          {
+            "type": "code",
+            "value": "CLS"
+          },
+          {
+            "type": "text",
+            "value": "）。先压体积，再控加载时机与优先级。"
           }
         ],
         [
@@ -318,11 +646,11 @@
           },
           {
             "type": "strong",
-            "value": "格式"
+            "value": "格式与尺寸："
           },
           {
             "type": "text",
-            "value": "：照片用现代压缩格式 "
+            "value": "照片用 "
           },
           {
             "type": "code",
@@ -338,7 +666,15 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "。用 "
+          },
+          {
+            "type": "code",
+            "value": "srcset + sizes"
+          },
+          {
+            "type": "text",
+            "value": " 按槽宽和设备像素比选档，别在小图容器里塞 4K 原图。"
           }
         ],
         [
@@ -348,19 +684,27 @@
           },
           {
             "type": "strong",
-            "value": "尺寸"
+            "value": "传输与占位："
           },
           {
             "type": "text",
-            "value": "："
+            "value": "走 CDN 并压缩；首屏外 "
           },
           {
             "type": "code",
-            "value": "srcset + sizes"
+            "value": "loading=\"lazy\""
           },
           {
             "type": "text",
-            "value": " 按设备像素比与槽宽切档，避免在小尺寸容器内加载超大原图。"
+            "value": "。标签或 CSS 写死宽高（或 "
+          },
+          {
+            "type": "code",
+            "value": "aspect-ratio"
+          },
+          {
+            "type": "text",
+            "value": "），图片到达前后布局稳定。"
           }
         ],
         [
@@ -369,34 +713,16 @@
             "value": "3、"
           },
           {
-            "type": "strong",
-            "value": "传输"
-          },
-          {
-            "type": "text",
-            "value": "：走CDN并压缩；首屏外用 "
-          },
-          {
             "type": "code",
-            "value": "loading=\"lazy\""
+            "value": "LCP"
           },
           {
             "type": "text",
-            "value": "；预留宽高防 CLS。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "4、"
-          },
-          {
-            "type": "strong",
-            "value": "LCP 图"
+            "value": " 图："
           },
           {
             "type": "text",
-            "value": "：Chrome 可对最大内容绘制图设 "
+            "value": "首屏最大那张不要懒加载；可 "
           },
           {
             "type": "code",
@@ -404,7 +730,15 @@
           },
           {
             "type": "text",
-            "value": " 提高优先级。"
+            "value": " 或 "
+          },
+          {
+            "type": "code",
+            "value": "rel=preload"
+          },
+          {
+            "type": "text",
+            "value": "，让浏览器早下载。"
           }
         ]
       ]
@@ -413,7 +747,7 @@
       "id": "q-lazyload",
       "navLabel": "懒加载",
       "question": "图片懒加载与路由懒加载分别解决什么问题？如何实现？",
-      "questionNote": "进入视口再请求、路由级拆包。",
+      "questionNote": "图片懒加载省带宽与并发；路由懒加载削首包 JS。首屏关键资源两边都不能偷懒。",
       "answer": [
         [
           {
@@ -422,7 +756,7 @@
           },
           {
             "type": "text",
-            "value": "图片懒加载推迟非首屏资源；路由懒加载按页拆包，降低首包体积。"
+            "value": "图片懒加载：视口外的图先不请求。路由懒加载：非当前页的 JS 先不下载执行。两者都是「用到再取」，但作用点不同。"
           }
         ],
         [
@@ -432,7 +766,35 @@
           },
           {
             "type": "strong",
-            "value": "图片：进入视口再赋 src，可用 IntersectionObserver 或 loading=\"lazy\"；注意占位高度，防止布局抖动。"
+            "value": "图片："
+          },
+          {
+            "type": "text",
+            "value": "原生 "
+          },
+          {
+            "type": "code",
+            "value": "loading=\"lazy\""
+          },
+          {
+            "type": "text",
+            "value": "，或 "
+          },
+          {
+            "type": "code",
+            "value": "IntersectionObserver"
+          },
+          {
+            "type": "text",
+            "value": " 进入视口再赋 "
+          },
+          {
+            "type": "code",
+            "value": "src"
+          },
+          {
+            "type": "text",
+            "value": "。占位高度要先留好，否则图出来时整页狂跳。"
           }
         ],
         [
@@ -445,12 +807,16 @@
             "value": "路由："
           },
           {
+            "type": "text",
+            "value": "动态 "
+          },
+          {
             "type": "code",
-            "value": "() => import(\"./Page\")"
+            "value": "() => import('./Page')"
           },
           {
             "type": "text",
-            "value": " 一类动态导入，配合构建拆 chunk；首屏路由仍要优先加载。"
+            "value": "，构建拆出异步 chunk；进页时再下载。首屏路由仍要优先加载或预取。"
           }
         ],
         [
@@ -463,8 +829,12 @@
             "value": "边界："
           },
           {
+            "type": "code",
+            "value": "LCP"
+          },
+          {
             "type": "text",
-            "value": "首屏关键图不要懒加载；拆包过细会增加请求次数，要结合首屏路径权衡。"
+            "value": " 图、首屏关键模块不要懒；拆包过碎会变成一堆小请求，二次导航也可能更慢，要按首屏路径量体裁衣。"
           }
         ]
       ]
@@ -473,7 +843,7 @@
       "id": "q-code-split",
       "navLabel": "代码分割",
       "question": "前端应如何实现代码分割？",
-      "questionNote": "路由级与组件级动态 import；打包工具 manualChunks 配合验证首包。",
+      "questionNote": "目标是首屏 JS 只含当前页；路由级拆大块，组件级拆大 SDK，再用打包分析验收。",
       "answer": [
         [
           {
@@ -482,7 +852,7 @@
           },
           {
             "type": "text",
-            "value": "按路由和重组件拆包，首屏只拉当前页需要的 JavaScript。"
+            "value": "代码分割把一个大 bundle 拆成多份，首屏只下载当前路由需要的 JS，缩短解析与执行时间。"
           }
         ],
         [
@@ -492,11 +862,11 @@
           },
           {
             "type": "strong",
-            "value": "路由级"
+            "value": "路由级："
           },
           {
             "type": "text",
-            "value": "："
+            "value": "Vue "
           },
           {
             "type": "code",
@@ -504,7 +874,7 @@
           },
           {
             "type": "text",
-            "value": " 或 React "
+            "value": "，React "
           },
           {
             "type": "code",
@@ -512,7 +882,15 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": " + "
+          },
+          {
+            "type": "code",
+            "value": "Suspense"
+          },
+          {
+            "type": "text",
+            "value": "。这是最稳、收益通常最大的一刀。"
           }
         ],
         [
@@ -522,11 +900,19 @@
           },
           {
             "type": "strong",
-            "value": "组件级"
+            "value": "组件级："
           },
           {
             "type": "text",
-            "value": "：图表、编辑器等大 SDK 进弹窗再动态 import 挂载。"
+            "value": "图表、富文本、编辑器等大 SDK，等弹窗打开再 "
+          },
+          {
+            "type": "code",
+            "value": "import()"
+          },
+          {
+            "type": "text",
+            "value": "，避免打进首包。"
           }
         ],
         [
@@ -536,19 +922,11 @@
           },
           {
             "type": "strong",
-            "value": "构建配置"
+            "value": "构建与验收："
           },
           {
             "type": "text",
-            "value": "：Webpack 魔法注释 "
-          },
-          {
-            "type": "code",
-            "value": "webpackChunkName"
-          },
-          {
-            "type": "text",
-            "value": "，或 Vite/Rollup 的 "
+            "value": "Vite/Rollup "
           },
           {
             "type": "code",
@@ -556,23 +934,13 @@
           },
           {
             "type": "text",
-            "value": " 把框架与业务拆开；改完测首包与二次导航耗时。"
+            "value": " 可把 vue/react 与业务拆开；用打包分析看首包构成，改完对比首屏与二次导航耗时。"
           }
         ],
         [
-          {
-            "type": "strong",
-            "value": "示例："
-          },
           {
             "type": "text",
-            "value": "路由级懒加载。"
-          }
-        ],
-        [
-          {
-            "type": "code",
-            "value": "// Vue\ncomponent: () => import('./views/Orders.vue')\n// React\nconst Orders = lazy(() => import('./Orders'))"
+            "value": "坑：别一刀切拆太细——每个 chunk 都有请求开销，HTTP/2 下小 chunk 多了反而慢。路由级拆完先看首包降到多少，再决定要不要继续拆组件；二次导航场景下预加载（prefetch）比拆更管用。"
           }
         ]
       ]
@@ -581,7 +949,7 @@
       "id": "q-long-list",
       "navLabel": "长列表",
       "question": "超长列表应如何优化渲染性能？",
-      "questionNote": "虚拟列表是标准方案；简单场景可采用分页或无限滚动。",
+      "questionNote": "DOM 节点数随数据线性涨时，布局与内存都会爆；虚拟列表只保留视口附近节点。",
       "answer": [
         [
           {
@@ -590,13 +958,21 @@
           },
           {
             "type": "text",
-            "value": "优先采用虚拟列表，仅渲染可视区及缓冲区 DOM，滚动时复用节点。"
+            "value": "一万行若全挂 DOM，滚动必卡。虚拟列表只渲染可视区加少量缓冲行，滚动时改数据窗口、复用节点。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、按 "
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "原理："
+          },
+          {
+            "type": "text",
+            "value": "用 "
           },
           {
             "type": "code",
@@ -604,15 +980,15 @@
           },
           {
             "type": "text",
-            "value": " 换算 "
+            "value": " 和行高算 "
           },
           {
             "type": "code",
-            "value": "startIndex"
+            "value": "startIndex / endIndex"
           },
           {
             "type": "text",
-            "value": "，库如 "
+            "value": "，外层用占位撑出总高度，内部只挂窗口内的行。库如 "
           },
           {
             "type": "code",
@@ -634,15 +1010,29 @@
         [
           {
             "type": "text",
-            "value": "2、交互简单可用分页或无限滚动 + 节流，本质是"
+            "value": "2、"
           },
           {
             "type": "strong",
-            "value": "减少 DOM 节点与布局次数"
+            "value": "坑："
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "行高不固定要动态测量；横向复杂单元格、粘性表头要单独处理。缓冲行太少会白闪，太多又失去收益。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "更轻方案："
+          },
+          {
+            "type": "text",
+            "value": "交互简单时分页或无限滚动 + 节流也能减节点；本质仍是控制同时存在的 DOM 数量。"
           }
         ]
       ]
@@ -651,7 +1041,7 @@
       "id": "q-resource-hints",
       "navLabel": "资源提示",
       "question": "dns-prefetch、preconnect、preload、prefetch 怎么选？",
-      "questionNote": "资源提示（Resource Hints）按「解析 → 建连 → 本页关键 → 下页预取」递进使用。",
+      "questionNote": "都是告诉浏览器「提前做一点」；越早介入成本越低，preload 最贵也最容易抢带宽。",
       "answer": [
         [
           {
@@ -660,37 +1050,57 @@
           },
           {
             "type": "text",
-            "value": "资源提示（Resource Hints）按「解析 → 建连 → 本页关键 → 下页预取」递进使用，越靠前收益越直接、成本越低。"
+            "value": "资源提示（Resource Hints）按「只解析 → 建连 → 本页关键下载 → 下页空闲预取」递进；用错 preload 会和首屏抢带宽。"
           }
         ],
         [
+          {
+            "type": "text",
+            "value": "1、"
+          },
           {
             "type": "code",
             "value": "dns-prefetch"
           },
           {
             "type": "text",
-            "value": "：只做DNS。"
+            "value": "：只做 DNS 解析，适合以后可能用到的多域名。"
           }
         ],
         [
+          {
+            "type": "text",
+            "value": "2、"
+          },
           {
             "type": "code",
             "value": "preconnect"
           },
           {
             "type": "text",
-            "value": "：解析 + TCP + TLS，适合马上要用第三方接口或 CDN。"
+            "value": "：DNS + TCP + TLS，适合马上要打的 API / CDN 源，建连成本高时更值。"
           }
         ],
         [
+          {
+            "type": "text",
+            "value": "3、"
+          },
           {
             "type": "code",
             "value": "preload"
           },
           {
             "type": "text",
-            "value": "：高优先级拉本页 LCP 图、关键 CSS；"
+            "value": "：高优先级下载本页立刻要用的字体、"
+          },
+          {
+            "type": "code",
+            "value": "LCP"
+          },
+          {
+            "type": "text",
+            "value": " 图、关键 CSS；"
           },
           {
             "type": "code",
@@ -698,23 +1108,35 @@
           },
           {
             "type": "text",
-            "value": " 类型要与真实请求一致，滥用会抢带宽。"
+            "value": " 必须和真实类型一致，且数量要克制。"
           }
         ],
         [
+          {
+            "type": "text",
+            "value": "4、"
+          },
           {
             "type": "code",
             "value": "prefetch"
           },
           {
             "type": "text",
-            "value": "：空闲预取下一路由 chunk。和 dns-prefetch / preconnect 同一套资源提示思路。"
+            "value": "：空闲时预取下一页 chunk，给二次导航加速，不抢当前首屏。"
           }
         ],
         [
           {
+            "type": "text",
+            "value": "坑：preload 用多了和首屏抢带宽，"
+          },
+          {
             "type": "code",
-            "value": "<link rel=\"dns-prefetch\" href=\"//cdn.example.com\">\n<link rel=\"preconnect\" href=\"https://api.example.com\" crossorigin>\n<link rel=\"preload\" href=\"/font.woff2\" as=\"font\" crossorigin>\n<link rel=\"prefetch\" href=\"/next-page.js\">"
+            "value": "LCP"
+          },
+          {
+            "type": "text",
+            "value": " 反而更慢；只给「这一秒就要用」的资源，数量克制到 1~2 个。prefetch 别在弱网/低端机上乱用，省得预取一堆用户根本不会点的页面。"
           }
         ]
       ]
@@ -723,7 +1145,7 @@
       "id": "q-third-party",
       "navLabel": "第三方脚本",
       "question": "统计/广告脚本拖慢页面怎么办？",
-      "questionNote": "延后加载、异步属性、审计体积；Partytown 等受兼容性限制。",
+      "questionNote": "第三方常在主线程长任务里露脸；能砍则砍，不能砍就延后、异步、隔离。",
       "answer": [
         [
           {
@@ -732,13 +1154,29 @@
           },
           {
             "type": "text",
-            "value": "能不上就不上；必须上的尽量别抢首屏主线程。"
+            "value": "统计和广告常同步抢主线程，直接抬高 "
+          },
+          {
+            "type": "code",
+            "value": "INP"
+          },
+          {
+            "type": "text",
+            "value": "、拖慢首屏。策略是少接、晚接、异步接，必要时隔离到 Worker。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "1、延后到 "
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "延后："
+          },
+          {
+            "type": "text",
+            "value": "等 "
           },
           {
             "type": "code",
@@ -754,7 +1192,7 @@
           },
           {
             "type": "text",
-            "value": " 再注入；用 "
+            "value": " 再插入脚本；标签加 "
           },
           {
             "type": "code",
@@ -762,13 +1200,21 @@
           },
           {
             "type": "text",
-            "value": "。"
+            "value": "，避免挡 HTML 解析。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "2、能 "
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "减负："
+          },
+          {
+            "type": "text",
+            "value": "能动态 "
           },
           {
             "type": "code",
@@ -776,95 +1222,7 @@
           },
           {
             "type": "text",
-            "value": " 的走动态加载；可用 Partytown 等把脚本迁到 Worker（视兼容性）。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、定期用打包分析看 bundle 里谁最大，和业务方对齐是否可删。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-monitor",
-      "navLabel": "性能监控",
-      "question": "线上性能监控通常关注哪些方面？",
-      "questionNote": "线上真实用户数据为主，Lighthouse 实验室跑分为辅；按版本、机型切片看长尾。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "线上真实用户打点才能看到长尾；实验室跑分用来复现和对比，两者互补。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、指标：优先 LCP、INP、CLS（Core Web Vitals；INP 已取代 FID）。再补 TTFB、FCP、长任务、接口 P95、白屏率。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、采集：PerformanceObserver 听 LCP / longtask；INP、CLS 可用 web-vitals 库。按版本、地区、机型切片，别只看平均值。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "3、关页用 "
-          },
-          {
-            "type": "code",
-            "value": "navigator.sendBeacon"
-          },
-          {
-            "type": "text",
-            "value": " 尽量把队列发出去；不要只拿一次 Lighthouse 分数当结论。"
-          }
-        ]
-      ]
-    },
-    {
-      "id": "q-observability",
-      "navLabel": "埋点与可观测",
-      "question": "埋点、性能监控和错误上报怎么分工？",
-      "questionNote": "三者都上报，但目的不同：指标类型与消费方各异。",
-      "answer": [
-        [
-          {
-            "type": "strong",
-            "value": "要点："
-          },
-          {
-            "type": "text",
-            "value": "埋点看「用户做了什么」，性能监控看「快不快、卡不卡」，错误上报看「哪里挂了」。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "1、"
-          },
-          {
-            "type": "strong",
-            "value": "行为埋点"
-          },
-          {
-            "type": "text",
-            "value": "：点击、曝光、漏斗转化，给产品/运营；注意采样与隐私合规。"
-          }
-        ],
-        [
-          {
-            "type": "text",
-            "value": "2、性能监控（RUM）：看 LCP、INP、CLS、接口耗时、白屏率；用 PerformanceObserver 采集，和 Lighthouse 实验室跑分互补。"
+            "value": " 就别打进主包；可用 Partytown 等把部分脚本迁到 Worker（要评估兼容与功能缺失）。"
           }
         ],
         [
@@ -874,17 +1232,273 @@
           },
           {
             "type": "strong",
-            "value": "错误上报"
+            "value": "治理："
           },
           {
             "type": "text",
-            "value": "：JS 异常、资源 404、接口 5xx；接 Sentry 等，带 release、路由、breadcrumb。"
+            "value": "打包分析与线上长任务归因里点名第三方，和业务方对齐能否下线或换轻量方案。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-monitor",
+      "navLabel": "性能监控",
+      "question": "线上性能监控通常关注哪些方面？",
+      "questionNote": "实验室跑分可复现；线上真实用户（RUM）才看得到机型与网络长尾。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "Lighthouse 适合对比和复现；线上要用真实用户监控（RUM）看 P75/P95。指标以 "
+          },
+          {
+            "type": "code",
+            "value": "LCP"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "INP"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "CLS"
+          },
+          {
+            "type": "text",
+            "value": " 为主，再补导航与接口。"
           }
         ],
         [
           {
             "type": "text",
-            "value": "4、可共用 "
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "看什么："
+          },
+          {
+            "type": "text",
+            "value": "优先 "
+          },
+          {
+            "type": "code",
+            "value": "LCP"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "INP"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "CLS"
+          },
+          {
+            "type": "text",
+            "value": "。再补 "
+          },
+          {
+            "type": "code",
+            "value": "TTFB"
+          },
+          {
+            "type": "text",
+            "value": "（Time to First Byte，首字节时间）、"
+          },
+          {
+            "type": "code",
+            "value": "FCP"
+          },
+          {
+            "type": "text",
+            "value": "（First Contentful Paint，首次内容绘制）、长任务次数、接口 P95、白屏率。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "怎么采："
+          },
+          {
+            "type": "text",
+            "value": "PerformanceObserver 听 "
+          },
+          {
+            "type": "code",
+            "value": "LCP"
+          },
+          {
+            "type": "text",
+            "value": "、longtask；"
+          },
+          {
+            "type": "code",
+            "value": "INP"
+          },
+          {
+            "type": "text",
+            "value": "/"
+          },
+          {
+            "type": "code",
+            "value": "CLS"
+          },
+          {
+            "type": "text",
+            "value": " 常用 "
+          },
+          {
+            "type": "code",
+            "value": "web-vitals"
+          },
+          {
+            "type": "text",
+            "value": " 库。按版本、地区、机型切片；关页用 "
+          },
+          {
+            "type": "code",
+            "value": "navigator.sendBeacon"
+          },
+          {
+            "type": "text",
+            "value": " 尽量把队列发出去。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "怎么用："
+          },
+          {
+            "type": "text",
+            "value": "告警看回归（发版后 P75 变差），优化看头部场景归因到具体页与资源，不要拿一次实验室满分当上线标准。"
+          }
+        ]
+      ]
+    },
+    {
+      "id": "q-observability",
+      "navLabel": "埋点与可观测",
+      "question": "埋点、性能监控和错误上报怎么分工？",
+      "questionNote": "三者都上报，但问题不同：做了什么、快不快、哪里挂了；字段与告警不要揉成一张表。",
+      "answer": [
+        [
+          {
+            "type": "strong",
+            "value": "要点："
+          },
+          {
+            "type": "text",
+            "value": "行为埋点回答「用户做了什么」，性能监控回答「快不快、卡不卡」，错误上报回答「哪里挂了」。通道可共用，指标定义要分开。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "1、"
+          },
+          {
+            "type": "strong",
+            "value": "行为埋点："
+          },
+          {
+            "type": "text",
+            "value": "点击、曝光、漏斗转化，给产品/运营看路径；注意采样与隐私合规，别把敏感字段打上去。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "2、"
+          },
+          {
+            "type": "strong",
+            "value": "性能监控："
+          },
+          {
+            "type": "text",
+            "value": "RUM 采 "
+          },
+          {
+            "type": "code",
+            "value": "LCP"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "INP"
+          },
+          {
+            "type": "text",
+            "value": "、"
+          },
+          {
+            "type": "code",
+            "value": "CLS"
+          },
+          {
+            "type": "text",
+            "value": "、接口耗时、白屏率；和实验室 Lighthouse 互补，用来发现发版回归与长尾机型。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "3、"
+          },
+          {
+            "type": "strong",
+            "value": "错误上报："
+          },
+          {
+            "type": "text",
+            "value": "JS 异常、资源加载失败、接口 5xx；带 release、路由、用户操作面包屑，方便复现。"
+          }
+        ],
+        [
+          {
+            "type": "text",
+            "value": "4、"
+          },
+          {
+            "type": "strong",
+            "value": "边界："
+          },
+          {
+            "type": "text",
+            "value": "可共用 "
           },
           {
             "type": "code",
@@ -892,7 +1506,7 @@
           },
           {
             "type": "text",
-            "value": " 通道，但指标定义与告警要分开，避免一个大盘塞所有字段。"
+            "value": " 出站，但告警阈值与看板要拆开，避免一个大盘塞所有字段、谁也看不懂。"
           }
         ]
       ]
